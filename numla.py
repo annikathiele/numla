@@ -91,4 +91,35 @@ class FiniteDifference:
             candidate_ee_h = abs(dd_f(x_i)- compute_ddh_f(x_i))
             if candidate_ee_h > ee_h:
                 ee_h = candidate_ee_h
-            
+    def graph(self, a, b, p): #pylint: disable=invalid-name
+        """
+        Graphs the functions f, ...
+        """
+        xlist = []
+        ylist_f = []
+        ylist_df = []
+        ylist_ddf = []
+        if self.d_f != None:
+            ylist_d_f = []
+        if self.dd_f != None:
+            ylist_dd_f = []
+        for counter in range(p+1):
+            xpoint = a + (counter*abs(b-a))/p
+            xlist.append(xpoint)
+            ylist_f.append(self.f(xpoint))
+            ylist_df.append(self.compute_dh_f()(xpoint))
+            ylist_ddf.append(self.compute_ddh_f()(xpoint))
+            if self.d_f != None:
+                ylist_d_f.append(self.d_f(xpoint))
+            if self.dd_f != None:
+                ylist_dd_f.append(self-dd_f(xpoint))
+        plt.plot(xlist, ylist_f, 'b-',label= 'f(x)' )
+        plt.plot(xlist, ylist_df, 'r-',label= 'df(x)' )
+        plt.plot(xlist, ylist_ddf, 'o-',label= 'ddf(x)' )
+        if self.d_f != None:
+            plt.plot(xlist, ylist_d_f, 'g-',label= 'd_f(x)' )
+        if self.dd_f != None:
+            plt.plot(xlist, ylist_dd_f, 'y-',label= 'dd_f(x)' )
+                
+        plt.legend()
+        plt.show()               
