@@ -84,11 +84,11 @@ class FiniteDifference:
         ee_h = 0
         for i in range(p+1):
             x_i = a + i*abs(b-a) / p
-            candidate_e_h = abs(f(x_i)- compute_dh_f(x_i))
+            candidate_e_h = abs(d_f(x_i)- compute_dh_f(x_i))
             if candidate_e_h > e_h:
                 e_h = candidate_e_h
             
-            candidate_ee_h = abs(f(x_i)- compute_ddh_f(x_i))
+            candidate_ee_h = abs(dd_f(x_i)- compute_ddh_f(x_i))
             if candidate_ee_h > ee_h:
                 ee_h = candidate_ee_h
             
