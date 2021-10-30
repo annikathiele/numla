@@ -112,7 +112,7 @@ class FiniteDifference:
 
         return e_h, ee_h
 
-    def graph(self, a, b, p): #pylint: disable=invalid-name
+        def graph(self, a, b, p): #pylint: disable=invalid-name
             """
             Graphs the functions f, ...
             """
@@ -134,15 +134,19 @@ class FiniteDifference:
                     ylist_d_f.append(self.d_f(xpoint))
                 if self.dd_f != None:
                     ylist_dd_f.append(self.dd_f(xpoint))
-            plt.plot(xlist, ylist_f, 'b-',label= 'f(x)' )
-            plt.plot(xlist, ylist_df, 'r-',label= 'df(x)' )
-            plt.plot(xlist, ylist_ddf, 'r-',label= 'ddf(x)' )
+            fig = plt.figure()
+            ax = fig.add_subplot(1,1,1)
+            ax.plot(xlist, ylist_f, color='tab:blue',label= 'f(x)' )
+            ax.plot(xlist, ylist_df, color = 'tab:red',label= 'df(x)' )
+            ax.plot(xlist, ylist_ddf, color = 'tab:green',label= 'ddf(x)' )
             if self.d_f != None:
-                plt.plot(xlist, ylist_d_f, 'g-',label= 'd_f(x)' )
+                ax.plot(xlist, ylist_d_f, color = 'tab:orange',label= 'd_f(x)' )
             if self.dd_f != None:
-                plt.plot(xlist, ylist_dd_f, 'y-',label= 'dd_f(x)' )
+                ax.plot(xlist, ylist_dd_f, color = 'tab:pink',label= 'dd_f(x)' )
+            plt.title("Finite Differences")
             plt.legend()
+            plt.xlabel('x')
+            plt.ylabel('y')
             plt.show()
-
 if __name__ == "__main__":
     main()
