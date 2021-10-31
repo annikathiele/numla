@@ -148,5 +148,32 @@ class FiniteDifference:
             plt.xlabel('x')
             plt.ylabel('y')
             plt.show()
+def graph_error(a, b, p, h, f, d_f, dd_f): #pylint: disable=invalid-name
+    e_h = []
+    ee_h = []
+    quad = []
+    cubic = []
+    for number in h:
+        g_1 = FiniteDifference(number, f, d_f, dd_f)
+        errors = g_1.compute_errors(a,b,p)
+        e_h.append(errors[0])
+        ee_h.append(errors[1])
+        quad.append(number * number)
+        cubic.append(number*number*number)
+    fig = plt.figure()
+    ax = fig.add_subplot(1,1,1)
+    ax.plot(h,e_h, color = 'tab:blue', label = 'e_f(h)1')
+    ax.plot(h,ee_h, color = 'tab:red', label = 'e_f(h)2')
+    ax.plot(h,h,color = 'tab:green', label = 'f(h)=h')
+    ax.plot(h,quad,color = 'tab:orange', label = 'f(h)=h^2')
+    ax.plot(h,cubic,color = 'tab:pink', label = 'f(h)=h^3')
+    plt.title("Errors")
+    plt.legend()
+    plt.xscale("log")
+    plt.yscale("log")
+    plt.xlabel('h')
+    plt.ylabel('y')
+    plt.show()
+
 if __name__ == "__main__":
     main()
