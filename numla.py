@@ -15,6 +15,12 @@ def main():
     g_1 = FiniteDifference(0.5, f, d_f, dd_f)
     print(g_1.compute_errors(1, 10, 500))
     g_1.graph(1, 10, 500)
+        array = []
+    for counter in range(20):
+        array.append(10**(-counter))
+
+    #array = [1,0.1,0.01,0.001,0.0001,0.00001, 0.000001, 0.0000001, 0.00000001, 0.000000001]
+    graph_error(math.pi, 3*math.pi, 1000, array, f, d_f, dd_f)
 
 class FiniteDifference:
     """ Represents the first and second order finite difference approximation
