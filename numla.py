@@ -120,7 +120,18 @@ class FiniteDifference:
 
         def graph(self, a, b, p): #pylint: disable=invalid-name
             """
-            Graphs the functions f, ...
+            Graphs the functions f, the first and second order finite difference
+            approximation of f and if given, the analytic derivative of f.
+            Parameters
+            ----------
+            a, b : float
+            Start and end point of the interval.
+            p : int
+            Number of intervals used in the approximation of the infinity norm.
+            Returns
+            ----------
+            None
+                    
             """
             xlist = []
             ylist_f = []
