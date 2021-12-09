@@ -1,0 +1,159 @@
+
+\documentclass[smallheadings]{scrartcl}
+
+%%% GENERAL PACKAGES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% inputenc allows the usage of non-ascii characters in the LaTeX source code
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+
+
+% title of the document
+\title{LGS mit LU Zerlegung}
+% optional subtitle
+%\subtitle{Draft from~\today}
+% information about the author
+\author{%
+ Aron Ventura und Annika Thiele\\ Humboldt-Universit\"at zu Berlin
+}
+\date{\today}
+
+
+%%% LANGUAGE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% babel provides hyphenation patterns and translations of keywords like 'table
+% of contents'
+\usepackage[ngerman]{babel}
+
+\usepackage{amsthm}
+\newtheorem{theorem}{Satz}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+
+%%% HYPERLINKS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% automatic generation of hyperlinks for references and URIs
+\usepackage{hyperref}
+
+%%% MATH %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% amsmath provides commands for type-setting mathematical formulas
+\usepackage{amsmath}
+% amssymb provides additional symbols
+\usepackage{amssymb}
+% HINT
+% Use http://detexify.kirelabs.org/classify.html to find unknown symbols!
+
+%%% COLORS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% define own colors and use colored text
+\usepackage[pdftex,svgnames,hyperref]{xcolor}
+
+%%% nice tables
+\usepackage{booktabs}
+
+%%% Code Listings %%%%%%%%%%%%%%%%
+% provides commands for including code (python, latex, ...)
+\usepackage{listings}
+\definecolor{keywords}{RGB}{255,0,90}
+\definecolor{comments}{RGB}{0,0,113}
+\definecolor{red}{RGB}{160,0,0}
+\definecolor{green}{RGB}{0,150,0}
+\lstset{language=Python, 
+        basicstyle=\ttfamily\small, 
+        keywordstyle=\color{keywords},
+        commentstyle=\color{comments},
+        stringstyle=\color{red},
+        showstringspaces=false,
+        identifierstyle=\color{green},
+        }
+
+\usepackage{graphicx}
+\usepackage{paralist}
+
+\usepackage[style=authoryear, backend=biber,natbib=true]{biblatex}
+\addbibresource{mapliteratur.bib}
+
+% setting the font style for input und returns in description items
+\newcommand{\initem}[2]{\item[\hspace{0.5em} {\normalfont\ttfamily{#1}} {\normalfont\itshape{(#2)}\/}]}
+\newcommand{\outitem}[1]{\item[\hspace{0.5em} \normalfont\itshape{(#1)}\/]}
+\newcommand{\bfpara}[1]{
+	
+	\noindent \textbf{#1:}\,}
+
+\begin{document}
+
+% generating the title page
+\maketitle
+\newpage
+% generating the table of contents (requires to run pdflatex twice!)
+\tableofcontents
+\newpage
+
+%%% BEGIN OF CONTENT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Einf\"uhrung in die Theorie}
+	\subsection{Motivation und Problemstellung}
+
+	
+	\subsection{Theoretischer Hintergrund}
+		\subsubsection{Lösen eines Gleichungssystems mit der LU Zerlegung}
+	In der Linearen Algebra haben wir bereits zum Lösen von Gleichunssystemen den Gaußschen Algorithmus kennengelernt. Beim Durchführen des Gaußschen Algorithmus an eine Matrix $A$ wird diese Matrix in eine  oberen rechten Dreiecksmatrix mit Einsen auf der Hauptdiagonalen und einer unteren linken Dreicksmatrix zerlegt. Eine solche Zerlegung nennt man auch \textit{LU-Zerlegung}.
+	\begin{definition}[LU-Zerlegung]
+	Eine Zerlegung einer Matrix $A$ der Form $A=L\cdot U$ mit einer unteren linken Dreiecksmatrix mit Einsen auf der Hauptdiagonalen $L$ und eine oberen rechten Dreiecksmatrix $U$:
+	\begin{align*}
+	L=\begin{pmatrix}
+	1&0&\cdots&0&0\\
+	*&1&\cdots&0&0\\
+	\vdots&\vdots&\ddots&\vdots&\vdots\\
+	*&*&\cdots&0&0\\
+	*&*&\cdots&*&1
+	\end{pmatrix},
+	U=\begin{pmatrix}
+	*&*&\cdots&*&*\\
+	0&*&\cdots&*&*\\
+\vdots&\vdots&\ddots&\vdots&\vdots\\
+	0&0&\cdots&*&*\\
+	0&0&\cdots&0&*
+	\end{pmatrix}
+	\end{align*}
+	heißt \textit{LU-Zerlegung}.
+	\end{definition}
+	\begin{theorem}
+	Jede reguläre Matrix lässt sich LU-zerlegen mit 
+	$$PA=LU$$
+	wobei $P$ eine geeignete Permutationsmatrix ist. 
+	\end{theorem}
+	\begin{proof}
+	Sei $A$ eine reguläre Matrix $A=(a_{i,j})$. Wir setzten $A^{(0)}:=A$. Dann gilt für $$L_1=\begin{pmatrix}
+	
+	1&0&\cdots&0&0\\
+	-l_{21}&1&\cdots&0&0\\
+	\vdots&\vdots&\ddots&\vdots&\vdots\\
+	-l_{n2}&0&\cdots&0&1
+
+	\end{pmatrix}	
+	$$ mit $l_{i1}=\frac{a_{i1}^{(0)}}{a_{11}^{(0)}}$, dass
+$$A^{(1)}:=L_1\cdot A^{(0)}$$ gilt mit 
+$$A^{(1)}=\begin{pmatrix}
+a_{11}^{(1)}&a_{12}^{(1)}&\cdots &a_{1n}^{(1)}\\
+0&a_{22}^{(1)}&\cdots &a_{2n}^{(1)}\\
+\vdots&\vdots&\ddots&\vdots\\
+0&a_{n2}^{(1)}&\cdots & a_{nn}^{(1)}
+\end{pmatrix}
+	$$
+	\end{proof}
+			
+
+	\section{Implementation}
+	
+	
+	
+\section{Beschreibung der Experimente und Beobachtungen}
+
+\section{Zusammenfassung}
+
+
+
+\printbibliography
+
+%%% END OF DOCUMENT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
