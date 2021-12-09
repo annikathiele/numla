@@ -140,9 +140,97 @@ a_{11}^{(1)}&a_{12}^{(1)}&\cdots &a_{1n}^{(1)}\\
 0&a_{n2}^{(1)}&\cdots & a_{nn}^{(1)}
 \end{pmatrix}
 	$$
-	\end{proof}
-			
-
+	Im $i$-ten Schritt des Gauss-Algorithmus erhalten wir
+	$$ A^{(i)} = L_iA^{(i-1)}$$
+	mit
+	$$ A^{(i)}=\begin{pmatrix}
+	a_{11}^{(i)}&a_{12}^{(i)}&\cdots&a_{1i}^{(i)}&a_{1,i+1}^{(i)}&\cdots&a_{1n}^{(i)}\\
+	0&a_{22}^{(i)}&\cdots&a_{2i}^{(i)}&a_{2,i+1}^{(i)}&\cdots&a_{2n}^{(i)}\\
+	\vdots&\vdots&\ddots&\vdots&\vdots&&\vdots\\
+	0&0&\cdots&a_{ii}^{(i)}&a_{i,i+1}^{(i)}&\cdots&a_{in}^{(i)}\\
+	0&0&\cdots&0&a_{i+1,i+1}^{(i)}&\cdots&a_{i+1,n}^{(i)}\\
+	\vdots&\vdots&&\vdots&\vdots&\ddots&\vdots\\
+	0&0&\cdots&0&a_{n,i+1}^{(i)}&\cdots&a_{nn}^{(i)}
+	\end{pmatrix}
+	$$
+	und $$L_1:=\begin{pmatrix}
+	1&\cdots&0&0&0&\cdots&0\\
+	\vdots&\ddots&\vdots&\vdots&\vdots&&\vdots\\
+	0&\cdots&1&0&0&\cdots&0\\
+	0&\cdots&0&1&0&\cdots&0\\
+	0&\cdots&0&-l_{i+1,i}&1&\cdots&0\\
+	\vdots&&\vdots&\vdots&\vdots&\ddots&\vdots\\
+	0&\cdots&0&-l_{n,i}&0&\cdots&1\\
+	\end{pmatrix}
+	$$wobei $$l_{k,i}:=\frac{a_{k,i}^{(i-1)}}{a_{i,i}^{(i-1)}}$$
+	Nach $n-1$ Schritten erhalten wir dann insgesamt
+	$$A^{(n-1)}=L_{n-1}A^{(n-2)}=\cdots=L_{n-1}L_{n-2}\cdots L_{1}A^{(0)}\\$$
+	und damit
+	$$L_{1}^{-1}L_{2}^{-1}\cdots L_{n-1}^{-1}A^{(n-1)}=A^{(0)}$$
+	Hierbei ist $$U:=A^{(n-1)}$$ eine obere Dreiecksmatrix und es lässt sich leicht nachrechnen, dass $$L:=L_{1}^{-1}L_{2}^{-1}\cdots L_{n-1}^{-1}=\begin{pmatrix}
+	1&0&\cdots&0&0\\
+	l_{21}&1&\cdots&0&0\\
+	\vdots&\vdots&\ddots&\vdots&\vdots\\
+	l_{n-1,1}&l_{n-1,2}&\cdots&1&0\\
+	l_{n1}&l_{n2}&\cdots&l_{n,n-1}&1
+	\end{pmatrix}
+	$$ eine untere Dreiecksmatrix mit Einsen auf der Hauptdiagonalen ist.
+	Damit haben wir schon unsere Zerlegung $$LU=A$$
+	\end{proof}		
+	
+	\subsubsection{Pivotisierung}
+	Um zu verhindern, dass beim Invertieren große Einträge in der $L$-Matrix stehen, die eventuell andere Einträge \textit{auslöscht} wollen wir die Matrizen $L_i$, die im $i$-ten Schritt des Gauss-Verfahrens entstehen, so wählen dass die \textit{Kondition} minimal wird.
+	Für die \textit{Kondition} gilt:
+	\begin{align*}
+	cond_1(L_i)&=||L_i^{-1}||_1||L_i||_1\\
+	&=\left(1+\sum_{k=i+1}^{m}|l_{ki}|\right)^2\\
+	&=\left(1+\sum_{k=i+1}^{m}\left|\frac{a_{ki}^{(i-1)}}{a_{ii}^{(i-1)}}\right|\right)^2
+	\end{align*}
+	Wir wollen im $i$-ten Eliminationsschritt also unser \textit{Pivotelement} $a_{ii}$ möglichst groß
+	wählen.
+	
+	Sei also $k^*$ so, dass
+	$$ |a_{k^*i}^{(i-1)}|= \max_{k=1,...,n} |a_{ki}^{(i-1)}|$$
+	
+	Dazu tauschen wir die $i$-te Zeile mit der $k^*$-ten Zeile.
+	Hierzu verwenden wir die Matrix $P$, die aus der Einheitsmatrix entsteht indem man die $i$-te und $k^*$-te Spalte tauscht.
+	$$P_i=\begin{array}{cc}
+	\begin{array}{c}
+	\begin{pmatrix}	
+	1&0&\cdots&0&\cdots&0&\cdots&0&0\\
+	0&1&\cdots&0&\cdots&0&\cdots&0&0\\
+	&&\ddots&\vdots&&\vdots&&&\\
+	&&&0&&1&&&\\
+	\vdots&\vdots&&\vdots&\ddots&\vdots&&\vdots&\vdots\\
+	&&&1&&0&&&\\
+	&&&\vdots&&\vdots&\ddots&&\\
+	0&0&\cdots&0&\cdots&0&\cdots&1&0\\
+	0&0&\cdots&0&\cdots&0&\cdots&0&1
+	\end{pmatrix}
+	\end{array}&\begin{array}{cc}
+	&\\
+	&\\
+	&\\
+	\leftarrow&i\text{-te Zeile}\\
+	\\
+	\leftarrow&k^*\text{-te Zeile}\\
+	&\\
+	&\\
+	&\\
+	\end{array}
+	\end{array}	
+	$$	
+	
+	Damit finden wir $$A^{(i)}=L_iP_iA^{(i-1)}$$ wobei $L_i$ optimal konditioniert ist.
+	
+	Wir erhalten also nach dem $(n-1)$-ten Eliminationsschritt.
+	$$A^{(n-1)}=L_{n-1}P_{n-1}L_{n-2}P_{n-2}\cdots L_{1}P_{1}A^{(0)}$$
+	\vdots
+	
+	Mit $$L:=L_{1}^{-1}L_{2}^{-1}\cdots L_{n-1}^{-1}$$
+	und $$P:=P_{n-1}P_{n-2}\cdots P_1$$
+	erhalten wir $$PA=LU$$
+	
 	\section{Implementation}
 	
 	
