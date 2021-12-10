@@ -1,4 +1,3 @@
-
 \documentclass[smallheadings]{scrartcl}
 
 %%% GENERAL PACKAGES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -225,11 +224,76 @@ a_{11}^{(1)}&a_{12}^{(1)}&\cdots &a_{1n}^{(1)}\\
 	
 	Wir erhalten also nach dem $(n-1)$-ten Eliminationsschritt.
 	$$A^{(n-1)}=L_{n-1}P_{n-1}L_{n-2}P_{n-2}\cdots L_{1}P_{1}A^{(0)}$$
-	\vdots
+
+	Da $P_i$ jeweils sein eigenes Inverses ist, können wir folgendermaßen mit der Einheitsmatrix multiplizieren:
+	$$A^{(n-1)}=L_{n-1}P_{n-1}L_{n-2}P_{n-2}\cdots L_{2}P_{2}L_{1}P_{2}P_{2}P_{1}A^{(0)}$$
+	Man kann leicht sehen, dass $P_{2}L_{1}P_{2}=L_{1}$ gilt, und somit 
+$$A^{(n-1)}=L_{n-1}P_{n-1}L_{n-2}P_{n-2}\cdots L_{2}L_{1}P_{2}P_{1}A^{(0)}.$$
+Induktiv können wir so alle Permutationsmatrizen an den $L$ Matrizen vorbeischieben, sodass wir folgende Gleichung erhalten.
+$$A^{(n-1)}=L_{n-1}L_{n-2}\cdots L_{1}P_{n-1}P_{n-2}\cdots P_{1}A^{(0)}.$$
+
+
 	
 	Mit $$L:=L_{1}^{-1}L_{2}^{-1}\cdots L_{n-1}^{-1}$$
-	und $$P:=P_{n-1}P_{n-2}\cdots P_1$$
+	und $$P:=P_{n-1}P_{n-2}\cdots P_1$$ und $$A^{(n-1)}=U$$
 	erhalten wir $$PA=LU$$
+	\subsubsection{Beispielrechnung}
+	Wir führen beispielhaft den obigen Algorithmus zur Bestummung der LU-Zerlegung einer Matrix an der folgen Matrix $A$ durch.
+	$$A=A^{(0)}=\begin{pmatrix}
+	2&4&-2\\
+	4&9&-3\\
+	-2&-3&7
+	\end{pmatrix}$$
+	Wir vertauschen zunächst die erste und zweite Zeile durch Multiplikation mit der Permutationsmatrix 
+	$$P_1=\begin{pmatrix}
+	0&1&0\\
+	1&0&0\\
+	0&0&1
+	\end{pmatrix}$$
+	Wir erhalten 
+	$$P_1\cdot A=\begin{pmatrix}
+	4&9&-3\\
+	2&4&-2\\
+	-2&-3&7
+	\end{pmatrix}
+$$ Nun eliminieren wir durch geeignete Wahl von $L_1$ die unteren Einträge der ersten Spalte. Wir setzten 
+	$$A^{(1)}:=L_1P_1A^{(0)}=\begin{pmatrix}
+	4&9&-3\\
+	0&-\frac{1}{2	}&-\frac{1}{2	}\\
+	0&\frac{3}{2}&\frac{11}{2}
+	\end{pmatrix}, \text{ mit } L_1=\begin{pmatrix}
+	1&0&0\\
+	-\frac{1}{2}&0&0\\
+	\frac{1}{2}&0&0
+	\end{pmatrix}$$
+	
+	Wieder Pivotisieren wir
+	
+	$$P_2A^{(1)}=\begin{pmatrix}
+	4&9&-3\\
+	0&\frac{3}{2}&\frac{11}{2}\\
+	0&-\frac{1}{2	}&-\frac{1}{2	}
+	\end{pmatrix}, \text{ mit }
+	P_2=\begin{pmatrix}
+	1&0&0\\
+	0&0&1\\
+	0&1&0
+	\end{pmatrix}
+	$$
+	
+	und wir setzen 
+	$$A^{(2)}:=L_2P_2A^{(1)}=\begin{pmatrix}
+	4&9&-3\\
+	0&\frac{3}{2}&\frac{11}{2}\\
+	0&0&\frac{4}{3	}
+	\end{pmatrix}, \text{ mit } L_2=\begin{pmatrix}
+	1&0&0\\
+	0&1&0\\
+	0&\frac{1}{3}&1
+\end{pmatrix}	
+$$
+Wir haben also mit 
+	
 	
 	\section{Implementation}
 	
