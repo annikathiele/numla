@@ -5,6 +5,7 @@ from scipy import sparse
 import seaborn as sns
 import scipy.linalg as lg
 from scipy.sparse.linalg import inv, norm
+import poisson_problem_23 as pp
  #pylint: disable=invalid-name
 def main():
     A= BlockMatrix(3,3)
@@ -15,39 +16,7 @@ def main():
     print(A.eval_sparsity_lu())
     print(A.get_cond())
     graph_cond()
-    """
-    nlist_one=[]
-    nlist_two =[]
-    nlist_three =[]
-    Nlist_one=[]
-    Nlist_two=[]
-    Nlist_three=[]
-    ylist_one = []
-    ylist_two = []
-    ylist_three = []
-    ylist = [ylist_one , ylist_two , ylist_three ]
-    nlist = [nlist_one , nlist_two , nlist_three ]
-    Nlist = [Nlist_one , Nlist_two , Nlist_three ]
-    rangelist = []
-    for counter in range (1,4):
-        rangelist.append(10**counter)
-    for dimension in range (1,4):
-        for i in rangelist:
-            n=int(i**(float(1)/float(dimension))+1)
-            nlist[dimension-1].append(n)
-            Nlist[dimension-1].append((n-1)**(dimension))
-        for n in nlist[dimension-1]:
-            A=BlockMatrix(dimension, n)
-            ylist[dimension-1].append(A.get_cond())
-
-    plt.plot(Nlist_one, ylist_one, 'b-',label= 'd=1' )
-    plt.plot(Nlist_two, ylist_two, 'r-',label= 'd=2' )
-    plt.plot(Nlist_three, ylist_three, 'g-',label= 'd=3' )
-    plt.xscale("log")
-    plt.yscale("log")
-    plt.legend()
-    plt.show()
-    """
+    graph_sparsity()
 
 
 class BlockMatrix:
@@ -147,8 +116,12 @@ def graph_cond():
     nlist = [nlist_one , nlist_two , nlist_three ]
     Nlist = [Nlist_one , Nlist_two , Nlist_three ]
     rangelist = []
+    for counter in range (1, 6):
+        rangelist.append(counter*(1700/20))
+    """
     for counter in range (1,4):
         rangelist.append(10**counter)
+    """
     for dimension in range (1,4):
         for i in rangelist:
             n=int(i**(float(1)/float(dimension))+1)
@@ -158,9 +131,82 @@ def graph_cond():
             A=BlockMatrix(dimension, n)
             ylist[dimension-1].append(A.get_cond())
 
-    plt.plot(Nlist_one, ylist_one, 'b-',label= 'f(x)' )
-    plt.plot(Nlist_two, ylist_two, 'r-',label= 'df(x)' )
-    plt.plot(Nlist_three, ylist_three, 'r-',label= 'ddf(x)' )
+    plt.plot(Nlist_one, ylist_one, 'b-',label= 'd=1' )
+    plt.plot(Nlist_two, ylist_two, 'r-',label= 'd=2' )
+    plt.plot(Nlist_three, ylist_three, 'y-',label= 'd=3' )
+    plt.xscale("log")
+    plt.yscale("log")
+    plt.legend()
+    plt.show()
+
+def graph_sparsity():
+    nlist_one=[]
+    nlist_two =[]
+    nlist_three =[]
+    Nlist_one=[]
+    Nlist_two=[]
+    Nlist_three=[]
+    ylist_one = []
+    ylist_two = []
+    ylist_three = []
+    ylist = [ylist_one , ylist_two , ylist_three ]
+    nlist = [nlist_one , nlist_two , nlist_three ]
+    Nlist = [Nlist_one , Nlist_two , Nlist_three ]
+    rangelist = []
+    for counter in range (1, 4):
+        rangelist.append(counter*(1700/20))
+    """
+    for counter in range (1,4):
+        rangelist.append(10**counter)
+    """
+    for dimension in range (1,4):
+        for i in rangelist:
+            n=int(i**(float(1)/float(dimension))+1)
+            nlist[dimension-1].append(n)
+            Nlist[dimension-1].append((n-1)**(dimension))
+        for n in nlist[dimension-1]:
+            A=BlockMatrix(dimension, n)
+            ylist[dimension-1].append(A.eval_sparsity_lu())
+
+    plt.plot(Nlist_one, ylist_one, 'b-',label= 'd=1' )
+    plt.plot(Nlist_two, ylist_two, 'r-',label= 'd=2' )
+    plt.plot(Nlist_three, ylist_three, 'y-',label= 'd=3' )
+    plt.xscale("log")
+    plt.yscale("log")
+    plt.legend()
+    plt.show()
+
+def graph_error():
+    nlist_one=[]
+    nlist_two =[]
+    nlist_three =[]
+    Nlist_one=[]
+    Nlist_two=[]
+    Nlist_three=[]
+    ylist_one = []
+    ylist_two = []
+    ylist_three = []
+    ylist = [ylist_one , ylist_two , ylist_three ]
+    nlist = [nlist_one , nlist_two , nlist_three ]
+    Nlist = [Nlist_one , Nlist_two , Nlist_three ]
+    rangelist = []
+    for counter in range (1, 4):
+        rangelist.append(counter*(1700/20))
+    """
+    for counter in range (1,4):
+        rangelist.append(10**counter)
+    """
+    for dimension in range (1,4):
+        for i in rangelist:
+            n=int(i**(float(1)/float(dimension))+1)
+            nlist[dimension-1].append(n)
+            Nlist[dimension-1].append((n-1)**(dimension))
+        for n in nlist[dimension-1]:
+            ylist[dimension-1].append(pp.compute_error(dimension, n, hat_u, u))
+
+    plt.plot(Nlist_one, ylist_one, 'b-',label= 'd=1' )
+    plt.plot(Nlist_two, ylist_two, 'r-',label= 'd=2' )
+    plt.plot(Nlist_three, ylist_three, 'y-',label= 'd=3' )
     plt.xscale("log")
     plt.yscale("log")
     plt.legend()
