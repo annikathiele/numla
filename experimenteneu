@@ -1,0 +1,72 @@
+import sys, os
+sys.path.append('/Users/annikathiele/__pycache__')
+import block_matrix as bl
+import linear_solvers as ls
+import poission_problem as pp
+import numpy as np
+import matplotlib.pyplot as plt
+
+kappa = 2
+
+
+def main():
+    array=[10,10^2,10^3]
+    """
+    for dimension in range (1,4):
+        for n in range(2,100,10):
+            A=bl.BlockMatrix(dimension, n)
+            p,l,uu=A.get_lu()
+            b = rhs(dimension, n, f)
+            hat_u= ls.solve_lu(p,l,uu,b)
+            e=compute_error(dimension,n, hat_u, u)
+            print(dimension,n,e)
+            """
+    xlist =[]
+    for i in range(2,50):
+        xlist.append(i)
+    ylist=[]
+    for x in xlist:
+        A=bl.BlockMatrix(1, x)
+        p,l,uu=A.get_lu()
+        b = pp.rhs(1, x, f)
+        hat_u= ls.solve_lu(p,l,uu,b)
+        e=pp.compute_error(1,x, hat_u, u)
+        ylist.append(e)
+
+    plt.plot(xlist, ylist, 'b-',label= 'u(x)' )
+
+    plt.legend()
+    plt.show()
+
+
+
+def u(x, d):
+    prod = 1
+    for i in range(d):
+        prod=prod*x[i]* np.sin(kappa*np.pi*x[i])
+    return prod
+
+def f(x,d):
+    sum=0
+    for i in range(d):
+        prod=1
+        for k in range(d):
+            if k!=i:
+                prod=prod*float(x[k])* np.sin(float(kappa)*np.pi*float(x[k]))
+        prod_one = prod*np.sin(kappa*np.pi*x[i])
+        prod_two = prod*x[i]*np.cos(kappa*np.pi*x[i])*kappa*np.pi
+        sum+=prod_one+prod_two
+    return sum
+
+def graph():
+    x_list_u = np.linspace(-100, 100, num=50)
+    y_list_u =[]
+    for i in x_list_u:
+        y_list_u.append(u(i,2))
+    plt.plot(x_list_u, y_list_u, 'b-',label= 'u(x)' )
+    plt.legend()
+    plt.show()
+
+if __name__ == "__main__":
+    main()
+
