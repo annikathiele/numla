@@ -166,7 +166,7 @@ def graph_error(hat_u, u):
 
     plt.plot(Nlist_one, ylist_one, 'b-',label= 'dimension = 1' )
     plt.plot(Nlist_two, ylist_two, 'r-',label= 'dimension = 2' )
-    plt.plot(Nlist_three, ylist_three, 'r-',label= 'dimension = 3' )
+    plt.plot(Nlist_three, ylist_three, 'g-',label= 'dimension = 3' )
     plt.xscale("log")
     plt.yscale("log")
     plt.legend()
