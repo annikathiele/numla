@@ -139,3 +139,38 @@ def compute_error(d, n, hat_u, u):
 
 
 
+
+def graph_error(hat_u, u):
+    nlist_one=[]
+    nlist_two =[]
+    nlist_three =[]
+    Nlist_one=[]
+    Nlist_two=[]
+    Nlist_three=[]
+    ylist_one = []
+    ylist_two = []
+    ylist_three = []
+    ylist = [ylist_one , ylist_two , ylist_three ]
+    nlist = [nlist_one , nlist_two , nlist_three ]
+    Nlist = [Nlist_one , Nlist_two , Nlist_three ]
+    rangelist = []
+    for counter in range (1,10):
+        rangelist.append(10**counter)
+    for dimension in range (1,4):
+        for i in rangelist:
+            n=int(i**(float(1)/float(dimension))+1)
+            nlist[dimension-1].append(n)
+            Nlist[dimension-1].append((n-1)**(dimension))
+        for n in nlist[dimension-1]:
+            ylist[dimension-1].append(compute_error(dimension, n, hat_u, u))
+
+    plt.plot(Nlist_one, ylist_one, 'b-',label= 'dimension = 1' )
+    plt.plot(Nlist_two, ylist_two, 'r-',label= 'dimension = 2' )
+    plt.plot(Nlist_three, ylist_three, 'r-',label= 'dimension = 3' )
+    plt.xscale("log")
+    plt.yscale("log")
+    plt.legend()
+    plt.show()
+
+
+
