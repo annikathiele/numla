@@ -1,4 +1,4 @@
-import sys, os
+import sys
 sys.path.append('/Users/annikathiele/__pycache__')
 import block_matrix as bl
 import linear_solvers as ls
@@ -6,12 +6,26 @@ import poission_problem as pp
 import numpy as np
 import matplotlib.pyplot as plt
 
-kappa = 2
-
+Kappa = 6
 
 def main():
-    array=[10,10^2,10^3]
+    print("Wir stellen hiermit unsere Experimente vor.")
+    print("Zunächst stellen wir graphisch den Fehler unserer berechneten Lösung,\
+dar.")
+    print("Wir betrachten hier bis zu 13824 Diskretisierungpunkte in\
+ein bis drei Dimensionen.")
+    print("Einen kurzen Moment bitte...")
+    #graph_errors()
+    print("Als nächstes haben wir die Kondition unserer Matrizen A^(d) mit \
+der von dxd-Hilbertmatrizen verglichen.")
+    print("Hier die Ergebnisse:")
+    bl.vgl_cond()
+    print("Es war auch interessant zu sehen wie stark die LU Zerlegung die \
+Sparsity beeinflusst hat.")
+    print("Im Folgenden sehen Sie die Anzahl an Nicht-Null-Einträgen:")
+    bl.vgl_spar()
     """
+    array=[10,10^2,10^3]
     for dimension in range (1,4):
         for n in range(2,100,10):
             A=bl.BlockMatrix(dimension, n)
@@ -21,8 +35,9 @@ def main():
             e=compute_error(dimension,n, hat_u, u)
             print(dimension,n,e)
             """
+def graph_errors():
     xlist =[]
-    for i in range(2,50):
+    for i in range(2,25):
         xlist.append(i)
     ylist=[]
     for x in xlist:
@@ -33,8 +48,29 @@ def main():
         e=pp.compute_error(1,x, hat_u, u)
         ylist.append(e)
 
-    plt.plot(xlist, ylist, 'b-',label= 'u(x)' )
+    ylistt=[]
+    for x in xlist:
+        A=bl.BlockMatrix(2, x)
+        p,l,uu=A.get_lu()
+        b = pp.rhs(2, x, f)
+        hat_u= ls.solve_lu(p,l,uu,b)
+        e=pp.compute_error(2,x, hat_u, u)
+        ylistt.append(e)
 
+    ylisttt=[]
+    for x in xlist:
+        A=bl.BlockMatrix(3, x)
+        p,l,uu=A.get_lu()
+        b = pp.rhs(3, x, f)
+        hat_u= ls.solve_lu(p,l,uu,b)
+        e=pp.compute_error(3,x, hat_u, u)
+        ylisttt.append(e)
+
+    plt.plot(xlist, ylist, 'b-',label= 'd=1' )
+    plt.plot(xlist, ylistt, 'b-',label= 'd=2' )
+    plt.plot(xlist, ylisttt, 'b-',label= 'd=3)' )
+    plt.xscale("log")
+    plt.yscale("log")
     plt.legend()
     plt.show()
 
