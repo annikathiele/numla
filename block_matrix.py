@@ -7,22 +7,26 @@ import scipy.linalg as lg
 from scipy.sparse.linalg import inv, norm
 import poisson_problem_23 as pp
  #pylint: disable=invalid-name
+"""
 def main():
+    vgl_cond()
+    vgl_spar()
     A= BlockMatrix(3,3)
     print(A.get_sparse())
     p,l,u = A.get_lu()
-    print(l)
-    print(u)
     print(A.eval_sparsity_lu())
     print(A.get_cond())
-    graph_cond()
+    #graph_cond()
     graph_sparsity()
-
+"""
 
 class BlockMatrix:
-    """ Represents block matrices arising from finite difference approximations of the Laplace operator.
-    Parameters ---------d : int Dimension of the space. n : int Number of intervals in each dimension.
-    Attributes ---------d : int Dimension of the space. n : int Number of intervals in each dimension.
+    """ Represents block matrices arising from finite difference approximations
+    of the Laplace operator.
+    Parameters ---------d : int Dimension of the space. n : int Number of
+    intervals in each dimension.
+    Attributes ---------d : int Dimension of the space. n : int Number of
+    intervals in each dimension.
     Raises -----ValueError If d < 1 or n < 2.
     """
     def __init__(self, d, n):
@@ -37,7 +41,7 @@ class BlockMatrix:
         if self.sparse is None:
             matrix = sparse.csr_matrix(np.array([[2 * self.d]]))
             for _ in range(self.d):
-                idt = sparse.identity(matrix.shape[0], format='csr', dtype='int8')
+                idt = sparse.identity(matrix.shape[0], format='csc', dtype='int8')
                 zero = sparse.csr_matrix(matrix.shape, dtype='int8')
                 rows = []
                 for r in range(self.n-1):
@@ -49,11 +53,26 @@ class BlockMatrix:
                             entries.append(-idt)
                         else:
                             entries.append(zero)
-                    rows.append(sparse.hstack(entries, format='csr'))
-                matrix = sparse.vstack(rows, format='csr')
+                    rows.append(sparse.hstack(entries, format='csc'))
+                matrix = sparse.vstack(rows, format='csc')
             self.sparse = matrix
         return self.sparse
 
+    def eval_sparsity(self):
+        """ Returns the absolute and relative numbers of non-zero elements of
+        the matrix. The relative quantities are with respect to the total
+        number of elements of the represented matrix.
+        Returns
+        -------
+        int
+        Number of non-zeros
+        float
+        Relative number of non-zeros
+        """
+        csr = self.get_sparse()
+        nnz = csr.count_nonzero()
+        rel_nnz = nnz / (csr.shape[0] * csr.shape[1])
+        return (nnz, rel_nnz)
 
     def get_lu(self):
         """ Provides an LU-Decomposition of the represented matrix A of the
@@ -153,7 +172,7 @@ def graph_sparsity():
     nlist = [nlist_one , nlist_two , nlist_three ]
     Nlist = [Nlist_one , Nlist_two , Nlist_three ]
     rangelist = []
-    for counter in range (1, 4):
+    for counter in range (1, 6):
         rangelist.append(counter*(1700/20))
     """
     for counter in range (1,4):
@@ -166,7 +185,7 @@ def graph_sparsity():
             Nlist[dimension-1].append((n-1)**(dimension))
         for n in nlist[dimension-1]:
             A=BlockMatrix(dimension, n)
-            ylist[dimension-1].append(A.eval_sparsity_lu())
+            ylist[dimension-1].append(A.eval_sparsity_lu()[0])
 
     plt.plot(Nlist_one, ylist_one, 'b-',label= 'd=1' )
     plt.plot(Nlist_two, ylist_two, 'r-',label= 'd=2' )
@@ -176,6 +195,7 @@ def graph_sparsity():
     plt.legend()
     plt.show()
 
+"""
 def graph_error():
     nlist_one=[]
     nlist_two =[]
@@ -192,10 +212,6 @@ def graph_error():
     rangelist = []
     for counter in range (1, 4):
         rangelist.append(counter*(1700/20))
-    """
-    for counter in range (1,4):
-        rangelist.append(10**counter)
-    """
     for dimension in range (1,4):
         for i in rangelist:
             n=int(i**(float(1)/float(dimension))+1)
@@ -211,6 +227,27 @@ def graph_error():
     plt.yscale("log")
     plt.legend()
     plt.show()
+"""
 
+
+def cond_hilmat(n):
+    cond= lg.norm(lg.hilbert(n), np.inf)*lg.norm(lg.invhilbert(n), np.inf)
+    return cond
+
+def vgl_cond():
+    for counter in range(1,7):
+        A= BlockMatrix(counter,5)
+        print("d =", counter)
+        print("Kondition A^d =", A.get_cond(), "Kondition Hilbert\
+ =" , cond_hilmat(counter))
+
+def vgl_spar():
+    print("Dimension, n , Sparsity A^d , Sparsity LU")
+    for d in range(1,4):
+        for n in range(2,15):
+            A= BlockMatrix(d,n)
+            print(d,n, A.eval_sparsity()[0] , A.eval_sparsity_lu()[0])
+"""
 if __name__ == "__main__":
     main()
+"""
