@@ -121,6 +121,13 @@ class BlockMatrix:
         return cond
 
 def graph_cond():
+ 
+    """ Erstellt ein Plot, welcher für Dimension 1,2,3 die Kondition der Blockmatirx in Abhängigkeit von 
+    der Anzahl an inneren Diskretisierungspunkten abbildet. 
+    Returns
+    -------
+    None
+    """
 
     nlist_one=[]
     nlist_two =[]
@@ -197,6 +204,7 @@ def graph_sparsity():
 
 """
 def graph_error():
+   
     nlist_one=[]
     nlist_two =[]
     nlist_three =[]
@@ -231,10 +239,29 @@ def graph_error():
 
 
 def cond_hilmat(n):
+    """ 
+    Liefert zu einem gegebenen n die Kondition der HIlbertmatrix der Größe nxn.
+    Input
+    ______
+    n (int) Größe der zu betrachtenden Hilbertmatrix
+    Returns
+    -------
+    float Kondition der Hilbertmatrix der Größe nxn
+    """
     cond= lg.norm(lg.hilbert(n), np.inf)*lg.norm(lg.invhilbert(n), np.inf)
     return cond
 
 def vgl_cond():
+    """ 
+    Gibt für n=1 bis n=6 die Konditionen der Hilbert und Blockmatritzen der jeweiligen Größe aus.
+    Input
+    ______
+    None
+    Returns
+    -------
+    None
+    """
+    
     for counter in range(1,7):
         A= BlockMatrix(counter,5)
         print("d =", counter)
@@ -242,6 +269,15 @@ def vgl_cond():
  =" , cond_hilmat(counter))
 
 def vgl_spar():
+    """ 
+    Gibt für verschiedene Dimensionen und n die Sparsität der Blockmatrix und der LU Zerlegung aus.
+    Input
+    ______
+    None
+    Returns
+    -------
+    None
+    """
     print("Dimension, n , Sparsity A^d , Sparsity LU")
     for d in range(1,4):
         for n in range(2,15):
