@@ -141,6 +141,13 @@ def compute_error(d, n, hat_u, u):
 
 
 def graph_error(hat_u, u):
+    """Erstellt einen Plot, welcher den Fehler einer numerisch berechneten Lösung des Poission Problems in Abhängigkeit 
+    der ANzahl an inneren Diskretisierungspunkten.
+    Parameters:
+        Nonw
+    Returns:
+        None
+    """
     nlist_one=[]
     nlist_two =[]
     nlist_three =[]
