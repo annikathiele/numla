@@ -123,17 +123,27 @@ def graph():
     -------
     None
     """
-    A=bl.BlockMatrix(1,8)
+    y_list =[]
+    for i in np.linspace(0,1,100):
+        y_list.append(u([i]))
+    A=bl.BlockMatrix(1,10)
     p,l,uu=A.get_lu()
-    b = pp.rhs(1,8,f)
-    print(b)
+    b = pp.rhs(1,10,f)
     hat_u= ls.solve_lu(p,l,uu,b)
-    x_list_u = np.linspace(0, 1, num=7)
-    y_list_u =[]
-    for i in x_list_u:
-        y_list_u.append(u([i]))
-    plt.plot(x_list_u, y_list_u, 'b-',label= 'u(x)' )
-    plt.plot(x_list_u, hat_u, 'r-',label= 'uhat(x)' )
+    x_list_u = np.linspace(0, 1, num=9)
+
+
+    B=bl.BlockMatrix(1,4)
+    pq,ll,uuu=B.get_lu()
+    bb = pp.rhs(1,4,f)
+    hat_uu= ls.solve_lu(pq,ll,uuu,bb)
+    x_listt_u = np.linspace(0, 1, num=3)
+
+    plt.plot(np.linspace(0,1,100), y_list, 'b--',label= 'Exakte Lösung' )
+    plt.plot(x_list_u, hat_u, 'b-',label= 'Approximierte Lösung für n=10' )
+    plt.plot(x_listt_u, hat_uu, 'r-',label= 'Approximierte Lösung für n=4' )
+    plt.xlabel("x")
+    plt.ylabel("y")
     plt.legend()
     plt.show()
 
