@@ -1,20 +1,37 @@
+"""
+    Serie 3
+    Kurs: Praxisübung Numerische Lineare Algebra
+    Programm: experiments_lu
+    Authoren: Aron Ventura, Annika Thiele
+    Datum: 20.12.2021
+    Funktionen:
+        graph_errors()
+        u()
+        f()
+        graph()
+
+"""
 import sys
-sys.path.append("/Users/annikathiele/Desktop/numlapraxis")
+import matplotlib.pyplot as plt
+import numpy as np
 import block_matrix as bl
 import linear_solvers as ls
 import poisson_problem as pp
-import numpy as np
-import matplotlib.pyplot as plt
 
-Kappa = 1
-
-
-
-
+sys.path.append("/Users/annikathiele/Desktop/numlapraxis")
+ #pylint: disable=invalid-name
+  #pylint: disable= pointless-string-statement
+Kappa = 2
 def main():
+    """
+    Die Main Funktion demonstriert die Funktionalität der Funktionen.
+    Returns
+    -------
+    None
+    """
 
 
-    graph_errors()
+    pp.graph_errors(f,u,25)
     """
     print("Wir stellen hiermit unsere Experimente vor.")
     print("Zunächst stellen wir graphisch den Fehler unserer berechneten Lösung,\
@@ -49,79 +66,76 @@ einer Schrittweite von 85")
             e=compute_error(dimension,n, hat_u, u)
             print(dimension,n,e)
             """
-def graph_errors():
 
-    """
-    nlist =[]
 
-    ylist=[]
-    Nlist=[]
-    for x in range(2,200):
-        A=bl.BlockMatrix(1, x)
-        p,l,uu=A.get_lu()
-        b = pp.rhs(1, x, f)
-        hat_u= ls.solve_lu(p,l,uu,b)
-        e=pp.compute_error(1,x, hat_u, u)
-        ylist.append(e)
-        Nlist.append(x-1)
 
-    ylistt=[]
-    Nlistt=[]
-    for x in range(3,200):
-        A=bl.BlockMatrix(2, x)
-        p,l,uu=A.get_lu()
-        b = pp.rhs(2, x, f)
-        hat_u= ls.solve_lu(p,l,uu,b)
-        e=pp.compute_error(2,x, hat_u, u)
-        ylistt.append(e)
-        Nlistt.append((x-1)**2)
-    """
-    ylisttt=[]
-    Nlisttt=[]
-    for x in range(3,18):
-        A=bl.BlockMatrix(3, x)
-        p,l,uu=A.get_lu()
-        b = pp.rhs(3, x, f)
-        hat_u= ls.solve_lu(p,l,uu,b)
-        e=pp.compute_error(3,x, hat_u, u)
-        ylisttt.append(e)
-        Nlisttt.append((x-1)**3)
 
-    plt.figure()
-    #plt.plot(Nlist, ylist, 'b-',label= 'd=1' )
-    #plt.plot(Nlistt, ylistt, 'b-',label= 'd=2' )
-    plt.plot(Nlisttt, ylisttt, 'b-',label= 'd=3)' )
-
-    plt.title("Error")
-    plt.legend()
-    plt.show()
-
+ #pylint: disable=unused-variable
 def u(x):
+    """
+    Diese Funktion berechnet u(x) für ein gegebenes Numpy.array x.
+    Parameters
+    -------
+    x : numpy.array Stellee an der Funktionswert berechnet werden soll
+    Returns
+    -------
+    float Funktionswert an der gegebenen Stelle
+    """
+
     prod = 1
-    for i in range(len(x)):
-        prod=prod*x[i]* np.sin(Kappa*np.pi*x[i])
+    for counter, value in enumerate(x):
+        prod=prod*value* np.sin(Kappa*np.pi*value)
     return prod
 
+
+
+
+
 def f(x):
-    sum=0
-    for i in range(len(x)):
+    """
+    Diese Funktion berechnet f(x) für ein gegebenes Numpy.array x.
+    Parameters
+    -------
+    x : numpy.array Stellee an der Funktionswert berechnet werden soll
+    Returns
+    -------
+    float Funktionswert an der gegebenen Stelle
+    """
+    laplace=0
+    for count, value in enumerate(x):
         prod=1
-        for k in range(len(x)):
-            if k!=i:
-                prod=prod*float(x[k])* np.sin(float(Kappa)*np.pi*float(x[k]))
-        prod_one = prod*np.sin(Kappa*np.pi*x[i])
-        prod_two = prod*x[i]*np.cos(Kappa*np.pi*x[i])*Kappa*np.pi
-        sum+=prod_one+prod_two
-    return sum
-"""
+        for c,v in enumerate(x):
+            if c!=count:
+                prod=prod*float(v)* np.sin(float(Kappa)*np.pi*float(v))
+        prod_one = -prod*value*((Kappa*np.pi)**2)*np.sin(Kappa*np.pi*value)
+        prod_two = prod*(1+Kappa*np.pi)*np.cos(Kappa*np.pi*value)
+        laplace+=prod_one+prod_two
+    return -laplace
+
+
+
 def graph():
-    x_list_u = np.linspace(-100, 100, num=50)
+    """
+    Diese Funktion erstellt einen Graphen, der die exakte und approximierte
+    Lösung des Poissionproblems für n=4 und n=10 ind der Dimension d=1 darstellt.
+
+    Returns
+    -------
+    None
+    """
+    A=bl.BlockMatrix(1,8)
+    p,l,uu=A.get_lu()
+    b = pp.rhs(1,8,f)
+    print(b)
+    hat_u= ls.solve_lu(p,l,uu,b)
+    x_list_u = np.linspace(0, 1, num=7)
     y_list_u =[]
     for i in x_list_u:
-        y_list_u.append(u(i,2))
+        y_list_u.append(u([i]))
     plt.plot(x_list_u, y_list_u, 'b-',label= 'u(x)' )
+    plt.plot(x_list_u, hat_u, 'r-',label= 'uhat(x)' )
     plt.legend()
     plt.show()
-"""
+
 if __name__ == "__main__":
     main()

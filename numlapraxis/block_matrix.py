@@ -1,18 +1,46 @@
+
+"""
+    Serie 3
+    Kurs: Praxisübung Numerische Lineare Algebra
+    Programm: block_matrix
+    Authoren: Aron Ventura, Annika Thiele
+    Datum: 10.12.2021
+    Funktionen:
+        get_sparse()
+        eval_sparsity()
+        get_lu()
+        eval_sparsity_lu()
+        get_cond()
+        graph_sparsity()
+        cond_hilmat()
+        vgl_cond()
+        vgl_spar()
+
+"""
+
+
 import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sns
 import scipy.linalg as lg
 from scipy.sparse.linalg import inv, norm
 from scipy import sparse
-import poisson_problem as pp
+
  #pylint: disable=invalid-name
+ #pylint: disable=unused-variable
+ #pylint: disable= unbalanced-tuple-unpacking
 
 def main():
+    """
+    Die Main Funktion demonstriert die Funktionalität der Funktionen.
+    Returns
+    -------
+    None
+    """
     vgl_cond()
     vgl_spar()
     A= BlockMatrix(3,3)
     print(A.get_sparse())
-    p,l,u = A.get_lu()
+    A.get_lu()
     print(A.eval_sparsity_lu())
     print(A.get_cond())
     graph_cond()
@@ -36,7 +64,9 @@ class BlockMatrix:
 
     def get_sparse(self):
         """ Returns the block matrix as sparse matrix.
-    Returns ------scipy.sparse.csr_matrix The block_matrix in a sparse data format. """
+    Returns
+    ------
+    scipy.sparse.csr_matrix The block_matrix in a sparse data format. """
         if self.sparse is None:
             matrix = sparse.csr_matrix(np.array([[2 * self.d]]))
             for _ in range(self.d):
@@ -121,7 +151,8 @@ class BlockMatrix:
 
 def graph_cond():
 
-    """ Erstellt ein Plot, welcher für Dimension 1,2,3 die Kondition der Blockmatirx in Abhängigkeit von
+    """ Erstellt ein Plot, welcher für Dimension 1,2,3 die Kondition der
+    Blockmatirx in Abhängigkeit von
     der Anzahl an inneren Diskretisierungspunkten abbildet.
     Returns
     -------
@@ -143,10 +174,6 @@ def graph_cond():
     rangelist = []
     for counter in range (1, 8):
         rangelist.append(counter*(1700/20))
-    """
-    for counter in range (1,4):
-        rangelist.append(10**counter)
-    """
     for dimension in range (1,4):
         for i in rangelist:
             n=int(i**(float(1)/float(dimension))+1)
@@ -167,6 +194,14 @@ def graph_cond():
     plt.show()
 
 def graph_sparsity():
+
+    """ Erstellt ein Plot, welcher für Dimension 1,2,3 die Sparsität der
+    Blockmatirx in Abhängigkeit von
+    der Anzahl an inneren Diskretisierungspunkten abbildet.
+    Returns
+    -------
+    None
+    """
     nlist_one=[]
     nlist_two =[]
     nlist_three =[]
@@ -201,40 +236,6 @@ def graph_sparsity():
     plt.legend()
     plt.show()
 
-"""
-def graph_error():
-
-    nlist_one=[]
-    nlist_two =[]
-    nlist_three =[]
-    Nlist_one=[]
-    Nlist_two=[]
-    Nlist_three=[]
-    ylist_one = []
-    ylist_two = []
-    ylist_three = []
-    ylist = [ylist_one , ylist_two , ylist_three ]
-    nlist = [nlist_one , nlist_two , nlist_three ]
-    Nlist = [Nlist_one , Nlist_two , Nlist_three ]
-    rangelist = []
-    for counter in range (1, 4):
-        rangelist.append(counter*(1700/20))
-    for dimension in range (1,4):
-        for i in rangelist:
-            n=int(i**(float(1)/float(dimension))+1)
-            nlist[dimension-1].append(n)
-            Nlist[dimension-1].append((n-1)**(dimension))
-        for n in nlist[dimension-1]:
-            ylist[dimension-1].append(pp.compute_error(dimension, n, hat_u, u))
-    plt.plot(Nlist_one, ylist_one, 'b-',label= 'd=1' )
-    plt.plot(Nlist_two, ylist_two, 'r-',label= 'd=2' )
-    plt.plot(Nlist_three, ylist_three, 'y-',label= 'd=3' )
-    plt.xscale("log")
-    plt.yscale("log")
-    plt.legend()
-    plt.show()
-"""
-
 
 def cond_hilmat(n):
     """
@@ -251,7 +252,8 @@ def cond_hilmat(n):
 
 def vgl_cond():
     """
-    Gibt für n=1 bis n=6 die Konditionen der Hilbert und Blockmatritzen der jeweiligen Größe aus.
+    Gibt für n=1 bis n=6 die Konditionen der Hilbert und Blockmatritzen der
+    jeweiligen Größe aus.
     Input
     ______
     None
@@ -268,7 +270,8 @@ def vgl_cond():
 
 def vgl_spar():
     """
-    Gibt für verschiedene Dimensionen und n die Sparsität der Blockmatrix und der LU Zerlegung aus.
+    Gibt für verschiedene Dimensionen und n die Sparsität der Blockmatrix und
+    der LU Zerlegung aus.
     Input
     ______
     None
@@ -284,4 +287,3 @@ def vgl_spar():
 
 if __name__ == "__main__":
     main()
-
