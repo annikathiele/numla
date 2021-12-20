@@ -166,42 +166,54 @@ def graph_errors(f,u,n):
     -------
     None
     """
-    xlist =[]
-    for i in range(2,n):
-        xlist.append(i)
+    Nlist=[]
+    Nlistt=[]
+    Nlisttt=[]
+
+
+    print(int((n)**(1/2)+1))
+    print(int((n)**(1/3)+1))
+
     ylist=[]
-    for x in xlist:
+    for x in range(2, n+1):
         A=bl.BlockMatrix(1, x)
         p,l,uu=A.get_lu()
         b = rhs(1, x, f)
         hat_u= ls.solve_lu(p,l,uu,b)
         e=compute_error(1,x, hat_u, u)
         ylist.append(e)
-
+        Nlist.append(x-1)
+    
     ylistt=[]
-    for x in xlist:
+    for x in range(2,int((n)**(1/2)+1)):
         A=bl.BlockMatrix(2, x)
         p,l,uu=A.get_lu()
         b = rhs(2, x, f)
         hat_u= ls.solve_lu(p,l,uu,b)
         e=compute_error(2,x, hat_u, u)
         ylistt.append(e)
-
+        Nlistt.append((x-1)**2)
+    
     ylisttt=[]
-    for x in xlist:
+    for x in range(2,int((n)**(1/3)+1)):
         A=bl.BlockMatrix(3, x)
         p,l,uu=A.get_lu()
         b = rhs(3, x, f)
         hat_u= ls.solve_lu(p,l,uu,b)
         e=compute_error(3,x, hat_u, u)
         ylisttt.append(e)
+        Nlisttt.append((x-1)**3)
+    
 
-    plt.plot(xlist, ylist, 'b-',label= 'd=1' )
-    plt.plot(xlist, ylistt, 'b-',label= 'd=2' )
-    plt.plot(xlist, ylisttt, 'b-',label= 'd=3)' )
+
+
+    plt.plot(Nlist, ylist, 'b-',label= 'd=1' )
+    plt.plot(Nlistt, ylistt, 'g-',label= 'd=2' )
+    plt.plot(Nlisttt, ylisttt, 'r-',label= 'd=3)' )
     plt.xscale("log")
     plt.yscale("log")
     plt.xlabel("N")
     plt.ylabel("Error")
     plt.legend()
     plt.show()
+
