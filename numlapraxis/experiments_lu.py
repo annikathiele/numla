@@ -9,16 +9,21 @@
         u()
         f()
         graph()
-
+        graph3D()
+        cond_hilmat()
+        vgl_cond()
+        vgl_spar()
 """
-import sys
+
+#import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import block_matrix as bl
 import linear_solvers as ls
 import poisson_problem as pp
+from mpl_toolkits import mplot3d
 
-sys.path.append("/Users/annikathiele/Desktop/numlapraxis")
+#sys.path.append("/Users/annikathiele/Desktop/numlapraxis")
  #pylint: disable=invalid-name
   #pylint: disable= pointless-string-statement
 Kappa = 2
@@ -29,9 +34,9 @@ def main():
     -------
     None
     """
+    graph3D()
 
-
-    pp.graph_errors(f,u,25)
+    #pp.graph_errors(f,u,25)
     """
     print("Wir stellen hiermit unsere Experimente vor.")
     print("Zunächst stellen wir graphisch den Fehler unserer berechneten Lösung,\
@@ -43,11 +48,11 @@ ein bis drei Dimensionen.")
     print("Als nächstes haben wir die Kondition unserer Matrizen A^(d) mit \
 der von dxd-Hilbertmatrizen verglichen.")
     print("Hier die Ergebnisse:")
-    bl.vgl_cond()
+    vgl_cond()
     print("Es war auch interessant zu sehen wie stark die LU Zerlegung die \
 Sparsity beeinflusst hat.")
     print("Im Folgenden sehen Sie die Anzahl an Nicht-Null-Einträgen:")
-    bl.vgl_spar()
+    vgl_spar()
     print("Außerdem haben wir noch zwei Plots:")
     print("Beide sind in Abhängigkeit von N mit Werten bis N=595 mit \
 einer Schrittweite von 85")
@@ -55,7 +60,6 @@ einer Schrittweite von 85")
     bl.graph_cond()
     print("2: Ein Plot zur Sparsity von A")
     bl.graph_sparsity()
-
     array=[10,10^2,10^3]
     for dimension in range (1,4):
         for n in range(2,100,10):
@@ -118,7 +122,6 @@ def graph():
     """
     Diese Funktion erstellt einen Graphen, der die exakte und approximierte
     Lösung des Poissionproblems für n=4 und n=10 ind der Dimension d=1 darstellt.
-
     Returns
     -------
     None
@@ -146,6 +149,97 @@ def graph():
     plt.ylabel("y")
     plt.legend()
     plt.show()
+
+def graph3D():
+    """
+    Diese Funktion erstellt einen Graphen, der die exakte und approximierte
+    Lösung des Poissionproblems für n=4 und n=11 ind der Dimension d=2 darstellt.
+    Returns
+    -------
+    None
+    """
+    fig = plt.figure()
+    ax = plt.axes(projection='3d')
+
+    x_list = np.linspace(0,1,100)
+    y_list = np.linspace(0,1,100)
+
+    X_list, Y_list = np.meshgrid(x_list,y_list)
+    z_list = u([X_list,Y_list])
+
+    A=bl.BlockMatrix(2,11)
+    p,l,uu=A.get_lu()
+    b = pp.rhs(2,11,f)
+    hat_u= ls.solve_lu(p,l,uu,b)
+    print(hat_u)
+    x_list_u = np.linspace(0, 1, num=10)
+    y_list_u = np.linspace(0, 1, num=10)
+    X_list_u,Y_list_u = np.meshgrid(x_list_u,y_list_u)
+
+    B=bl.BlockMatrix(2,4)
+    pq,ll,uuu=B.get_lu()
+    bb = pp.rhs(2,4,f)
+    hat_uu= ls.solve_lu(pq,ll,uuu,bb)
+    x_listt_u = np.linspace(0, 1, num=3)
+    y_listt_u = np.linspace(0, 1, num=3)
+    X_listt_u,Y_listt_u = np.meshgrid(x_listt_u,y_listt_u)
+
+    ax.plot_wireframe(X_list, Y_list, z_list ,cmap='plasma',label= 'Exakte Lösung' )
+    #ax.plot_wireframe(X_list_u, Y_list_u, hat_u, cmap='viridis',label= 'Approximierte Lösung für n=10' )
+    #ax.plot_wireframe(X_listt_u, Y_listt_u, hat_uu, cmap=cm.coolwarm ,label= 'Approximierte Lösung für n=4' )
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
+    plt.legend()
+    plt.show()
+
+def cond_hilmat(n):
+    """
+    Liefert zu einem gegebenen n die Kondition der HIlbertmatrix der Größe nxn.
+    Input
+    ______
+    n (int) Größe der zu betrachtenden Hilbertmatrix
+    Returns
+    -------
+    float Kondition der Hilbertmatrix der Größe nxn
+    """
+    cond= lg.norm(lg.hilbert(n), np.inf)*lg.norm(lg.invhilbert(n), np.inf)
+    return cond
+
+def vgl_cond():
+    """
+    Gibt für n=1 bis n=6 die Konditionen der Hilbert und Blockmatritzen der
+    jeweiligen Größe aus.
+    Input
+    ______
+    None
+    Returns
+    -------
+    None
+    """
+
+    for counter in range(1,7):
+        A= BlockMatrix(counter,5)
+        print("d =", counter)
+        print("Kondition A^d =", A.get_cond(), "Kondition Hilbert\
+ =" , cond_hilmat(counter))
+
+def vgl_spar():
+    """
+    Gibt für verschiedene Dimensionen und n die Sparsität der Blockmatrix und
+    der LU Zerlegung aus.
+    Input
+    ______
+    None
+    Returns
+    -------
+    None
+    """
+    print("Dimension, n , Sparsity A^d , Sparsity LU")
+    for d in range(1,4):
+        for n in range(2,15):
+            A= BlockMatrix(d,n)
+            print(d,n, A.eval_sparsity()[0] , A.eval_sparsity_lu()[0])
 
 if __name__ == "__main__":
     main()
