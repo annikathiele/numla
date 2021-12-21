@@ -137,8 +137,17 @@
 		
 		Wir betrachten die Matrizen $A^{(d)} \in \text{Mat}(\mathbb{R}^{(n-1)^d},\mathbb{R}^{(n-1)^d})$. Die Anzahl der Einträge wird also mit wachsender Feinheit, also wachsendem $n$ sehr schnell groß. Allerdings sind nur einige Einträge ungleich Null. Wir sprechen von \textit{sparse}, also dünnbesetzte Matrizen. Betrachtet man den Speicherbedarf einer solchen Matrix kann es also sinnvoll sein, statt die Matrix intuitiv als Array von arrays abzuspeichern, die nicht-null Einträge und deren Position zu speichern. 
 		
-		
-		
+		Wir werden in unseren Experimenten die Kondition von Hilbertmatrizen betrachten. Dazu definieren wir an dieser Stelle:
+		\begin{definition}[Hilbertmatrix]
+		Die HIlbert Matrix der Ordnung $n$ ist definiert als 
+		$$\begin{pmatrix}
+		1&\frac{1}{2}&\frac{1}{3}&\cdots & \frac{1}{n}\\
+		\frac{1}{2}&\frac{1}{3}&\frac{1}{4}&\cdots &\frac{1}{n+1}\\
+		\frac{1}{3}&\frac{1}{4}&\frac{1}{5}&\cdots &\frac{1}{n+2}\\
+		\vdots &\vdots &\vdots &\ddots &\vdots\\
+		\frac{1}{n}&\frac{1}{n+1}&\frac{1}{n+2}&\cdots &\frac{1}{2n-1}\\
+		\end{pmatrix}$$
+		\end{definition}
 		
 		\subsubsection{Lösen eines Gleichungssystems mit der LU Zerlegung}
 	In der Linearen Algebra haben wir bereits zum Lösen von Gleichunssystemen den Gaußschen Algorithmus kennengelernt. Beim Durchführen des Gaußschen Algorithmus an eine Matrix $A$ wird diese Matrix in eine  oberen rechten Dreiecksmatrix mit Einsen auf der Hauptdiagonalen und einer unteren linken Dreicksmatrix zerlegt. Eine solche Zerlegung nennt man auch \textit{LU-Zerlegung}.
@@ -341,9 +350,8 @@ $$
 Wir haben also mit 
 	
 	
-\section{Implementierung}
-	
-Wir wollen später Gleichungssysteme mithilfe der LU-Zerlegung lösen und  dann \textit{Kondition}, die Anzahl der Nicht-Null-Einträge und den Fehler der Approximation im Vergleich zur exakten Lösung in unseren Experimenten genauer betrachten.
+	\section{Implementierung}
+	Wir wollen später Gleichungssysteme mithilfe der LU-Zerlegung lösen und  dann \textit{Kondition}, die Anzahl der Nicht-Null-Einträge und den Fehler der Approximation im Vergleich zur exakten Lösung in unseren Experimenten genauer betrachten.
 Hierzu haben wir drei Programme implementiert:
 
 \subsection{\texttt{block\_matrix.py}}
@@ -393,8 +401,176 @@ Hier wird der maximale absolute Fehler der Approximation an den Diskretisierungs
 Dafür gehen wir sukzessive die Diskretisierungspunkte durch, bestimmen dessen Koordinaten mithilfe von \texttt{inv\_idx} und erhalten mit $u(x)$ die exakte Lösung. 
 Die \texttt{Infinity-Norm} der Differenz zur Approximierten Lösung gibt uns dann unseren Wert für den Fehler.
 	
+\subsection{Bedienungshilfe \texttt{experiments\_lu.py}}
+In \texttt{experiments\_lu.py} ist eine \texttt{main()} Funktion implementiert. Sie dient zur Ausf\"uhrung der 
+		betrachtenten Experimente und
+		wird nur ausgef\"uhrt wenn \texttt{experimente.py} direkt mittels \texttt{python3 experiments\_lu.py} gestartet wird. 
+		
+		Vor dem Starten des Programmes sollte die globale Variable \begin{verbatim}
+		Kappa
+		\end{verbatim} auf eine beliebige natürliche Zahl gesetzt werden. 
+		Nach dem Starten des Programms darf der Benutzende ausw\"ahlen, welches der Experimente er oder sie sehen möchte. Dazu werden die möglichen Experimente aufgelistet, zusammen mit einer Zahl. Die zugehöroge Zahl zum Experiment, das gesehen werden soll, muss danach eingegeben werden. WIrd eine andere Eingabe eingegeben, wird der Nutzer darauf hingewiedsen und nochmal um eine EIngabe gebeten. Nach dem Auswählen eines Experimentes, wird dieses durchgeführt. 
+	
+	
 \section{Beschreibung der Experimente und Beobachtungen}
+Im Rahmen unserer Experimente werden wir uns mit folgender Funktion beschäftigen.
+Für $\kappa \in \mathbb{N}$ sei $u:\Omega\rightarrow \mathbb{R}$ definiert durch
+$$u(x):=\prod_{l=1}^dx_l\sin (\kappa\pi x_l)$$
+Wir berechnen
 
+$$f(x)=\Delta u= \sum_{i=1}^d\frac{\partial ^2 u}{\partial x_i^2}=
+ \sum_{i=1}^d \left(\prod_{l\neq i}x_l\sin (\kappa\pi x_l)\right)\left(-x_i\kappa ^2\pi ^2\sin (\kappa\pi x_i)+(1+\kappa\pi)\cos (\kappa\pi x_i) \right)$$
+
+Dann ist $u$ die exakte Lösung zum Poisson Problem mit $f$ wie oben definiert. Wir können also nun numerisch das Poisson Problem lösen und das Ergebnis mit $u$ vergleichen um den Fehler zu erhalten. 
+
+Um die Kondition von den Blockmatrizen in Bezug zu setzen, vergleichen wir sie mit der Kondition von HIlbertmatrizen. 
+
+
+\begin{table}[h]
+		\centering
+		\begin{tabular}{c|c|c|c}
+			$n$ & \text{Dimension} & \text{Kondition von} $A^{(d)}$ & \text{Kondition von} $H_{(n-1)^d}$\\
+			\hline		
+			\hline	
+			3 & 1 & 3.0 & 27.0\\
+			\hline
+			4 & 1 & 8.0& 748.0 \\
+			\hline
+			5 & 1 & 11.999999999999998& 28374.999999999996\\
+			\hline
+			6 & 1 & 17.999999999999996& 943656.0\\
+			\hline
+			7 & 1 & 23.999999999999996 &29070278.9999999966 \\
+			\hline
+			3 & 2 & 3.0 &28374.9999999999964\\
+			\hline
+			4& 2 & 8.999999999999996 & 1099654541342.59 \\
+			\hline
+			5 & 2 & 13.333333333333334 & 5.062774787508321e+2216 \\
+			\hline
+			6&2 & 20.769230769230763 & 2.7744613640462164e+3625 \\
+			\hline
+			7 & 2 & 27.448275862068975 & 1.7462247118839097e+5336\\
+			\hline
+			3& 3& 3.0000000000000004& 33872791094.9999968 \\
+			\hline
+			4 & 3& 9.882352941176471 & 3.069327740892257e+3927\\
+			\hline
+			5 &3& 14.526315789473685&1.0957826974904638e+9664\\
+			\hline
+			6 &3& 23.313131313131308 & 2.235417938871472e+189125 \\
+			\hline
+		
+		\end{tabular}
+		\caption{Vergleich Kondition}
+		\label{Tabelle}
+	\end{table}
+Im Folgenden werden wir die exakte Lösung des Gleichungsystems zusammen mit der approxierten Lösung plotten. Zunächst betrachten wir den eindimensionalen Fall. 
+\begin{figure}
+
+
+\includegraphics[scale = 0.69]{graph().png}
+	\caption{Vergleich exakte und approximierte Lösung für $d=1$}
+	\label{graph()}
+\end{figure}
+Die blaue gestrichelte Linie zeigt die exakte Lösung des Poisson Problems. Die blaue durchgezogene Linie stellt die approximierte Lösung für $n=100$, also für $99$ innere Diskretisierungspunkte dar. Letztlich ist die rote LInie die approximierte Lösung für $9$ Diskretisierungspunkten. Es ist zu erkennen, dass die blaue durchgezogene Linie schon viel näher an dem eigentlichen Ergebnis ist. WIr betrachten nun den zweidimensionalen Fall. 
+\begin{figure}
+\includegraphics[scale = 1]{3D.jpg}
+	\caption{Vergleich exakte und approximierte Lösung für $d=2$}
+	\label{3d}
+\end{figure}
+
+\begin{table}[h]
+		\centering
+		\begin{tabular}{c|c|c|c}
+			$n$ & \text{Dimension} & \text{Sparsität von} $A^{(d)}$ & \text{Sparsität von} $LU$\\
+			\hline		
+			\hline	
+1 &2 &1& 1\\
+\hline	
+1& 3& 4 &4\\
+\hline	
+1 &4& 7& 7\\
+\hline	
+1& 5 &10 &10\\
+\hline	
+1 &6& 13 &13\\
+\hline	
+1 &7& 16& 16\\
+\hline	
+1 &8 &19 &19\\
+\hline	
+1 &9 &22& 22\\
+\hline	
+1 &10 &25& 25\\
+\hline	
+1 &11 &28& 28\\
+\hline	
+1& 12& 31& 31\\
+\hline	
+1 &13& 34 &34\\
+\hline	
+1 &14& 37& 37\\
+\hline	
+2 &2& 1& 1\\
+\hline	
+2 &3 &12& 14\\
+\hline	
+2 &4 &33& 49\\
+\hline	
+2& 5& 64& 118\\
+\hline	
+2 &6 &105& 233\\
+\hline	
+2& 7& 156& 406\\
+\hline	
+2 &8& 217& 649\\
+\hline	
+2 &9 &288& 974\\
+\hline	
+2& 10& 369 &1393\\
+\hline	
+2& 11& 460& 1918\\
+\hline	
+2 &12 &561& 2561\\
+\hline	
+2& 13& 672& 3334\\
+\hline	
+2 &14& 793 &4249\\
+\hline	
+3& 2 &1& 1\\
+\hline	
+3 &3 &32& 50\\
+\hline	
+3 &4 &135& 391\\
+\hline	
+3 &5 &352& 1702\\
+\hline	
+3 &6& 725& 5333\\
+\hline	
+3& 7 &1296& 13546\\
+\hline	
+3& 8& 2107 &29755\\
+\hline	
+3 &9 &3200 &58766\\
+\hline	
+3 &10 &4617& 107017\\
+\hline	
+3 &11& 6400 &182818\\
+\hline	
+3 &12& 8591& 296591\\
+\hline	
+3 &13& 11232& 461110\\
+\hline	
+3& 14& 14365& 691741\\
+\hline
+		
+		\end{tabular}
+		\caption{Vergleich Kondition}
+		\label{Tabelle}
+	\end{table}
+
+\section{Auswertung der Experimente}
 \section{Zusammenfassung}
 
 
