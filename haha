@@ -91,9 +91,55 @@
 
 \section{Einf\"uhrung in die Theorie}
 	\subsection{Motivation und Problemstellung}
+	 	Das Poisson Problem findet in vielen Anwendungsbereichen wie zum Beispiel der Elektrostatik, der Hydrostatik, der Gravitation und der Wärmeleitung anwendung.
+	 	Das motivioert sich mit dem numerischen Lösen des Differentialgleichungssystems auseinander zu setzen. Man kann das Problem diskretisieren und erhält so ein lineares Gleichungssystems, welches wir dann mithilfe der sogenannten $LU$ Zerlegung lösen. Es stellt sich die Frage wie efiizient und genau man eine Lösung finden kann. Deshalb schauen wir uns in diesem Bericht mit zunehmender Feinheit der Diskretisierung den Fehler, aber auch die Sparsität sowie Kondition der Matrix des Gleichungssystems an. 
 
 	
 	\subsection{Theoretischer Hintergrund}
+		\subsubsection{Poisson Problem}
+		Wir definieren den Laplace Operator.
+		\begin{definition}[Laplace Operator]
+		Der Laplace Operator einer Funktion $u\in C^2(\mathbb{R}^d,\mathbb{R})$ ist definiert durch
+		$$\Delta u=\sum_{i=1}^d\frac{\partial ^2 u}{\partial x_i^2}$$
+		
+		\end{definition}
+		Wir definieren weiter das partielle Differentialgleichungssystem, welches im Poisson-Problem gelöst werden soll. Wir betrachten das Problem auf einem  Gebiet  $\Omega$ und Rand $\partial \Omega$. seien $f\in C(\Omega , \mathbb{R})$ und $g\in C(\partial \Omega , \mathbb{R})$ Funktionen. Dann suchen wir eine Funktion $u$, sodass
+		\begin{align*}
+		\Delta u&=f \text{ in }\Omega\\
+		u&= g \text{ auf }\partial\Omega
+		\end{align*}
+		WIr betrachten in diesem Berichtr einen Spezialfall des Problems, wo $\Omega =(0,11)^d$, $d\in \{1,2,3\}$ und $g\equiv 0$
+		
+		Wir wollen approximativ das Problem numerisch Lösen. Dazu diskretisieren wir das Gebiet $\Omega$ und den Laplace Operator durch Finite Differenzen um ein lineares Gleichungssystem zu erhalten. Wir diskretisieren das Gebiet indem wir das Intervall $(0,1)$ in $n$ äquidistante Teilintervalle zerlegen. Die so entstehenden Gitterpunkte im $(0,1)^d$ werden unsere Diskretisierungspunkte. Mit den Finiten DIfferenzen zweiter Ordnung können wir den Laplace Operator diskretiseren, denn wir wissen, dass 
+		$$\frac{\delta^2u}{\delta x_l^2} \approx D_h^{(2)} u_{x,l}(x) =\frac{u(x_1,...,x_l+h,...,x_d) - 2u(x_1,...,x_l,...,x_d) + u(x_1,...,x_l-h,...,x_d)}{h^2}$$
+		gilt. 
+		Um ein lineares Gleichungssystem zu erhalten, definieren wir eine Ordnung auf den Diskretisierungspunkten.
+		\begin{definition}
+		Seien $x=(x_1,...,x_d)$ und $y=(y_1,...,y_d)$ zwei Diskretisierungspunkte. Dann gilt$x<_X y$ genau dann, wenn
+		$$\sum_{l=1}^dx_ln^l<\sum_{l=1}^dy_ln^l$$
+		\end{definition}
+		Sei $N:=(n-1)^d$ die Anzahl an Diskretisierungspunkten.
+		So erhalten wir $N$ lineare Gleichungen und damit Blockmatrizen $A^{(d)}$, für die zu llösen gilt $A^{(d)}\hat{u}=b$. Wir definieren diese Blockmatrizen induktiv.
+		$$A^{(d)}_{1} := \begin{pmatrix}     2d & -1 & 0 & 0 &\dots&0 \\    -1 & 2d & -1 & 0&\dots&0 \\    0&\ddots&\ddots&\ddots&\ddots&\vdots\\    \vdots & \ddots &\ddots&\ddots&-1&0 \\    0 & \dots&0&-1&2d&-1\\     0&  \dots&0&0&-1&2d    \end{pmatrix}$$
+		$$A^{(d)}_{l} := \begin{pmatrix}     A^{(d)}_{l-1} & -\mathbf{I}_{l-1} & 0 & 0 &\dots&0 \\    -\mathbf{I}_{l-1} & A^{(d)}_{l-1} & -\mathbf{I}_{l-1} & 0&\dots&0 \\    0&\ddots&\ddots&\ddots&\ddots&\vdots\\    \vdots & \ddots &\ddots&\ddots&-\mathbf{I}_{l-1}&0 \\    0 & \dots&0&-\mathbf{I}_{l-1}&A^{(d)}_{l-1}&-\mathbf{I}_{l-1}\\     0&  \dots&0&0&-\mathbf{I}_{l-1}&A^{(d)}_{l-1}    \end{pmatrix}$$
+		WIr setzen $A^{(d)}:=A^{(d)}_d$ Die rechte Seite $b$ erhalten wir durch das Einsetzen der DIskretisierungspunkte in die gegebene Funktion $f$. 
+		
+		\subsubsection{Kondition und Sparsität einer Matrix}
+		Wir betrachten ein mathematisches Problem $P(x)=y$. Dann interessiert uns wie sich eine Störung oder ein relativer Fehler im Input $\frac{||\Delta x||}{||x||}$ sich im Output fortpflanzt. Dies motiviert die Definition der relativen Kondition.
+				\begin{definition}[(relative) Kondition]
+		Die (relative) Kondition eines Problems $P$ ist der kleinste Faktor $K$ mit der EIgenschaft, dass für alle Inputdaten $x$ und für alle Outputdaten $y$, gilt 
+		$$\frac{||\Delta y||}{||y||}\leq K\frac{||\Delta x||}{||x||}$$
+		\end{definition}
+		\begin{definition}[Kondition einer Matrix]
+		Die Kondition einer Matrix $A$ ist definiert durch $\text{cond}(A):=||A||\cdot ||A^{-1}||$
+		\end{definition}
+		Die Kondition dieser Matrix enstspricht der relativen Kondition des Problems $Ax=b$, gibt also ein Maß an, wie sich der Fehler beim Lösen eines Linearen Gleichungssystems verhält. 
+		
+		Wir betrachten die Matrizen $A^{(d)} \in \text{Mat}(\mathbb{R}^{(n-1)^d},\mathbb{R}^{(n-1)^d})$. Die Anzahl der Einträge wird also mit wachsender Feinheit, also wachsendem $n$ sehr schnell groß. Allerdings sind nur einige Einträge ungleich Null. Wir sprechen von \textit{sparse}, also dünnbesetzte Matrizen. Betrachtet man den Speicherbedarf einer solchen Matrix kann es also sinnvoll sein, statt die Matrix intuitiv als Array von arrays abzuspeichern, die nicht-null Einträge und deren Position zu speichern. 
+		
+		
+		
+		
 		\subsubsection{Lösen eines Gleichungssystems mit der LU Zerlegung}
 	In der Linearen Algebra haben wir bereits zum Lösen von Gleichunssystemen den Gaußschen Algorithmus kennengelernt. Beim Durchführen des Gaußschen Algorithmus an eine Matrix $A$ wird diese Matrix in eine  oberen rechten Dreiecksmatrix mit Einsen auf der Hauptdiagonalen und einer unteren linken Dreicksmatrix zerlegt. Eine solche Zerlegung nennt man auch \textit{LU-Zerlegung}.
 	\begin{definition}[LU-Zerlegung]
