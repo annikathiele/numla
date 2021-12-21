@@ -12,10 +12,6 @@
         eval_sparsity_lu()
         get_cond()
         graph_sparsity()
-        cond_hilmat()
-        vgl_cond()
-        vgl_spar()
-
 """
 
 
@@ -36,8 +32,6 @@ def main():
     -------
     None
     """
-    vgl_cond()
-    vgl_spar()
     A= BlockMatrix(3,3)
     print(A.get_sparse())
     A.get_lu()
@@ -236,54 +230,6 @@ def graph_sparsity():
     plt.legend()
     plt.show()
 
-
-def cond_hilmat(n):
-    """
-    Liefert zu einem gegebenen n die Kondition der HIlbertmatrix der Größe nxn.
-    Input
-    ______
-    n (int) Größe der zu betrachtenden Hilbertmatrix
-    Returns
-    -------
-    float Kondition der Hilbertmatrix der Größe nxn
-    """
-    cond= lg.norm(lg.hilbert(n), np.inf)*lg.norm(lg.invhilbert(n), np.inf)
-    return cond
-
-def vgl_cond():
-    """
-    Gibt für n=1 bis n=6 die Konditionen der Hilbert und Blockmatritzen der
-    jeweiligen Größe aus.
-    Input
-    ______
-    None
-    Returns
-    -------
-    None
-    """
-
-    for counter in range(1,7):
-        A= BlockMatrix(counter,5)
-        print("d =", counter)
-        print("Kondition A^d =", A.get_cond(), "Kondition Hilbert\
- =" , cond_hilmat(counter))
-
-def vgl_spar():
-    """
-    Gibt für verschiedene Dimensionen und n die Sparsität der Blockmatrix und
-    der LU Zerlegung aus.
-    Input
-    ______
-    None
-    Returns
-    -------
-    None
-    """
-    print("Dimension, n , Sparsity A^d , Sparsity LU")
-    for d in range(1,4):
-        for n in range(2,15):
-            A= BlockMatrix(d,n)
-            print(d,n, A.eval_sparsity()[0] , A.eval_sparsity_lu()[0])
 
 if __name__ == "__main__":
     main()
