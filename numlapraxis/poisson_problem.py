@@ -209,7 +209,7 @@ def graph_errors(f,u,n):
 
     plt.plot(Nlist, ylist, 'b-',label= 'd=1' )
     plt.plot(Nlistt, ylistt, 'g-',label= 'd=2' )
-    plt.plot(Nlisttt, ylisttt, 'r-',label= 'd=3)' )
+    plt.plot(Nlisttt, ylisttt, 'r-',label= 'd=3' )
     plt.xscale("log")
     plt.yscale("log")
     plt.xlabel("N")
