@@ -6,8 +6,6 @@
     Datum: 20.12.2021
     Funktionen:
         solve_lu()
-
-
 """
 
 
@@ -47,8 +45,8 @@ def solve_lu(p, l, u, b):
     x : numpy.ndarray
     solution of the linear system
     """
-
-    y = solve_triangular(l,b, lower=True)
+    Pb= np.matmul(np.transpose(p),b)
+    y = solve_triangular(l,Pb, lower=True)
     x= solve_triangular(u,y)
     return x
 
