@@ -295,9 +295,57 @@ $$
 Wir haben also mit 
 	
 	
-	\section{Implementation}
+\section{Implementierung}
 	
-	
+Wir wollen später Gleichungssysteme mithilfe der LU-Zerlegung lösen und  dann \textit{Kondition}, die Anzahl der Nicht-Null-Einträge und den Fehler der Approximation im Vergleich zur exakten Lösung in unseren Experimenten genauer betrachten.
+Hierzu haben wir drei Programme implementiert:
+
+\subsection{\texttt{block\_matrix.py}}
+Für unsere Blockmatrizen interessiert uns deren LU-Zerlegung, außerdem möchten wir in unseren Experimenten die \textit{Kondition} und \textit{Sparsity} vergleichen können.
+Deshalb haben wir die Klasse \texttt{BlockMatrix} des Programms
+\texttt{block\_matrix.py} um die folgenden Funktionen erweitert:
+
+\subsubsection*{\texttt{get\_lu()}:}
+Diese Funktion zerlegt unsere Matrix in eine orthogonale Matrix zur \textit{Pivorisierung}, eine untere linke Dreiecksmatrix mit Einsen auf der Hauptdiagonalen und eine obere rechte Dreiecksmatrix.
+Wir verwenden dafür zunächst \texttt{get\_sparse()} um die Matrix zu erhalten, welche die entsprechende Dimension und Intervallzahl pro Dimension repräsentiert. Mit \texttt{todense()} ändern wir die Matrix in ein \textit{Numpy-Array}, sodass wir dann \texttt{scipy.linalg.lu()} verwenden können. Das liefert uns schon das Erwünschte.
+
+\subsubsection*{\texttt{eval\_sparsity\_lu()}:}
+\texttt{eval\_sparsity\_lu()} soll die absolute Anzahl an Nicht-Null-Einträgen der \textit{LU-Zerlegung} einer Matrix, sowie die relative Anzahl ausgeben. 
+Es muss also zuerst die \textit{LU-Zerlegung} bestimmt werden. Hierfür können wir \texttt{get\_lu()} verwenden. Die Nicht-Null-Einträge von $L$ und $U$ lassen sich durch \texttt{numpy.count\_nonzero()} ermitteln. Um die absolute Anzahl zu erhalten addieren wir die beiden Werte, ziehen aber noch $(n-1)^d$ ab, denn wir möchten die Einsen auf der Hauptdiagonalen nicht mitzählen.
+Der relative Wert berechnet sich dann, indem wir die absolute Anzahl durch die Zahl an Elementen der Koeffizientenmatrix ($=(n-1)^{2d}$) teilen.
+
+\subsubsection*{\texttt{get\_cond()}:}
+\texttt{get\_sparse()} bringt uns unsere Koeffizientenmatrix. Die \textit{Kondition} berechnet sich dann mit folgender Formel:
+$$
+cond(A)=||A^{-1}||_{\infty}||A||_{\infty}
+$$
+Die Bestimmung der Inversen und der Norm erfolgt mithilfe von 
+\texttt{scipy.sparse.linalg}-Funktionen.
+
+\subsection{\texttt{linear\_solvers.py}}
+Mit diesem Programm kann man Gleichungen der Form $Ax=b$ lösen. Dies geschieht über eine \texttt{pivotisierte LU-Zerlegung}.
+
+\subsubsection*{\texttt{solve\_lu()}:}
+Diese Funktion benötigt als Input $p , l , u$ und $b$ und gibt uns die Lösung $x$ des Gleichungssystems wieder.
+Wir können die Dreiecksform unserer Matrizen ausnutzen und $x$ durch \textit{Vorwärts- und Rückwertseinsetzen} bestimmen. Das Ganze wird dann durch \texttt{scipy.linalg.solve\_triangular()} umgesetzt.
+Wir bestimmen zunächst $y$ aus
+$$
+Ly = P^{-1}b
+$$
+Da $P^{-1}$ eine orthogonale Matrix ist, können wir \texttt{numpy.transpose(p)} nutzen.
+Im zweiten Schritt liefert uns
+$$
+Ux=y
+$$
+unsere Lösung $x$.
+
+\subsection{\texttt{poisson\_problem.py}}
+Wir wollen den Fehler der Approximation im Vergleich zur exakten Lösung vergleichen können. Dieses Programm erweitern wir deshalb um folgende Funktion:
+
+\subsubsection*{\texttt{compute\_error()}:}
+Hier wird der maximale absolute Fehler der Approximation an den Diskretisierungspunkten berechnet, bezüglich der \textit{Infinity-Norm}. Dazu nimmt die Funktion als Input die Dimension, die Anzahl an Intervallen pro Dimension, die exakte Lösung des \textit{Poisson-Problems} an den Diskretisierungspunkten und die Funktion welche das \textit{Poisson-Problem} löst.
+Dafür gehen wir sukzessive die Diskretisierungspunkte durch, bestimmen dessen Koordinaten mithilfe von \texttt{inv\_idx} und erhalten mit $u(x)$ die exakte Lösung. 
+Die \texttt{Infinity-Norm} der Differenz zur Approximierten Lösung gibt uns dann unseren Wert für den Fehler.
 	
 \section{Beschreibung der Experimente und Beobachtungen}
 
