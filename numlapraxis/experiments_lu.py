@@ -16,62 +16,79 @@
 """
 
 #import sys
+import scipy.linalg as lg
+#from mpl_toolkits import mplot3d
 import matplotlib.pyplot as plt
 import numpy as np
-import block_matrix as bl
 import linear_solvers as ls
 import poisson_problem as pp
-from mpl_toolkits import mplot3d
+import block_matrix as bl
 
 #sys.path.append("/Users/annikathiele/Desktop/numlapraxis")
  #pylint: disable=invalid-name
   #pylint: disable= pointless-string-statement
-Kappa = 2
+
 def main():
-    """
+        """
     Die Main Funktion demonstriert die Funktionalität der Funktionen.
     Returns
     -------
     None
     """
-    graph3D()
-
-    #pp.graph_errors(f,u,25)
-    """
     print("Wir stellen hiermit unsere Experimente vor.")
-    print("Zunächst stellen wir graphisch den Fehler unserer berechneten Lösung,\
-dar.")
-    print("Wir betrachten hier bis zu 13824 Diskretisierungpunkte in\
-ein bis drei Dimensionen.")
-    print("Einen kurzen Moment bitte...")
-    graph_error()
-    print("Als nächstes haben wir die Kondition unserer Matrizen A^(d) mit \
-der von dxd-Hilbertmatrizen verglichen.")
-    print("Hier die Ergebnisse:")
-    vgl_cond()
-    print("Es war auch interessant zu sehen wie stark die LU Zerlegung die \
-Sparsity beeinflusst hat.")
-    print("Im Folgenden sehen Sie die Anzahl an Nicht-Null-Einträgen:")
-    vgl_spar()
-    print("Außerdem haben wir noch zwei Plots:")
-    print("Beide sind in Abhängigkeit von N mit Werten bis N=595 mit \
-einer Schrittweite von 85")
-    print("1: Ein Plot zur Kondition von A")
-    bl.graph_cond()
-    print("2: Ein Plot zur Sparsity von A")
-    bl.graph_sparsity()
-    array=[10,10^2,10^3]
-    for dimension in range (1,4):
-        for n in range(2,100,10):
-            A=bl.BlockMatrix(dimension, n)
-            p,l,uu=A.get_lu()
-            b = rhs(dimension, n, f)
-            hat_u= ls.solve_lu(p,l,uu,b)
-            e=compute_error(dimension,n, hat_u, u)
-            print(dimension,n,e)
-            """
+    print("Zunächst können Sie bestimmen mit welchem Kappa gerechnet werden soll")
+    global Kappa
+    while True:
+        try:
+            Kappa = input("Bitte wählen Sie eine ganze Zahl zwischen 1 und 100: ")
+            Kappa = int(Kappa)
+            if 1<=Kappa<=100:
+                break
+            print("Keine gültige Zahl, probiere es nochmals ...")
+        except ValueError:
+            print("Keine gültige Zahl, probiere es nochmals ...")
+    print("Es wurde Kappa =", Kappa, "festgelegt.")
 
-
+    while True:
+        print()
+        print("Sie können wählen, welche Funktion Sie gezeigt bekommen wollen.")
+        print("Ihnen steht folgende Auswahl zur Verfügung:")
+        print()
+        print("1: Graph zum Fehler der Approximation")
+        print("2: Vergleich zu Kondition von Hilbertmatrizen")
+        print("3: 3-D Graph zur Approximation der Lösung des Poisson-Problems")
+        print("4: Vergleich der Sparsity vor und nach LU-Zerlegung")
+        print()
+        print("Geben Sie zur Vorstellung einer Funktion die ihr zugewiesene Nummer ein")
+        while True:
+            try:
+                zahl = input("Bitte wählen Sie eine ganze Zahl zwischen 1 und 4: ")
+                zahl = int(zahl)
+                if 1<=zahl<=4:
+                    break
+                print("Keine gültige Zahl, probiere es nochmals ...")
+            except ValueError:
+                print("Keine gültige Zahl, probiere es nochmals ...")
+        print()
+        print("Ihre Eingabe war erfolgreich!")
+        Functions = {
+            1: m_errors,
+            2: m_cond,
+            3: m_3d,
+            4: m_sparsity,
+        }
+        Functions[zahl]()
+        print()
+        print("Möchten Sie eine weitere Funktion testen?")
+        print('Für "ja" geben Sie bitte 0 ein')
+        print("Jede andere Eingabe beendet das Programm")
+        try:
+            weiter = input("Weitermachen?: ")
+            weiter = int(weiter)
+            if weiter!=0:
+                break
+        except ValueError:
+            break
 
 
  #pylint: disable=unused-variable
@@ -116,7 +133,85 @@ def f(x):
         laplace+=prod_one+prod_two
     return -laplace
 
+def graph_errors(f,u,n):
+    """
+    Diese Funktion erstellt einen Graphen, der die Fehler der approximierten
+    Lösung für das Poisson Problem in Abhängigkeit von den
+    Diskretisierungspunkten darstellt.
+    Parameter
+    ------
+    f Callable Funktion, für die das Poisson Problem gelöst werden soll.
+    u Callable Exakte Lösung des Poisson Problems
+    n Maximales n für das der Fehler berechnet werden soll
+    Returns
+    -------
+    None
+    """
+    Nlist=[]
+    Nlistt=[]
+    Nlisttt=[]
 
+    ylist=[]
+    for x in range(2, (n-1)**3+2):
+        A=bl.BlockMatrix(1, x)
+        p,l,uu=A.get_lu()
+        b = pp.rhs(1, x, f)
+        hat_u= ls.solve_lu(p,l,uu,b)
+        e=pp.compute_error(1,x, hat_u, u)
+        ylist.append(e)
+        Nlist.append(x-1)
+
+    ylistt=[]
+    for x in range(2,int((n-1)**(3/2)+2)):
+        A=bl.BlockMatrix(2, x)
+        p,l,uu=A.get_lu()
+        b = pp.rhs(2, x, f)
+        hat_u= ls.solve_lu(p,l,uu,b)
+        e=pp.compute_error(2,x, hat_u, u)
+        ylistt.append(e)
+        Nlistt.append((x-1)**2)
+
+    ylisttt=[]
+    for x in range(2,n+1):
+        A=bl.BlockMatrix(3, x)
+        p,l,uu=A.get_lu()
+        b = pp.rhs(3, x, f)
+        hat_u= ls.solve_lu(p,l,uu,b)
+        e=pp.compute_error(3,x, hat_u, u)
+        ylisttt.append(e)
+        Nlisttt.append((x-1)**3)
+
+    """
+    ylistt=[]
+    for x in range(2,int((n)**(1/2)+1)):
+        A=bl.BlockMatrix(2, x)
+        p,l,uu=A.get_lu()
+        b = pp.rhs(2, x, f)
+        hat_u= ls.solve_lu(p,l,uu,b)
+        e=pp.compute_error(2,x, hat_u, u)
+        ylistt.append(e)
+        Nlistt.append((x-1)**2)
+
+    ylisttt=[]
+    for x in range(2,int((n)**(1/3)+1)):
+        A=bl.BlockMatrix(3, x)
+        p,l,uu=A.get_lu()
+        b = pp.rhs(3, x, f)
+        hat_u= ls.solve_lu(p,l,uu,b)
+        e=pp.compute_error(3,x, hat_u, u)
+        ylisttt.append(e)
+        Nlisttt.append((x-1)**3)
+    """
+
+    plt.plot(Nlist, ylist, 'b-',label= 'd=1' )
+    plt.plot(Nlistt, ylistt, 'g-',label= 'd=2' )
+    plt.plot(Nlisttt, ylisttt, 'r-',label= 'd=3' )
+    plt.xscale("log")
+    plt.yscale("log")
+    plt.xlabel("N")
+    plt.ylabel("Error")
+    plt.legend()
+    plt.show()
 
 def graph():
     """
@@ -171,7 +266,13 @@ def graph3D():
     p,l,uu=A.get_lu()
     b = pp.rhs(2,11,f)
     hat_u= ls.solve_lu(p,l,uu,b)
-    print(hat_u)
+    hat_u_2D=[]
+    for i in range(10):
+        array=[]
+        for j in range(10):
+            array.append(hat_u[10*i+j])
+        hat_u_2D.append(array)
+    hat_u_array= np.array(hat_u_2D)
     x_list_u = np.linspace(0, 1, num=10)
     y_list_u = np.linspace(0, 1, num=10)
     X_list_u,Y_list_u = np.meshgrid(x_list_u,y_list_u)
@@ -180,13 +281,22 @@ def graph3D():
     pq,ll,uuu=B.get_lu()
     bb = pp.rhs(2,4,f)
     hat_uu= ls.solve_lu(pq,ll,uuu,bb)
+    hat_uu_2D=[]
+    for i in range(3):
+        array=[]
+        for j in range(3):
+            array.append(hat_uu[3*i+j])
+        hat_uu_2D.append(array)
+    hat_uu_array= np.array(hat_uu_2D)
     x_listt_u = np.linspace(0, 1, num=3)
     y_listt_u = np.linspace(0, 1, num=3)
     X_listt_u,Y_listt_u = np.meshgrid(x_listt_u,y_listt_u)
 
-    ax.plot_wireframe(X_list, Y_list, z_list ,cmap='plasma',label= 'Exakte Lösung' )
-    #ax.plot_wireframe(X_list_u, Y_list_u, hat_u, cmap='viridis',label= 'Approximierte Lösung für n=10' )
-    #ax.plot_wireframe(X_listt_u, Y_listt_u, hat_uu, cmap=cm.coolwarm ,label= 'Approximierte Lösung für n=4' )
+    ax.plot_wireframe(X_list, Y_list, z_list ,label= 'Exakte Lösung' )
+    ax.plot_wireframe(X_list_u, Y_list_u, hat_u_array, color='green' ,\
+label= 'Approximierte Lösung für n=11' )
+    ax.plot_wireframe(X_listt_u, Y_listt_u, hat_uu_array, color='red',\
+label= 'Approximierte Lösung für n=4' )
     ax.set_xlabel('x')
     ax.set_ylabel('y')
     ax.set_zlabel('z')
@@ -241,5 +351,65 @@ def vgl_spar():
             A= BlockMatrix(d,n)
             print(d,n, A.eval_sparsity()[0] , A.eval_sparsity_lu()[0])
 
+def m_errors():
+    """
+    Stellt die Funktion graph_errors() für n=8 vor
+    Parameter
+    ------
+    None
+    Returns
+    -------
+    None
+    """
+    print("Wir stellen graphisch den Fehler unserer berechneten Lösung, dar.")
+    print("Dazu betrachten wir hier bis zu 13824 Diskretisierungpunkte in \
+ein bis drei Dimensionen.")
+    print("Einen kurzen Moment bitte...")
+    graph_errors(f,u,8)
+
+def m_cond():
+    """
+    Stellt die Funktion vgl_cond() vor
+    Parameter
+    ------
+    None
+    Returns
+    -------
+    None
+    """
+    print("Wir vergleichen die Kondition unserer Koeffizientenmatrizen mit \
+der von Hilbertmatrizen.")
+    print("Hier die Ergebnisse:")
+    vgl_cond()
+
+def m_3d():
+    """
+    Stellt die Funktion graph3D() vor
+    Parameter
+    ------
+    None
+    Returns
+    -------
+    None
+    """
+    print("Wir stellen in einem 3D-Plot die Approximation der Lösung des \
+Poisson-Problems graphisch dar.")
+    graph3D()
+
+def m_sparsity():
+    """
+    Stellt die Funktion vgl_spar() vor
+    Parameter
+    ------
+    None
+    Returns
+    -------
+    None
+    """
+    print("Es war interessant zu sehen wie stark die LU Zerlegung die \
+Sparsity beeinflusst hat.")
+    print("Im Folgenden sehen Sie die Anzahl an Nicht-Null-Einträgen:")
+    vgl_spar()
+         
 if __name__ == "__main__":
     main()
