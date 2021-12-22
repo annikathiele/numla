@@ -77,29 +77,23 @@ class BlockMatrix:
         self.sparse = None
 
 
-    def get_sparse(self):
+        def get_sparse(self):
         """ Returns the block matrix as sparse matrix.
     Returns
     ------
     scipy.sparse.csr_matrix The block_matrix in a sparse data format. """
         if self.sparse is None:
-            matrix = sparse.csr_matrix(np.array([[2 * self.d]]))
-            for _ in range(self.d):
-                idt = sparse.identity(matrix.shape[0], format='csr', dtype='int8')
-                zero = sparse.csr_matrix(matrix.shape, dtype='int8')
-                rows = []
-                for r in range(self.n-1):
-                    entries = []
-                    for c in range(self.n-1):
-                        if c == r:
-                            entries.append(matrix)
-                        elif abs(c-r) == 1:
-                            entries.append(-idt)
-                        else:
-                            entries.append(zero)
-                    rows.append(sparse.hstack(entries, format='csr'))
-                matrix = sparse.vstack(rows, format='csr')
-            self.sparse = matrix
+            A=2*self.d
+            for l in range(1,self.d+1):
+                lstr=[A]*(self.n-1)
+                D=sparse.block_diag(lstr)
+                r=(self.n-2)*((self.n-1)**(l-1))
+
+                lst=2*[-1*np.ones(r)]
+                lste=[(self.n-1)**(l-1),-(self.n-1)**(l-1)]
+                E=sparse.diags(lst,lste)
+                A=D+E
+            self.sparse =sparse.csr_matrix(A)
         return self.sparse
 
     def eval_sparsity(self):
