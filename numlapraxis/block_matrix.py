@@ -37,21 +37,24 @@ und Sparsity unserer Koeffizientenmatrix bestimmen.")
     print("Wir nutzen dies um zwei Plots zu erstellen")
     print("Beide sind in Abhängigkeit von N mit Werten bis N=595 mit \
 einer Schrittweite von 85")
-    print("Wenn Sie den Plot zur Kondition sehen möchten geben Sie bitte\
- die 0 ein")
-    print("1 führt Sie zum Plot über die Sparsity")
+    print("Wenn Sie den Plot zur Kondition sehen möchten, geben Sie bitte\
+ die 0 ein.")
+    print("1 führt Sie zum Plot über die Sparsity.")
     while True:
         try:
-            auswahl = input("Welchen Plot möchten Sie sehen?")
+            print()
+            auswahl = input("Welchen Plot möchten Sie sehen? ")
             auswahl = int(auswahl)
             if auswahl == 0:
-                print("Hier der Plot zur Kondition von A für d=1,2,3 in \
+                print()
+                print("Hier der Plot zur Kondition von A für d = 1,2,3 in \
 Abhängigkeit von N")
                 graph_cond()
                 break
             if auswahl ==1:
+                print()
                 print("Hier der Plot zur Sparsity von A und der LU-Zerlegung \
-von A für d=1,2,3 in Abhängigkeit von N")
+von A für d = 1,2,3 in Abhängigkeit von N")
                 graph_sparsity()
                 break
             print("Eingabe ungültig. Versuchen Sie es noch einmal...")
