@@ -391,9 +391,9 @@ Die gelbe Gerade zeigt die Kondition in Abhängigkeit von $N$ für die Dimension
 Um die Kondition von den Blockmatrizen in Bezug zu setzen, vergleichen wir sie mit der Kondition von HIlbertmatrizen. In der folgenden Tabelle sind für verschiedene $n$ und $d$ die Kondition von der zugehörigen Blockmatrix und die der Hilbertmatrix der Größe $(n-1)^d$ angegeben. 
 
 
+\begin{minipage}{\textwidth}
 
-\begin{table}[h]
-		\centering
+
 		\begin{tabular}{c|c|c|c}
 			$n$ & \text{Dimension} & \text{Kondition von} $A^{(d)}$ & \text{Kondition von} $H_{(n-1)^d}$\\
 			\hline		
@@ -428,9 +428,9 @@ Um die Kondition von den Blockmatrizen in Bezug zu setzen, vergleichen wir sie m
 			\hline
 		
 		\end{tabular}
-		\caption{Vergleich Kondition}
+		\captionof{table}{Vergleich Kondition}
 		\label{Tabelle}
-	\end{table}
+\end{minipage}
 	Es ist zu erkennen, dass besonders in der dritten Dimension, die Kondition der Hilbertmatrix viel schneller wächst.
 	\subsection{Exakte und Approximierte Lösung}
 Im Folgenden werden wir die exakte Lösung des Gleichungsystems zusammen mit der approxierten Lösung plotten. Zunächst betrachten wir den eindimensionalen Fall. 
