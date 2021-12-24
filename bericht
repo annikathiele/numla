@@ -398,6 +398,18 @@ Dann ist $u$ die exakte Lösung zum Poisson Problem mit $f$ wie oben definiert. 
 Wir betrachten für die Dimensionen $d\in\{1,2,3\}$ die diskrete Lösung der Poisson-Gleichung für verschiedene Anzahlen an Teilintervallen $n$. Vorallem die Funktion \texttt{get\_sparse()} benötigt mit zunehmendem $n$ sehr schnell sehr lange. So benötigt das Berechnen der Lösung für $d=3$ und $n=25$, also für $13824$ Diskretisierungspunkte bereits $43.904027223587036$ Sekunden. Für $d=1$ und $n=112$, also $12321$ Diskretisierungspunkte $31.030675172805786$ Sekunden. 
 Wir wollen uns nun mit dem Fehler der approximierten Lösung beschäftigen. In der folgenden Abbildung ist der Fehler für die verschiedenen Dimensionen in Abhängigkeit von der Anzahl von Diskretisierungspunkten für $\kappa =3$ abgebildet.
 
+\begin{minipage}{\textwidth}
+
+ \centering
+ \includegraphics[scale = 0.4]{error}
+ 	\captionof{figure}{Fehlergraph}
+ 	\label{error}
+
+ \end{minipage}
+
+ Es lässt sich erkennen, dass der Fehler in der ersten Dimension am größten ist und auch am wenigsten sinkt. In der zweiten dimension sinkt der Fehlergraph anfänglich sehr stark und dann genauso wie in der ersten Dimension. Letzlich sinkt der Fehler in der dritten Dimension am meisten. 
+
+
 
 \subsection{Kondition der Blockmatrizen}
 
