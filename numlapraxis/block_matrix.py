@@ -223,9 +223,15 @@ def graph_sparsity():
     ylist = [ylist_one , ylist_two , ylist_three ]
     nlist = [nlist_one , nlist_two , nlist_three ]
     Nlist = [Nlist_one , Nlist_two , Nlist_three ]
+
+    zlist_one = []
+    zlist_two = []
+    zlist_three = []
+    zlist = [zlist_one , zlist_two , zlist_three]#
+
     rangelist = []
     for counter in range (1, 8):
-        rangelist.append(counter*(1700/20))
+        rangelist.append(counter*(85))
     for dimension in range (1,4):
         for i in rangelist:
             n=int(i**(float(1)/float(dimension))+1)
@@ -233,12 +239,16 @@ def graph_sparsity():
             Nlist[dimension-1].append((n-1)**(dimension))
         for n in nlist[dimension-1]:
             A=BlockMatrix(dimension, n)
+            zlist[dimension-1].append(A.eval_sparsity()[0])#
             ylist[dimension-1].append(A.eval_sparsity_lu()[0])
 
     plt.figure()
-    plt.plot(Nlist_one, ylist_one, 'b-',label= 'd=1' )
-    plt.plot(Nlist_two, ylist_two, 'r-',label= 'd=2' )
-    plt.plot(Nlist_three, ylist_three, 'y-',label= 'd=3' )
+    plt.plot(Nlist_one, ylist_one, 'b-',label= 'd=1, LU' )
+    plt.plot(Nlist_one, zlist_one, 'c--',label= 'd=1' )
+    plt.plot(Nlist_two, ylist_two, 'm-',label= 'd=2, LU' )
+    plt.plot(Nlist_two, zlist_two, 'm--',label= 'd=2' )#
+    plt.plot(Nlist_three, ylist_three, 'k-',label= 'd=3, LU' )
+    plt.plot(Nlist_three, zlist_three, 'k--', label = 'd=3')
     plt.xscale("log")
     plt.yscale("log")
     plt.title("Sparsity")
