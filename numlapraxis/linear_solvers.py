@@ -21,11 +21,23 @@ def main():
     -------
     None
     """
-    A= bl.BlockMatrix(2,3)
+    p,l,u = lg.lu([[1,1,1],[4,2,1],[9,3,1]])
+    print(solve_lu(p,l,u,[1,14,49]))
+    print("Mithilfe dieses Moduls kann man mit einer gegebenen LU-Zerlegung \
+für A Gleichungssysteme der Form Ax = b nach x auflösen")
+    print()
+    print("Sei in diesem Beispiel A die Koeffizienten Matrix")
+    d,n= bl.get_dn()
+    print("Sei b=[1,2,..., (n-1)^d]")
+    b=[]
+    for counter in range(1,(n-1)**d+1):
+        b.append(counter)
+    b=np.array(b)
+    A= bl.BlockMatrix(d,n)
     p,l,u= A.get_lu()
-    b=np.array([2,4,4,2])
     x= solve_lu(p,l,u,b)
-    print(x)
+    print()
+    print("Dann löst", x," unsere Gleichung.")
 
 def solve_lu(p, l, u, b):
     """ Solves the linear system Ax = b via forward and backward substitution
