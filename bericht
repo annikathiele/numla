@@ -495,16 +495,17 @@ Auch hier ist zu erkennen, dass die Sparsität exponentiell wächst, allerdings 
 
 \section{Auswertung der Experimente}
 
-Schaut man sich den Fehlergraohen an, so sollte man beachten, dass der Fehler sich aus dem Approximationsfehler und der Fortpflanzung des Rundungsfehlers. Bei der Fortpflanzung des Rundungsfehlers gibt die Kondition der Blockmatrix $A$ ein Maß an, wie stark sich der Fehler fortpflanzt. Bei großen Blockmatrizen ist dann der Approximationsfehler kleiner, da die Lösung an mehr Stützsteklen berechnet wird, aber dafür steigt die Kondition mit der Anzahl an Diskretisierungspunkten. Es lässt sich so erklären, warum die Fehler mit zunehmenden $N$ zunächst stark fällt, die Kondition ist noch nicht sehr groß und somit spielt die Fortpflanzung des Rundungsfehlers noch nicht so eine große Rolle. Dennoch wird die Approximation exakter und der Fehler insgesamt fällt. Später spielt der RUndungsfehler aufgrund von größerer Kondition eine entscheidende Rolle und so fällt der Fehler trotz zunehmender Genauigkeit der Approximation nicht mehr so stark.
+Schaut man sich den Fehlergraphen an, so sollte man beachten, dass der Fehler sich aus dem Approximationsfehler und der Fortpflanzung des Rundungsfehlers ergibt. Bei der Fortpflanzung des Rundungsfehlers gibt die Kondition der Blockmatrix $A$ ein Maß an, wie stark sich der Fehler fortpflanzt. Bei großen Blockmatrizen ist dann der Approximationsfehler kleiner, da die Lösung an mehr Stützstellen berechnet wird, aber dafür steigt die Kondition mit der Anzahl an Diskretisierungspunkten. Es lässt sich so erklären, warum die Fehler mit zunehmenden $N$ zunächst stark fällt, die Kondition ist noch nicht sehr groß und somit spielt die Fortpflanzung des Rundungsfehlers noch nicht so eine große Rolle. Dennoch wird die Approximation exakter und der Fehler insgesamt fällt. Später spielt der Rundungsfehler aufgrund von größerer Kondition eine entscheidende Rolle und so fällt der Fehler trotz zunehmender Genauigkeit der Approximation nicht mehr so stark.
 
-Wir haben gesehen, dass die Kondition von $A$ in der ersten Dimension am größten ist und am stärksten steigt. Das erklärt, warum der Fehler in dere ersten DImension am höchsten ist und nur sehr langsam fällt. In der dritten dimension, steigt die Konditon nur langsam an, der Fehler fällt voarllem am Anfang sehr stark. Erst sehr spät fällt der Fehler nicht mehr so stark. Es fällt außerdem auf, dass wenn $n$  ein Teiler von $\kappa$ ist, der Fehler der Approximation sehr klein ist. Das liegt daran, dass die STützstellen dann genau auf den Nullstellen der Funktion liegen, und daher die approximierte Funktion an den Stützstellen nicht so stark abweicht.
+Wir haben gesehen, dass die Kondition von $A$ in der ersten Dimension am größten ist und am stärksten steigt. Das erklärt, warum der Fehler in der ersten Dimension am höchsten ist und nur sehr langsam fällt. In der dritten Dimension, steigt die Kondition nur langsam an, der Fehler fällt vor allem am Anfang sehr stark. Erst sehr spät fällt der Fehler nicht mehr so stark. Es fällt außerdem auf, dass wenn $n$  ein Teiler von $\kappa$ ist, der Fehler der Approximation sehr klein ist. Das liegt daran, dass die Stützstellen dann genau auf den Nullstellen der Funktion liegen, und daher die approximierte Funktion an den Stützstellen nicht so stark abweicht.
 
-Hilbert Matrizen sind besonders schlecht konditioniert. Besonders in der dritten Dimension erkennt man einen erheblichen Unterschied zwischen der Kondition der Blockmatrix und der hilbertmatrix der entsprechden Größe. 
+Hilbert Matrizen sind besonders schlecht konditioniert. Besonders in der dritten Dimension erkennt man einen erheblichen Unterschied zwischen der Kondition der Blockmatrix und der Hilbertmatrix der entsprechenden Größe. 
 
-In Abbildung \ref{graph()} und \ref{3d} erkennt man, dass mit größerem $n$, die approximierte Lösung schon viel näher an der exakten Lösung ist. Variiert man das $\kappa$, so fällt auf, dass eine AProximation mit $n<\kappa$ sehr schlecht sind, da sie die Struktur der Funktion noch gar nicht widerspiegeln. 
+In Abbildung \ref{graph()} und \ref{3d} erkennt man, dass mit größerem $n$, die approximierte Lösung schon viel näher an der exakten Lösung ist. Variiert man das $\kappa$, so fällt auf, dass eine Approximation mit $n<\kappa$ sehr schlecht sind, da sie die Struktur der Funktion noch gar nicht widerspiegeln. 
+
 
 \section{Zusammenfassung}
-
+\cite{PDE}, \cite{SkriptNumLA} \cite{PPI-LGS-LU} \citep{Wiki-PDE-Diskretisierung}
 
 
 \printbibliography
