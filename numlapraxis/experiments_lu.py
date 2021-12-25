@@ -8,6 +8,7 @@
         graph_errors()
         u()
         f()
+        graph_er()
         graph()
         graph3D()
         cond_hilmat()
