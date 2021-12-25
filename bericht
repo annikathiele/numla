@@ -398,6 +398,8 @@ Dann ist $u$ die exakte Lösung zum Poisson Problem mit $f$ wie oben definiert. 
 Wir betrachten für die Dimensionen $d\in\{1,2,3\}$ die diskrete Lösung der Poisson-Gleichung für verschiedene Anzahlen an Teilintervallen $n$. Vorallem die Funktion \texttt{get\_sparse()} benötigt mit zunehmendem $n$ sehr schnell sehr lange. So benötigt das Berechnen der Lösung für $d=3$ und $n=25$, also für $13824$ Diskretisierungspunkte bereits $43.904027223587036$ Sekunden. Für $d=1$ und $n=112$, also $12321$ Diskretisierungspunkte $31.030675172805786$ Sekunden. 
 Wir wollen uns nun mit dem Fehler der approximierten Lösung beschäftigen. In der folgenden Abbildung ist der Fehler für die verschiedenen Dimensionen in Abhängigkeit von der Anzahl von Diskretisierungspunkten für $\kappa =3$ abgebildet.
 
+
+
 \begin{minipage}{\textwidth}
 
  \centering
@@ -409,7 +411,16 @@ Wir wollen uns nun mit dem Fehler der approximierten Lösung beschäftigen. In d
 
  Es lässt sich erkennen, dass der Fehler in der ersten Dimension am größten ist und auch am wenigsten sinkt. In der zweiten dimension sinkt der Fehlergraph anfänglich sehr stark und dann genauso wie in der ersten Dimension. Letzlich sinkt der Fehler in der dritten Dimension am meisten. 
 
+Um genauer die Fortpflanzung des Rundungsfehlers zu untersuchen, addieren wir einen Rundungsfehler $10^{-m}r$ wobei $m$ eine natürliche Zahl ist unr $r$ eine zufällige Zahl zwischen $-\frac{1}{2}$ und $\frac{1}{2}$ ist. Für $\kappa =10$, $m=4$, $n=200$ ist noch kein bemerkenswerter Unterschied zu sehen, aber für $m=3$ sieht der Graph der approximierten Lösung folgendermaßen aus:
 
+
+\begin{minipage}{\textwidth}
+
+ \centering
+ \includegraphics[scale = 0.4]{kondition_Fehler}
+ 	\captionof{figure}{Fortpflanzung eines Rundungsfehlers}
+ 	\label{conderror}
+\end{minipage}
 
 \subsection{Kondition der Blockmatrizen}
 
@@ -417,7 +428,8 @@ Um zu verstehen, wie der Fehler zustande kommt, schauen wir uns nun die Konditio
 
 
 \begin{minipage}{\textwidth}
-\includegraphics[scale = 0.5]{Condition}
+\centering
+\includegraphics[scale = 0.4]{Condition}
     \captionof{figure}{Kondition der Block Matrizen}
     	\label{cond}
 \end{minipage}
@@ -471,23 +483,38 @@ Um die Kondition von den Blockmatrizen in Bezug zu setzen, vergleichen wir sie m
 Im Folgenden werden wir die exakte Lösung des Gleichungsystems zusammen mit der approxierten Lösung plotten. Zunächst betrachten wir den eindimensionalen Fall. 
 
 
+
+
 \begin{minipage}{\textwidth}
-\includegraphics[scale = 0.69]{graph().png}
-    \captionof{figure}{Vergleich exakte und approximierte Lösung für $d=1$}
+\centering
+\includegraphics[scale = 0.50]{graph().png}
+    \captionof{figure}{Vergleich exakte und approximierte Lösung für $d=1$, $\kappa =6$}
     	\label{graph()}
 \end{minipage}
 
 Die blaue gestrichelte Linie zeigt die exakte Lösung des Poisson-Problems. Die blaue durchgezogene Linie stellt die approximierte Lösung für $n=100$, also für $99$ innere Diskretisierungspunkte dar. Letztlich ist die rote Linie die approximierte Lösung für $9$ Punkte. Es ist zu erkennen, dass die blaue durchgezogene Linie schon viel näher an dem eigentlichen Ergebnis ist. Wir betrachten nun den zweidimensionalen Fall. 
 
+Für ein großes $\kappa =100$ sieht derselbe Graoh folgendermaßen aus.
+ 
+
+\begin{minipage}{\textwidth}
+\centering
+\includegraphics[scale = 0.50]{bigkappa}
+    \captionof{figure}{Vergleich exakte und approximierte Lösung für $d=1$, $\kappa =100$}
+    	\label{bigkappa}
+\end{minipage}
+
+Es ist zu erkennen, dass für größere $\kappa$ ein größeres $n$ notwendig ist, um eine halbwegs gute Approximation zu erhalten.
 
 
 \begin{minipage}{\textwidth}
 
-\includegraphics[scale = 1]{3D.png}
+\includegraphics[scale = 1]{3D}
 	\captionof{figure}{Vergleich exakte und approximierte Lösung für $d=2$}
 	\label{3d}
 \end{minipage}
 In dieser Abbildung zeigt die blaue Funktion den Graphen der Funkton $u(x,y)$, während die rote Funktion die approximierte Lösung an neun Diskretisierungspunkten und die grüne Funktion die approximierte Lösung an $100$ Diskretisierungspunkten darstellt. Auch hier ist zu erkennen, dass die grüne Funktion schon viel näher an der exakten Lösung ist als die rote.
+
 
 
 \subsection{Sparsität der LU Zerlegung}
@@ -495,7 +522,7 @@ In dieser Abbildung zeigt die blaue Funktion den Graphen der Funkton $u(x,y)$, w
 Wir haben schon in der Theorie bemerkt, dass die Blockmatrizen zwar sehr schnell sehr groß werden, aber nur einige Einträge ungleich Null sind. Es handelt sich also um dünnbesetzte Matrizen. Interessant ist nun, wie sie die Sparsität der $LU$ Zerlegung verhält. Dazu ist in der folgenden Abbildung \ref{spar} die Sparsität von der $LU$ Zerlegung der Blockmatrix in Abhängigkeit von $N$ für die Dimensionen $d\in\{1,2,3\}$ aufgetragen.
 
 \begin{minipage}{\textwidth}
-
+\centering
 
 \includegraphics[scale = 0.6]{sparsity}
 	\captionof{figure}{Sparsität der LU Zerlegung}
@@ -507,14 +534,15 @@ Auch hier ist zu erkennen, dass die Sparsität exponentiell wächst, allerdings 
 
 \section{Auswertung der Experimente}
 
-Schaut man sich den Fehlergraphen an, so sollte man beachten, dass der Fehler sich aus dem Approximationsfehler und der Fortpflanzung des Rundungsfehlers ergibt. Bei der Fortpflanzung des Rundungsfehlers gibt die Kondition der Blockmatrix $A$ ein Maß an, wie stark sich der Fehler fortpflanzt. Bei großen Blockmatrizen ist dann der Approximationsfehler kleiner, da die Lösung an mehr Stützstellen berechnet wird, aber dafür steigt die Kondition mit der Anzahl an Diskretisierungspunkten. Es lässt sich so erklären, warum die Fehler mit zunehmenden $N$ zunächst stark fällt, die Kondition ist noch nicht sehr groß und somit spielt die Fortpflanzung des Rundungsfehlers noch nicht so eine große Rolle. Dennoch wird die Approximation exakter und der Fehler insgesamt fällt. Später spielt der Rundungsfehler aufgrund von größerer Kondition eine entscheidende Rolle und so fällt der Fehler trotz zunehmender Genauigkeit der Approximation nicht mehr so stark.
+Schaut man sich den Fehlergraphen an, so sollte man beachten, dass der Fehler sich aus dem Approximationsfehler und der Fortpflanzung des Rundungsfehlers. Bei der Fortpflanzung des Rundungsfehlers gibt die Kondition der Blockmatrix $A$ ein Maß an, wie stark sich der Fehler fortpflanzt. Bei großen Blockmatrizen ist dann der Approximationsfehler kleiner, da die Lösung an mehr Stützsteklen berechnet wird, aber dafür steigt die Kondition mit der Anzahl an Diskretisierungspunkten. Es lässt sich so erklären, warum die Fehler mit zunehmenden $N$ zunächst stark fällt, die Kondition ist noch nicht sehr groß und somit spielt die Fortpflanzung des Rundungsfehlers noch nicht so eine große Rolle. Dennoch wird die Approximation exakter und der Fehler insgesamt fällt. Später spielt der Rundungsfehler aufgrund von größerer Kondition eine entscheidende Rolle und so fällt der Fehler trotz zunehmender Genauigkeit der Approximation nicht mehr so stark.
 
-Wir haben gesehen, dass die Kondition von $A$ in der ersten Dimension am größten ist und am stärksten steigt. Das erklärt, warum der Fehler in der ersten Dimension am höchsten ist und nur sehr langsam fällt. In der dritten Dimension, steigt die Kondition nur langsam an, der Fehler fällt vor allem am Anfang sehr stark. Erst sehr spät fällt der Fehler nicht mehr so stark. Es fällt außerdem auf, dass wenn $n$  ein Teiler von $\kappa$ ist, der Fehler der Approximation sehr klein ist. Das liegt daran, dass die Stützstellen dann genau auf den Nullstellen der Funktion liegen, und daher die approximierte Funktion an den Stützstellen nicht so stark abweicht.
+Den Effekt von der Fortpflanzung des Rundungsfehlers haben wir genauer in der ersten Dimension untersucht. In der Abbildung \ref{conderror} ist zu erkennen, dass ein Rundungsfehler der Größe $10^{-3}r$ in der rechten Seite $f$ einen erheblichen Fehler in der Lösung des Approximationsproblem macht. Die Kondition der Blockmatrix der Größe $199$ beträgt $19999.99999999993$. Der fortgepflanzte Fehler ist also von der Größenordnung $19999.99999999993\cdot 10^{-3}r$. 
 
-Hilbert Matrizen sind besonders schlecht konditioniert. Besonders in der dritten Dimension erkennt man einen erheblichen Unterschied zwischen der Kondition der Blockmatrix und der Hilbertmatrix der entsprechenden Größe. 
+Wir haben gesehen, dass die Kondition von $A$ in der ersten Dimension am größten ist und am stärksten steigt. Das erklärt, warum der Fehler in dere ersten Dimension am höchsten ist und nur sehr langsam fällt. In der dritten dimension, steigt die Konditon nur langsam an, der Fehler fällt voarllem am Anfang sehr stark. Erst sehr spät fällt der Fehler nicht mehr so stark. Es fällt außerdem auf, dass wenn $n$  ein Teiler von $\kappa$ ist, der Fehler der Approximation sehr klein ist. Das liegt daran, dass die STützstellen dann genau auf den Nullstellen der Funktion liegen, und daher die approximierte Funktion an den Stützstellen nicht so stark abweicht.
 
-In Abbildung \ref{graph()} und \ref{3d} erkennt man, dass mit größerem $n$, die approximierte Lösung schon viel näher an der exakten Lösung ist. Variiert man das $\kappa$, so fällt auf, dass eine Approximation mit $n<\kappa$ sehr schlecht sind, da sie die Struktur der Funktion noch gar nicht widerspiegeln. 
+Hilbert Matrizen sind besonders schlecht konditioniert. Besonders in der dritten Dimension erkennt man einen erheblichen Unterschied zwischen der Kondition der Blockmatrix und der hilbertmatrix der entsprechden Größe. 
 
+In Abbildung \ref{graph()} und \ref{3d} erkennt man, dass mit größerem $n$, die approximierte Lösung schon viel näher an der exakten Lösung ist. Variiert man das $\kappa$, so fällt auf, dass eine AProximation mit $n<\kappa$ sehr schlecht sind, da sie die Struktur der Funktion noch gar nicht widerspiegeln. 
 
 \section{Zusammenfassung}
 
@@ -522,7 +550,6 @@ Wir haben uns in diesem Bericht mit dem numerischen Lösen des Poisson Problems 
 
 Wir haben uns dann mit dem Fehler, der Sparsität und der Kondition der Blockmatrix mit zunehmender Anzahl an Diskretisierungspunkten $N$ angeschaut. Das haben wir jeweils für $d\in\{1,2,3\}$ getan. Wir haben einen Zusammenhang zwischen der Kondition der Blockmatrix und dem Fehler der Approximierten Lösung gefunden. Es ließ sich erklären, das der Fehler der Lösung sich aus dem Approximationsfehler und der Fortpflanzung des Rundungsfehlers zusammensetzt. Wie sehr sich der Fehler fortpfalnzt, lässt sich durch die Kondition beschreiben. Mit großem $N$ wird also zwar die Approximation genauer, allerdings die Kondition größer und somit auch die Fortplanzung des Rundungsfehlers. Wir haben uns außerdem die Sparsität der $LU$ Zerlegung angeschaut und diese mit der Sparsität der Blockmatrix verglichen. Es ist aufgefallen, dass die Anzahl an Nicht-Null EInträgen in der $LU$ Zerlegung weniger sind, diese also weniger dünnbesetzt sind als die Blockmatrizen.
 
-\cite{PDE}, \cite{SkriptNumLA} \cite{PPI-LGS-LU} \citep{Wiki-PDE-Diskretisierung}
 
 
 \printbibliography
