@@ -302,66 +302,16 @@ $$A^{(n-1)}=L_{n-1}L_{n-2}\cdots L_{1}P_{n-1}P_{n-2}\cdots P_{1}A^{(0)}.$$
 	
 \section{Implementierung}
 	
-Wir wollen später Gleichungssysteme mithilfe der LU-Zerlegung lösen und  dann \textit{Kondition}, die Anzahl der Nicht-Null-Einträge und den Fehler der Approximation im Vergleich zur exakten Lösung in unseren Experimenten genauer betrachten.
-Hierzu haben wir drei Programme implementiert:
-
-\subsection{\texttt{block\_matrix.py}}
-Für unsere Blockmatrizen interessiert uns deren LU-Zerlegung, außerdem möchten wir in unseren Experimenten die \textit{Kondition} und \textit{Sparsity} vergleichen können.
-Deshalb haben wir die Klasse \texttt{BlockMatrix} des Programms
-\texttt{block\_matrix.py} um die folgenden Funktionen erweitert:
-
-\subsubsection*{\texttt{get\_lu()}:}
-Diese Funktion zerlegt unsere Matrix in eine orthogonale Matrix zur \textit{Pivorisierung}, eine untere linke Dreiecksmatrix mit Einsen auf der Hauptdiagonalen und eine obere rechte Dreiecksmatrix.
-Wir verwenden dafür zunächst \texttt{get\_sparse()} um die Matrix zu erhalten, welche die entsprechende Dimension und Intervallzahl pro Dimension repräsentiert. Mit \texttt{todense()} ändern wir die Matrix in ein \textit{Numpy-Array}, sodass wir dann \texttt{scipy.linalg.lu()} verwenden können. Das liefert uns schon das Erwünschte.
-
-\subsubsection*{\texttt{eval\_sparsity\_lu()}:}
-\texttt{eval\_sparsity\_lu()} soll die absolute Anzahl an Nicht-Null-Einträgen der \textit{LU-Zerlegung} einer Matrix, sowie die relative Anzahl ausgeben. 
-Es muss also zuerst die \textit{LU-Zerlegung} bestimmt werden. Hierfür können wir \texttt{get\_lu()} verwenden. Die Nicht-Null-Einträge von $L$ und $U$ lassen sich durch \texttt{numpy.count\_nonzero()} ermitteln. Um die absolute Anzahl zu erhalten addieren wir die beiden Werte, ziehen aber noch $(n-1)^d$ ab, denn wir möchten die Einsen auf der Hauptdiagonalen nicht mitzählen.
-Der relative Wert berechnet sich dann, indem wir die absolute Anzahl durch die Zahl an Elementen der Koeffizientenmatrix ($=(n-1)^{2d}$) teilen.
-
-\subsubsection*{\texttt{get\_cond()}:}
-\texttt{get\_sparse()} bringt uns unsere Koeffizientenmatrix. Die \textit{Kondition} berechnet sich dann mit folgender Formel:
-$$
-cond(A)=||A^{-1}||_{\infty}||A||_{\infty}
-$$
-Die Bestimmung der Inversen und der Norm erfolgt mithilfe von 
-\texttt{scipy.sparse.linalg}-Funktionen.
-
-\subsubsection*{\texttt{main():}}
+\subsubsection*{Bedienungshilfe \texttt{block\_matrix.py}}
 Dies realisiert, dass der Nutzer zunächst $n,d$ eingeben kann mit $3 \leq n \leq 15 , 1 \leq d \leq 3$. (Wir definieren dazu \texttt{get\_dn()} mit der Exception \texttt{ValueError}). Das Programm nutzt dann, die in ihr implementierten Funktionen um die Kondition der entsprechenden Koeffizientenmatrix, deren LU-Zerlegung und die Sparsity der LU-Zerlegung auszugeben.
 Im Anschluss hat der Nutzer die Möglichkeit einen von zwei Graphen einzusehen. Auch hier gibt es eine Exception bei einem \texttt{ValueError}.
 Nach Eingabe von '0' wird ein Plot erstellt, der die Kondition in Abhängigkeit von $N$ zeigt. Betrachtet werden bis zu $595$ Diskretisierungspunkte und 1 bis 3 Dimensionen. 
 Wird jedoch '1' eingegeben, so wird ein Plot zu den selben $N$ dargestellt, jedoch wird dann die Anzahl an Nicht-Null-Einträgen für Dimension $d=1,2,3$ verglichen.
-
-\subsection{\texttt{linear\_solvers.py}}
-Mit diesem Programm kann man Gleichungen der Form $Ax=b$ lösen. Dies geschieht über eine \texttt{pivotisierte LU-Zerlegung}.
-
-\subsubsection*{\texttt{solve\_lu()}:}
-Diese Funktion benötigt als Input $p , l , u$ und $b$ und gibt uns die Lösung $x$ des Gleichungssystems wieder.
-Wir können die Dreiecksform unserer Matrizen ausnutzen und $x$ durch \textit{Vorwärts- und Rückwertseinsetzen} bestimmen. Das Ganze wird dann durch \texttt{scipy.linalg.solve\_triangular()} umgesetzt.
-Wir bestimmen zunächst $y$ aus
-$$
-Ly = P^{-1}b
-$$
-Da $P^{-1}$ eine orthogonale Matrix ist, können wir \texttt{numpy.transpose(p)} nutzen.
-Im zweiten Schritt liefert uns
-$$
-Ux=y
-$$
-unsere Lösung $x$.
-
-\subsubsection*{\texttt{main()}:}
+\subsubsection*{Bedienungshilfe \texttt{linear\_solvers.py}}
 Das Programm stellt die Funktionalität von \texttt{solve\_lu()} vor.
 Um die LU-Zerlegung für eine Koeffizienenmatrix $A$ zu erhalten wird durch \texttt{block\_matrix.get\_dn()} vom Nutzer $d,n$ ausgewählt und in \texttt{block\_matrix.get\_lu()} eingesetzt. Um für $b$ ein Array in der passenden Form zu erhalten nehmen wir $[1,2,\cdots,(n-1)^d]$.
 Das Programm gibt dann die Lösung $x$ zur Gleichung $Ax=b$ aus.
-
-\subsection{\texttt{poisson\_problem.py}}
-Wir wollen den Fehler der Approximation im Vergleich zur exakten Lösung vergleichen können. Dieses Programm erweitern wir deshalb um folgende Funktion:
-
-\subsubsection*{\texttt{compute\_error()}:}
-Hier wird der maximale absolute Fehler der Approximation an den Diskretisierungspunkten berechnet, bezüglich der \textit{Infinity-Norm}. Dazu nimmt die Funktion als Input die Dimension, die Anzahl an Intervallen pro Dimension, die exakte Lösung des \textit{Poisson-Problems} an den Diskretisierungspunkten und die Funktion welche das \textit{Poisson-Problem} löst.
-Dafür gehen wir sukzessive die Diskretisierungspunkte durch, bestimmen dessen Koordinaten mithilfe von \texttt{inv\_idx} und erhalten mit $u(x)$ die exakte Lösung. 
-Die \texttt{Infinity-Norm} der Differenz zur Approximierten Lösung gibt uns dann unseren Wert für den Fehler.
+	
 
 \subsection{Bedienungshilfe \texttt{experiments\_lu.py}}
 In \texttt{experiments\_lu.py} ist eine \texttt{main()} Funktion implementiert. Sie dient zur Ausf\"uhrung der 
@@ -549,6 +499,61 @@ In Abbildung \ref{graph()} und \ref{3d} erkennt man, dass mit größerem $n$, di
 Wir haben uns in diesem Bericht mit dem numerischen Lösen des Poisson Problems befasst. Dazu haben wir uns zunächstz überlegt, das Gebiet, auf dem das Problem gegeben ist, in unserem Fall $\Omega =(0,1)^d$ mit einem Gitter zu diskretisieren. Die Feinheit dieser Diskretisierung ist gegeben durch $n$, der Anzahl an Teilintervalle, in das wir $(0,1)$ zerlegen, um ein Gitter zu erhalten. Das Problem wird dann an $N=(n-1)^d$ Punkten diskretisiert. Somit erhalten wir nach Festlegung einer Ordnung auf den Diskretisierungspunkten durch Anwendung der Finiten Differnzen zur Diskretisierung des Laplace Operators, eine Blockmatrix $A$ der Größe $N\times N$. Setzen wir die Punkte in gegebener Reihenfolge in die Funktion $f$ ein, so erhalten wir einen Vektor $b$, sodass das Lineare Gleichungssystem $Ax=b$, welches das Poisson Problem löst. Um das lineare Gleichungssystem numerisch zu lösen, haben wir gesehen, dass man jede reguläre Matrix als Produkt $PLU$ schreiben kann, wobei $P$ eine Permutationsmatrix ist, $L$ eine linke untere Dreiecksmatrix und $U$ eine rechte obere Dreiecksmatrix ist. Durch diese $LU$ Zerlegung können wir dann durch Rückwärts und Vorwärtseinsetzen das Gleichungssytem vergleichsweise einfach lösen. 
 
 Wir haben uns dann mit dem Fehler, der Sparsität und der Kondition der Blockmatrix mit zunehmender Anzahl an Diskretisierungspunkten $N$ angeschaut. Das haben wir jeweils für $d\in\{1,2,3\}$ getan. Wir haben einen Zusammenhang zwischen der Kondition der Blockmatrix und dem Fehler der Approximierten Lösung gefunden. Es ließ sich erklären, das der Fehler der Lösung sich aus dem Approximationsfehler und der Fortpflanzung des Rundungsfehlers zusammensetzt. Wie sehr sich der Fehler fortpfalnzt, lässt sich durch die Kondition beschreiben. Mit großem $N$ wird also zwar die Approximation genauer, allerdings die Kondition größer und somit auch die Fortplanzung des Rundungsfehlers. Wir haben uns außerdem die Sparsität der $LU$ Zerlegung angeschaut und diese mit der Sparsität der Blockmatrix verglichen. Es ist aufgefallen, dass die Anzahl an Nicht-Null EInträgen in der $LU$ Zerlegung weniger sind, diese also weniger dünnbesetzt sind als die Blockmatrizen.
+
+\newpage
+\section{Anhang}
+\subsection*{Beschreibung der Implementierung}
+Wir wollen später Gleichungssysteme mithilfe der LU-Zerlegung lösen und  dann \textit{Kondition}, die Anzahl der Nicht-Null-Einträge und den Fehler der Approximation im Vergleich zur exakten Lösung in unseren Experimenten genauer betrachten.
+Hierzu haben wir drei Programme implementiert:
+
+\subsection{\texttt{block\_matrix.py}}
+Für unsere Blockmatrizen interessiert uns deren LU-Zerlegung, außerdem möchten wir in unseren Experimenten die \textit{Kondition} und \textit{Sparsity} vergleichen können.
+Deshalb haben wir die Klasse \texttt{BlockMatrix} des Programms
+\texttt{block\_matrix.py} um die folgenden Funktionen erweitert:
+
+\subsubsection*{\texttt{get\_lu()}:}
+Diese Funktion zerlegt unsere Matrix in eine orthogonale Matrix zur \textit{Pivorisierung}, eine untere linke Dreiecksmatrix mit Einsen auf der Hauptdiagonalen und eine obere rechte Dreiecksmatrix.
+Wir verwenden dafür zunächst \texttt{get\_sparse()} um die Matrix zu erhalten, welche die entsprechende Dimension und Intervallzahl pro Dimension repräsentiert. Mit \texttt{todense()} ändern wir die Matrix in ein \textit{Numpy-Array}, sodass wir dann \texttt{scipy.linalg.lu()} verwenden können. Das liefert uns schon das Erwünschte.
+
+\subsubsection*{\texttt{eval\_sparsity\_lu()}:}
+\texttt{eval\_sparsity\_lu()} soll die absolute Anzahl an Nicht-Null-Einträgen der \textit{LU-Zerlegung} einer Matrix, sowie die relative Anzahl ausgeben. 
+Es muss also zuerst die \textit{LU-Zerlegung} bestimmt werden. Hierfür können wir \texttt{get\_lu()} verwenden. Die Nicht-Null-Einträge von $L$ und $U$ lassen sich durch \texttt{numpy.count\_nonzero()} ermitteln. Um die absolute Anzahl zu erhalten addieren wir die beiden Werte, ziehen aber noch $(n-1)^d$ ab, denn wir möchten die Einsen auf der Hauptdiagonalen nicht mitzählen.
+Der relative Wert berechnet sich dann, indem wir die absolute Anzahl durch die Zahl an Elementen der Koeffizientenmatrix ($=(n-1)^{2d}$) teilen.
+
+\subsubsection*{\texttt{get\_cond()}:}
+\texttt{get\_sparse()} bringt uns unsere Koeffizientenmatrix. Die \textit{Kondition} berechnet sich dann mit folgender Formel:
+$$
+cond(A)=||A^{-1}||_{\infty}||A||_{\infty}
+$$
+Die Bestimmung der Inversen und der Norm erfolgt mithilfe von 
+\texttt{scipy.sparse.linalg}-Funktionen.
+
+
+
+\subsection{\texttt{linear\_solvers.py}}
+Mit diesem Programm kann man Gleichungen der Form $Ax=b$ lösen. Dies geschieht über eine \texttt{pivotisierte LU-Zerlegung}.
+
+\subsubsection*{\texttt{solve\_lu()}:}
+Diese Funktion benötigt als Input $p , l , u$ und $b$ und gibt uns die Lösung $x$ des Gleichungssystems wieder.
+Wir können die Dreiecksform unserer Matrizen ausnutzen und $x$ durch \textit{Vorwärts- und Rückwertseinsetzen} bestimmen. Das Ganze wird dann durch \texttt{scipy.linalg.solve\_triangular()} umgesetzt.
+Wir bestimmen zunächst $y$ aus
+$$
+Ly = P^{-1}b
+$$
+Da $P^{-1}$ eine orthogonale Matrix ist, können wir \texttt{numpy.transpose(p)} nutzen.
+Im zweiten Schritt liefert uns
+$$
+Ux=y
+$$
+unsere Lösung $x$.
+
+\subsection{\texttt{poisson\_problem.py}}
+Wir wollen den Fehler der Approximation im Vergleich zur exakten Lösung vergleichen können. Dieses Programm erweitern wir deshalb um folgende Funktion:
+
+\subsubsection*{\texttt{compute\_error()}:}
+Hier wird der maximale absolute Fehler der Approximation an den Diskretisierungspunkten berechnet, bezüglich der \textit{Infinity-Norm}. Dazu nimmt die Funktion als Input die Dimension, die Anzahl an Intervallen pro Dimension, die exakte Lösung des \textit{Poisson-Problems} an den Diskretisierungspunkten und die Funktion welche das \textit{Poisson-Problem} löst.
+Dafür gehen wir sukzessive die Diskretisierungspunkte durch, bestimmen dessen Koordinaten mithilfe von \texttt{inv\_idx} und erhalten mit $u(x)$ die exakte Lösung. 
+Die \texttt{Infinity-Norm} der Differenz zur Approximierten Lösung gibt uns dann unseren Wert für den Fehler.
 
 
 
