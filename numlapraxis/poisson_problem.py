@@ -10,6 +10,7 @@
         idx()
         inv_idx()
         rhs()
+        rhs_er()
         compute_error()
 
 """
