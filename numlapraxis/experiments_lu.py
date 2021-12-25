@@ -213,37 +213,80 @@ def graph_errors(f,u,n):
     plt.legend()
     plt.show()
 
+def graph_er():
+    """
+    Diese Funktion erstellt einen Graphen, welcher zum einen die Funktion u auf dem Intervall
+    (0,1) und zum anderen die Approximierte Lösung für Ax=f+10^(-3)r.
+    Returns
+    -------
+    None
+
+    """
+
+    zero=np.array([0])
+    y_list =[]
+    for i in np.linspace(0,1,300):
+        y_list.append(u([i]))
+    A=bl.BlockMatrix(1,200)
+    p,l,uu=A.get_lu()
+    b = pp.rhs_er(1,200,f)
+    hat_u= ls.solve_lu(p,l,uu,b)
+    hat_u=np.append(zero,hat_u)
+    hat_u=np.append(hat_u,zero)
+    x_list_u = np.linspace(0, 1, num=201)
+    plt.plot(np.linspace(0,1,300), y_list, 'b--',label= 'Exakte Lösung' )
+    plt.plot(x_list_u, hat_u, 'b-',label= 'Approximierte Lösung für n=200' )
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.legend()
+    plt.show()
+
+
+
 def graph():
     """
     Diese Funktion erstellt einen Graphen, der die exakte und approximierte
-    Lösung des Poissionproblems für n=4 und n=10 ind der Dimension d=1 darstellt.
+    Lösung des Poissionproblems für n=100 und n=10 ind der Dimension d=1 darstellt.
     Returns
     -------
     None
     """
+
+    zero=np.array([0])
     y_list =[]
-    for i in np.linspace(0,1,100):
+    for i in np.linspace(0,1,300):
         y_list.append(u([i]))
     A=bl.BlockMatrix(1,10)
     p,l,uu=A.get_lu()
     b = pp.rhs(1,10,f)
     hat_u= ls.solve_lu(p,l,uu,b)
-    x_list_u = np.linspace(0, 1, num=9)
+    hat_u=np.append(zero,hat_u)
+    hat_u=np.append(hat_u,zero)
+    x_list_u = np.linspace(0, 1, num=11)
 
 
-    B=bl.BlockMatrix(1,4)
+
+
+    B=bl.BlockMatrix(1,100)
     pq,ll,uuu=B.get_lu()
-    bb = pp.rhs(1,4,f)
+    bb = pp.rhs(1,100,f)
     hat_uu= ls.solve_lu(pq,ll,uuu,bb)
-    x_listt_u = np.linspace(0, 1, num=3)
+    hat_uu=np.append(zero,hat_uu)
+    hat_uu=np.append(hat_uu,zero)
+    x_listt_u = np.linspace(0, 1, num=101)
 
-    plt.plot(np.linspace(0,1,100), y_list, 'b--',label= 'Exakte Lösung' )
-    plt.plot(x_list_u, hat_u, 'b-',label= 'Approximierte Lösung für n=10' )
-    plt.plot(x_listt_u, hat_uu, 'r-',label= 'Approximierte Lösung für n=4' )
+
+
+
+    plt.plot(np.linspace(0,1,300), y_list, 'b--',label= 'Exakte Lösung' )
+    plt.plot(x_list_u, hat_u, 'r-',label= 'Approximierte Lösung für n=10' )
+    plt.plot(x_listt_u, hat_uu, 'b-',label= 'Approximierte Lösung für n=100' )
     plt.xlabel("x")
     plt.ylabel("y")
     plt.legend()
     plt.show()
+
+
 
 def graph3D():
     """
