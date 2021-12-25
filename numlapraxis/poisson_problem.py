@@ -121,6 +121,31 @@ def rhs(d, n, f):
         array.append(((1/n)**2)*f(punkt))
     return np.array(array)
 
+def rhs_er(d, n, f):
+    """Sample f with error at discretisation points and flatten
+    Parameters:
+        d : int
+            dimension
+        n : int
+            frequency of discretisation
+        f : callable[[numpy.ndarray], float]
+            function f: (0, 1)^d -> RR
+    Returns:
+        b : numpy.ndarray
+            sample of f
+    Raises:
+        ValueError
+            d < 1 or n < 2
+    """
+    if d < 1 or n < 2 :
+        raise ValueError
+    array=[]
+    for counter in range(1,(n-1)**d+1):
+        punkt = np.array(inv_idx(counter,d,n))/n
+        array.append(((1/n)**2)*f(punkt))
+    return np.array(array)+10**(-3)*(random.random()-1/2)
+
+
 
 def compute_error(d, n, hat_u, u):
     """ Computes the error of the numerical solution of the Poisson problem
