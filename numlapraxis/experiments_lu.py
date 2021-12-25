@@ -297,7 +297,7 @@ def graph3D():
     -------
     None
     """
-    fig = plt.figure()
+    #fig = plt.figure()
     ax = plt.axes(projection='3d')
 
     x_list = np.linspace(0,1,100)
@@ -306,39 +306,53 @@ def graph3D():
     X_list, Y_list = np.meshgrid(x_list,y_list)
     z_list = u([X_list,Y_list])
 
-    A=bl.BlockMatrix(2,11)
+    A=bl.BlockMatrix(2,9)
     p,l,uu=A.get_lu()
-    b = pp.rhs(2,11,f)
+    b = pp.rhs(2,9,f)
     hat_u= ls.solve_lu(p,l,uu,b)
-    hat_u_2D=[]
-    for i in range(10):
+    hat_u_array=[]
+    zer_array = []
+    for zer in range(10):
+        zer_array.append(0)
+    hat_u_array.append(zer_array)
+    for i in range(8):
         array=[]
-        for j in range(10):
-            array.append(hat_u[10*i+j])
-        hat_u_2D.append(array)
-    hat_u_array= np.array(hat_u_2D)
+        array.append(0)
+        for j in range(8):
+            array.append(hat_u[8*i+j])
+        array.append(0)
+        hat_u_array.append(array)
+    hat_u_array.append(zer_array)
+    hat_u_array= np.array(hat_u_array)
     x_list_u = np.linspace(0, 1, num=10)
     y_list_u = np.linspace(0, 1, num=10)
     X_list_u,Y_list_u = np.meshgrid(x_list_u,y_list_u)
 
-    B=bl.BlockMatrix(2,4)
-    pq,ll,uuu=B.get_lu()
-    bb = pp.rhs(2,4,f)
-    hat_uu= ls.solve_lu(pq,ll,uuu,bb)
-    hat_uu_2D=[]
+    A=bl.BlockMatrix(2,4)
+    p,l,uu=A.get_lu()
+    b = pp.rhs(2,4,f)
+    hat_u= ls.solve_lu(p,l,uu,b)
+    hat_uu_array=[]
+    zer_array = []
+    for zer in range(5):
+        zer_array.append(0)
+    hat_uu_array.append(zer_array)
     for i in range(3):
         array=[]
+        array.append(0)
         for j in range(3):
-            array.append(hat_uu[3*i+j])
-        hat_uu_2D.append(array)
-    hat_uu_array= np.array(hat_uu_2D)
-    x_listt_u = np.linspace(0, 1, num=3)
-    y_listt_u = np.linspace(0, 1, num=3)
+            array.append(hat_u[3*i+j])
+        array.append(0)
+        hat_uu_array.append(array)
+    hat_uu_array.append(zer_array)
+    hat_uu_array= np.array(hat_uu_array)
+    x_listt_u = np.linspace(0, 1, num=5)
+    y_listt_u = np.linspace(0, 1, num=5)
     X_listt_u,Y_listt_u = np.meshgrid(x_listt_u,y_listt_u)
 
     ax.plot_wireframe(X_list, Y_list, z_list ,label= 'Exakte Lösung' )
     ax.plot_wireframe(X_list_u, Y_list_u, hat_u_array, color='green' ,\
-label= 'Approximierte Lösung für n=11' )
+label= 'Approximierte Lösung für n=10' )
     ax.plot_wireframe(X_listt_u, Y_listt_u, hat_uu_array, color='red',\
 label= 'Approximierte Lösung für n=4' )
     ax.set_xlabel('x')
@@ -372,11 +386,12 @@ def vgl_cond():
     None
     """
 
-    for counter in range(1,7):
-        A= BlockMatrix(counter,5)
-        print("d =", counter)
-        print("Kondition A^d =", A.get_cond(), "Kondition Hilbert\
- =" , cond_hilmat(counter))
+    for counter in range(1,4):
+        for counter_2 in range (2,14):
+            A= bl.BlockMatrix(counter,counter_2)
+            print("d =", counter, "n=", counter_2)
+            print("Kondition A^d =", A.get_cond(), "Kondition Hilbert\
+    =" , cond_hilmat(counter))
 
 def vgl_spar():
     """
@@ -391,7 +406,7 @@ def vgl_spar():
     """
     print("Dimension, n , Sparsity A^d , Sparsity LU")
     for d in range(1,4):
-        for n in range(2,15):
+        for n in range(2,14):
             A= BlockMatrix(d,n)
             print(d,n, A.eval_sparsity()[0] , A.eval_sparsity_lu()[0])
 
