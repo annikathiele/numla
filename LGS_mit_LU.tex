@@ -97,26 +97,26 @@ Das Poisson Problem findet in vielen Anwendungsbereichen wie zum Beispiel der El
 
 	\subsection{Theoretischer Hintergrund}
 		\subsubsection{Poisson Problem}
-		Wir definieren den Laplace Operator.
+		Wir definieren den Laplace Operator wie in \citep{PDE}.
 		\begin{definition}[Laplace Operator]
 		Der Laplace Operator einer Funktion $u\in C^2(\mathbb{R}^d,\mathbb{R})$ ist definiert durch
 		$$\Delta u=\sum_{i=1}^d\frac{\partial ^2 u}{\partial x_i^2}$$
 
 		\end{definition}
-		Wir definieren weiter das partielle Differentialgleichungssystem, welches im Poisson-Problem gelöst werden soll. Wir betrachten das Problem auf einem  Gebiet  $\Omega$ und Rand $\partial \Omega$. seien $f\in C(\Omega , \mathbb{R})$ und $g\in C(\partial \Omega , \mathbb{R})$ Funktionen. Dann suchen wir eine Funktion $u$, sodass
+		Wir definieren weiter das partielle Differentialgleichungssystem wie in \citep{PDE}, welches im Poisson-Problem gelöst werden soll. Wir betrachten das Problem auf einem  Gebiet  $\Omega$ und Rand $\partial \Omega$. seien $f\in C(\Omega , \mathbb{R})$ und $g\in C(\partial \Omega , \mathbb{R})$ Funktionen. Dann suchen wir eine Funktion $u$, sodass
 		\begin{align*}
 		\Delta u&=f \text{ in }\Omega\\
 		u&= g \text{ auf }\partial\Omega
 		\end{align*}
 		WIr betrachten in diesem Bericht einen Spezialfall des Problems, wo $\Omega =(0,1)^d$, $d\in \{1,2,3\}$ und $g\equiv 0$
 
-		Wir wollen das Problem numerisch mit \textit{Finiten-Differenzen} approximieren.
+		Wir wollen das Problem numerisch mit \textit{Finiten-Differenzen} approximieren. Nach \citep{finite}
 		\begin{definition}[Finite-Differenzen-Methode]
 		Finite-Differenzen-Methoden sind eine Klasse numerischer Verfahren zur Lösung gewöhnlicher und partieller Differenzialgleichunen.		
 		Die grundlegende Idee bei der \textit{Finite-Differenzen-Methode} ist es die Ortsableitung in der Differenzialgleichung an einer endlichen Zahl Gitterpunkten durch Differenzenquotienten zu approximieren. Unsere angenäherten Lösungen der Differenzialgleichung an den Gitterpunkten führen dann auf ein entsprechendes Gleichungssystem, welches sich numerisch berechnen lässt.
 		\end{definition}
 		In unserem Fall diskretisieren wir dazu das Gebiet $\Omega$ und den Laplace Operator durch \textit{Finite Differenzen} um ein lineares Gleichungssystem zu erhalten.
-		 Wir diskretisieren das Gebiet indem wir das Intervall $(0,1)$ in $n$ äquidistante Teilintervalle zerlegen. Die so entstehenden Gitterpunkte im $(0,1)^d$ werden unsere Diskretisierungspunkte. Mit den Finiten Differenzen zweiter Ordnung können wir den Laplace Operator diskretiseren, denn wir wissen, dass 
+		 Im Folgenden wird die Theorie hinter unserem Verfahren zum numerischen lösen des Problems nach \citep{PDE}, \citep{Wiki}. Wir diskretisieren das Gebiet indem wir das Intervall $(0,1)$ in $n$ äquidistante Teilintervalle zerlegen. Die so entstehenden Gitterpunkte im $(0,1)^d$ werden unsere Diskretisierungspunkte. Mit den Finiten Differenzen zweiter Ordnung können wir den Laplace Operator diskretiseren, denn wir wissen aus \citep{Wiki}, dass 
 		$$\frac{\delta^2u}{\delta x_l^2} \approx D_h^{(2)} u_{x,l}(x) =\frac{u(x_1,...,x_l+h,...,x_d) - 2u(x_1,...,x_l,...,x_d) + u(x_1,...,x_l-h,...,x_d)}{h^2}$$
 		gilt. 
 		Um ein lineares Gleichungssystem zu erhalten, definieren wir eine Ordnung auf den Diskretisierungspunkten.
@@ -131,7 +131,7 @@ Das Poisson Problem findet in vielen Anwendungsbereichen wie zum Beispiel der El
 		Wir setzen $A^{(d)}:=A^{(d)}_d$ Die rechte Seite $b$ erhalten wir durch das Einsetzen der Diskretisierungspunkte in die gegebene Funktion $f$. 
 
 		\subsubsection{Kondition und Sparsität einer Matrix}
-		Wir betrachten ein mathematisches Problem $P(x)=y$. Dann interessiert uns, wie sich eine Störung oder ein relativer Fehler im Input $\frac{||\Delta x||}{||x||}$ sich im Output fortpflanzt. Dies motiviert die Definition der relativen Kondition.
+		Wir betrachten ein mathematisches Problem $P(x)=y$. Dann interessiert uns, wie sich eine Störung oder ein relativer Fehler im Input $\frac{||\Delta x||}{||x||}$ sich im Output fortpflanzt. Dies motiviert die Definition der relativen Kondition wie in \citep{Skript}.
 				\begin{definition}[(relative) Kondition]
 		Die (relative) Kondition eines Problems $P$ ist der kleinste Faktor $K$ mit der Eigenschaft, dass für alle Inputdaten $x$ und für alle Outputdaten $y$ gilt 
 		$$\frac{||\Delta y||}{||y||}\leq K\frac{||\Delta x||}{||x||}$$
@@ -141,7 +141,7 @@ Das Poisson Problem findet in vielen Anwendungsbereichen wie zum Beispiel der El
 		\end{definition}
 		Die Kondition dieser Matrix enstspricht der relativen Kondition des Problems $Ax=b$, gibt also ein Maß an, wie sich der Fehler beim Lösen eines Linearen Gleichungssystems verhält. 
 
-		Wir betrachten die Matrizen $A^{(d)} \in \text{Mat}(\mathbb{R}^{(n-1)^d},\mathbb{R}^{(n-1)^d})$. Die Anzahl der Einträge wird also mit wachsender Feinheit, also wachsendem $n$ sehr schnell groß. Allerdings sind nur einige Einträge ungleich Null. Wir sprechen von \textit{sparse}, also dünnbesetzte Matrizen. Betrachtet man den Speicherbedarf einer solchen Matrix kann es also sinnvoll sein, statt die Matrix intuitiv als Array von Arrays abzuspeichern, die nicht-null Einträge und deren Position zu speichern. 
+		Wir betrachten die Matrizen $A^{(d)} \in \text{Mat}(\mathbb{R}^{(n-1)^d},\mathbb{R}^{(n-1)^d})$. Die Anzahl der Einträge wird also mit wachsender Feinheit, also wachsendem $n$ sehr schnell groß. Allerdings sind nur einige Einträge ungleich Null. Wir sprechen wie in \citep{PDE} von \textit{sparse}, also dünnbesetzte Matrizen. Betrachtet man den Speicherbedarf einer solchen Matrix kann es also sinnvoll sein, statt die Matrix intuitiv als Array von Arrays abzuspeichern, die nicht-null Einträge und deren Position zu speichern. 
 
 Wir werden in unseren Experimenten die Kondition von Hilbertmatrizen betrachten. Dazu definieren wir an dieser Stelle:
 		\begin{definition}[Hilbertmatrix]
@@ -156,7 +156,7 @@ Wir werden in unseren Experimenten die Kondition von Hilbertmatrizen betrachten.
 		\end{definition}
 		
 		\subsubsection{Lösen eines Gleichungssystems mit der LU Zerlegung}
-	In der Linearen Algebra haben wir bereits zum Lösen von Gleichunssystemen den Gaußschen Algorithmus kennengelernt. Beim Durchführen des Gaußschen Algorithmus an eine Matrix $A$ wird diese Matrix in eine  oberen rechten Dreiecksmatrix mit Einsen auf der Hauptdiagonalen und einer unteren linken Dreicksmatrix zerlegt. Eine solche Zerlegung nennt man auch \textit{LU-Zerlegung}.
+	In der Linearen Algebra haben wir bereits zum Lösen von Gleichunssystemen den Gaußschen Algorithmus kennengelernt. Beim Durchführen des Gaußschen Algorithmus an eine Matrix $A$ wird diese Matrix in eine  oberen rechten Dreiecksmatrix mit Einsen auf der Hauptdiagonalen und einer unteren linken Dreicksmatrix zerlegt. Eine solche Zerlegung nennt man auch \textit{LU-Zerlegung}. Die Theorie hinter der $LU$ ZERlegung ist in Anlehnung an \citep{Skript}.
 	\begin{definition}[LU-Zerlegung]
 	Eine Zerlegung einer Matrix $A$ der Form $A=L\cdot U$ mit einer unteren linken Dreiecksmatrix mit Einsen auf der Hauptdiagonalen $L$ und eine oberen rechten Dreiecksmatrix $U$:
 	\begin{align*}
