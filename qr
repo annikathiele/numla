@@ -1,5 +1,26 @@
 from scipy.linalg import solve_triangular
+import scipy.linalg as lg
 import numpy as np
+def get_qr(A):
+    q, r = lg.qr(A)
+    return q, r
+
+def get_rank(A):
+    r = get_qr(A)[1]
+    print(r)
+    rank=r.shape[0]
+    for i in range(r.shape[0]):
+        print(abs(r[i][i]))
+        if abs(r[i][i])<0.000001:
+            rank-=1
+    return rank
+
+def get_cond(A):
+    At_A = np.matmul(A.transpose(),A)
+    cond_A= lg.norm(A)*lg.norm(lg.inv(A))
+    cond_At_A = lg.norm(At_A)*lg.norm(lg.inv(At_A))
+    return cond_A, cond_At_A
+    
 def solve_qr(A,rhs):
     if get_rank(A)==False:
         return 
@@ -12,8 +33,7 @@ def solve_qr(A,rhs):
     for counter in range(n+1):
         rhs_u.append(rhs[counter])
     for counter in range(n+1, m+1):
-        rhs_l.append(rhs[cpunter])
-    
+        rhs_l.append(rhs[cpunter])  
     
     solve_triangular(A_u, rhs_u)  
     
@@ -28,5 +48,10 @@ def get_resid(A, rhs):
     for counter in range(n+1, m+1):
         rhs_l.append(rhs[cpunter])
     np.linalg.norm(rhs_l, 2)
-    
-    
+
+def get_cond(A):
+    At_A = np.matmul(A.transpose(),A)
+    cond_A= lg.norm(A)*lg.norm(lg.inv(A))
+    cond_At_A = lg.norm(At_A)*lg.norm(lg.inv(At_A))
+    return cond_A, cond_At_A
+        
