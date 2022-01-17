@@ -54,6 +54,22 @@ def get_cond(A):
     cond_A= lg.norm(A)*lg.norm(lg.inv(A))
     cond_At_A = lg.norm(At_A)*lg.norm(lg.inv(At_A))
     return cond_A, cond_At_A
+   
+def text_input(filename):
+    return open(filename).read().split()
+
+def input(filename, n):
+    data = np.array(text_input(filename))
+    x = data[0: :2]
+    y = data[1: :2]
+    x_n=[]
+    y_n=[]
+    for i in n:
+        x_n.append(x[i])
+        y_n.append(y[i])
+    x_n = np.array(x_n)
+    y_n = np.array(y_n)
+    return x_n,y_n
         
 def build_matrix(X, d):
     matrix =[]
