@@ -55,3 +55,11 @@ def get_cond(A):
     cond_At_A = lg.norm(At_A)*lg.norm(lg.inv(At_A))
     return cond_A, cond_At_A
         
+def build_matrix(X, d):
+    matrix =[]
+    for x in X:
+        array = [np.e**(d*x), np.e**(-d*x), 1]
+        matrix.append(array)
+    return matrix
+
+
