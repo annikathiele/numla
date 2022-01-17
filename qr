@@ -63,12 +63,12 @@ def input(filename, n=None):
     x = data[0: :2]
     y = data[1: :2]
     if n is None:
-        return x,y
+        n = range(x.size)
     x_n=[]
     y_n=[]
     for i in n:
-        x_n.append(x[i])
-        y_n.append(y[i])
+        x_n.append(float(x[i][:-1]))
+        y_n.append(float(y[i]))
     x_n = np.array(x_n)
     y_n = np.array(y_n)
     return x_n,y_n
