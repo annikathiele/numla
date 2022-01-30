@@ -1,0 +1,211 @@
+\documentclass[smallheadings]{scrartcl}
+
+%%% GENERAL PACKAGES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% inputenc allows the usage of non-ascii characters in the LaTeX source code
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+
+
+% title of the document
+\title{LGS mit LU Zerlegung}
+% optional subtitle
+%\subtitle{Draft from~\today}
+% information about the author
+\author{%
+ Aron Ventura und Annika Thiele\\ Humboldt-Universit\"at zu Berlin
+}
+\date{\today}
+
+
+%%% LANGUAGE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% babel provides hyphenation patterns and translations of keywords like 'table
+% of contents'
+\usepackage[ngerman]{babel}
+
+\usepackage{amsthm}
+\newtheorem{theorem}{Satz}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+
+%%% HYPERLINKS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% automatic generation of hyperlinks for references and URIs
+\usepackage{hyperref}
+
+%%% MATH %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% amsmath provides commands for type-setting mathematical formulas
+\usepackage{amsmath}
+% amssymb provides additional symbols
+\usepackage{amssymb}
+% HINT
+% Use http://detexify.kirelabs.org/classify.html to find unknown symbols!
+
+%%% COLORS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% define own colors and use colored text
+\usepackage[pdftex,svgnames,hyperref]{xcolor}
+
+%%% nice tables
+\usepackage{booktabs}
+
+%%% Code Listings %%%%%%%%%%%%%%%%
+% provides commands for including code (python, latex, ...)
+\usepackage{listings}
+\definecolor{keywords}{RGB}{255,0,90}
+\definecolor{comments}{RGB}{0,0,113}
+\definecolor{red}{RGB}{160,0,0}
+\definecolor{green}{RGB}{0,150,0}
+\lstset{language=Python, 
+        basicstyle=\ttfamily\small, 
+        keywordstyle=\color{keywords},
+        commentstyle=\color{comments},
+        stringstyle=\color{red},
+        showstringspaces=false,
+        identifierstyle=\color{green},
+        }
+
+\usepackage{graphicx}
+\usepackage{paralist}
+
+\usepackage[style=authoryear, backend=biber,natbib=true]{biblatex}
+\addbibresource{LU}
+
+% setting the font style for input und returns in description items
+\newcommand{\initem}[2]{\item[\hspace{0.5em} {\normalfont\ttfamily{#1}} {\normalfont\itshape{(#2)}\/}]}
+\newcommand{\outitem}[1]{\item[\hspace{0.5em} \normalfont\itshape{(#1)}\/]}
+\newcommand{\bfpara}[1]{
+	
+	\noindent \textbf{#1:}\,}
+
+\begin{document}
+
+% generating the title page
+\maketitle
+\newpage
+% generating the table of contents (requires to run pdflatex twice!)
+\tableofcontents
+\newpage
+
+%%% BEGIN OF CONTENT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Einf\"uhrung in die Theorie}
+	\subsection{Motivation und Problemstellung}
+		Wir beschäftigen uns in diesem Bericht weiter mit dem numerischen Lösen des 
+		Poisson Differentialgleichungssystem.  Wir haben bereits gesehen,  dass wir das 
+		Poisson Problem numerisch lösen können, indem wir das Gebiet und den 
+		Laplaceoperator diskretisieren und so ein lineares Gleichungssystem erhalten.  Um 
+		eine gute Approximation zu berechnen,  möchten wir möglichst fein diskretisieren.  
+		Mit zunehmender Feinheit,  wächst allerdings auch die Größe der Matrix,  welche 
+		das lineare Gleichungssystem darstellt.  Allerdings sind viele Einträge Null. Man 
+		spricht hierbei auch von einer sparsen Matrix. Dabei ist unsere bisheriger Ansatz,  
+		das Problem mit der LU-Zerlegung zu lösen nicht sehr effizient.  Wir haben 
+		gemerkt,  dass die LU-Zerlegung die Sparsität der Gleichungssysteme nicht 
+		beibehält. Daher stellt sich die Frage,  wie wir große große (dünnbesetzte) 
+		Gleichungssysteme lösen können und die Sparsität für diesen Zweck ausnützen 
+		können.  In diesem Bericht beschäftigen wir uns dafür mit einem iterativen 
+		Verfahren und vergleichen dieses mit dem Verfahren der LU-Zerlegung. Wir 
+		ziehen dabei sowohl den Speicherbedarf als auch den Rechenaufwand in 
+		Betracht. 
+	\subsection{Theoretischer Hintergrund}
+		\subsubsection{Iterative numerische Verfahren}
+			Im Vergleich zu dem Verfahren zum lösen linearer Gleichungssysteme 
+			mit der LU-Zerlegung,  enden iterative numerische Verfahren nicht nach
+			endlich vielen Schritten mit einer exakten Lösung, sonder nähern sich vielmehr 
+			Schrittweise an die genaue Lösung an.  Wie wir gesehen haben, kommt es 
+			auch bei dem exakten Lösen des Problems zu Fehlern.  Daher ist es sinnvoll
+			sich anzuschauen, ob man mit iterativen Verfahren mit weniger Aufwand
+			und Speicherbedarf zu einer ähnlich gut approximierten Lösung
+			kommen kann.  Dass ein solches Iterationsverfahren konvergiert auf
+			Grundlage des Banachschen Fixpunktsatzes.
+			Wir definieren zunächst wie in \citep{kont}
+			\begin{definition}[Kontraktion]
+			Sei $(X,d)$ ein metrische Raum.  Eine Abbildung $f:X\rightarrow X$ heißt 
+			\textit{Kontraktion}, wenn sie Lipschitz stetig ist mit einer Lipschitzkonstanten
+			$0\leq \lambda < 1$,  es also für alle $x,y\in X$ gilt:
+			$$d(f(x),f(y))\leq \lambda d(x,y)$$
+			\end{definition}
+			Die Aussage des folgenden Satzes beruht auf \citep{ban}
+			\begin{theorem}[Banachscher Fixpunktsatz]
+			Sei $(X; d)$ ein vollständiger Metrischer Raum.  Sei $A\subset X$ 
+			abgeschlossen und nicht-leer. Sei $f:A\rightarrow A$ eine Kontraktion. Definiere
+			eine Folge $(x_n)$ mit beliebigen Startwert durch 
+			$$x_{n+1}=f(x_n)$$
+			Dann existiert genau ein Fixpunkt von $f$.  Dieser ist der Grenzwert von 
+			$(x_n)$.
+			\end{theorem}
+			Wir betrachten ein lineares Gleichungssystem $Ax=b$ für eine Matrix
+			$A\in \mathbb{R}^{m\cross m}$ Unser Iterationsansatz von \citep{skript}
+			 $$x_{n+1}=Bx_n+d$$
+			 für geeignet gewähltes $B$ und $d$,  konvergiert nach dem Banachschen 
+			 Fixpunktsatz, wenn die rechte Seite als Abbildung eine 
+			 Kontraktion ist. 
+			Wir werden uns in diesem Bericht ein spezielles Splitting Verfahren genauer
+			anschauen.  Allgemein zerlegt man bei Splitting Verfahren wie in \citep{skript}
+			beschrieben die Matrix $A=M+N$ in eine Summe von Matrizen und wählt dann
+			$$B:=-M^{-1}N,  \text{ } d=M^{-1}b.$$
+			Es wird in \citep{skript} gezeigt, dass die Iteration mit genau dann eine
+			Kontraktion ist und somit konvergiert, wenn 
+			$\rho (B):=\max_{1\leq i \leq m} |\lambda _i(B)|<1$ gilt.
+			Wir betrachten folgende Zerlegung von $A$ in die Summe einer unteren
+			Dreiecksmatrix, einer Diagonalmatrix und einer oberen Dreiecksmatrix.
+			\begin{definition}
+			Sei $A\in \mathbb{R}^{m\cross m}$.  Wir definieren die Matrizen
+			$$A=L+D+U:=\begin{pmatrix}
+			0&0&\hdots &0\\
+			*&0&\hdots &0\\
+			\vdots &&\ddots &\vdots\\
+			*&*&\hdots &0
+			\end{pmatrix}+\begin{pmatrix}
+			*&0&\hdots &0\\
+			0&*&\hdots &0\\
+			\vdots &&\ddots &\vdots\\
+			0&0&\hdots &*
+			\end{pmatrix}+\begin{pmatrix}
+			0&*&\hdots &*\\
+			0&0&\hdots &*\\
+			\vdots &&\ddots &\vdots\\
+			0&0&\hdots &0
+			\end{pmatrix}$$
+			
+			\end{definition}
+			
+			Dann betrachten wir für das sogenannte \textbf{SOR-Verfahren (Successive 
+			Over Relaxation} wie auch in \citep{skrpit} die Zerlegung  mit
+			$M:=L+\frac{1}{\omega}$ und $N:=U-(\frac{1}{\omega} -1)D$,  also die 
+			Iteration 
+			\begin{align}\label{sor_iteration}
+			x_{n+1}=\omega (-D^{-1}Ux_n-D^{-1}Lx_{n+1}+D^{-1})+(1-\omega )x_n
+			\end{align}
+			für ein geeignetes $\omega$.
+			
+			Da wir bei iterativen Verfahren nicht nach endlich vielen Schritten zu einer
+			exakten Lösung kommen,  möchten wir das Verfahren bei einer gewissen
+			Genauigkeit der Lösung abbrechen.  Dafür geben wir einen Wert $\varepsilon$ 
+			an, und setzen die Abbruchbedingung als $$||Ax_i-b||<\varepsilon$$ für $x_i$ 
+			als Lösung des $i$-ten Iterationsschrittes. 
+			
+		\subsubsection{Rechenaufwand und Speicherplatz}	
+		
+		Im Gegensatz zum Verfahren mit der 
+		LU-Zerlegung,  benötigen wir in dem oben beschriebenen Iterativen Verfahren 
+		nicht mehr Speicherplatz, denn die Anzahl an Nicht-Null Eintägen der Zerlegung 
+		ist genauso groß wie die der Matrix $A$.
+		
+		Der Rechenaufwand von dem SOR-Verfahren ist in jedem Schritt nach
+		 \citep{slides} linear beschränkt, also in $\mathcal{O}(n)$, für eine 
+		 dünnbesetzte Matrix $A\in\mathbb{R}^{n\cross nm}$
+		 
+		 \subsubsection{Optimaler Wert $\omega$}
+		 
+\section{Implementierung}
+\section{Beschreibung der Experimente}
+\section{Auswertung der Experimente}
+\section{Zusammenfassung}
+
+
+
+\printbibliography
+
+%%% END OF DOCUMENT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
