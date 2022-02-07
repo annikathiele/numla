@@ -139,7 +139,7 @@
 		\end{definition}
 		In unserem Fall diskretisieren wir dazu das Gebiet $\Omega$ und den Laplace Operator durch \textit{Finite Differenzen} um ein lineares Gleichungssystem zu erhalten.
 		 Im Folgenden wird die Theorie hinter unserem Verfahren zum numerischen lösen des Problems nach \citep{PDE}, \citep{Wiki}. Wir diskretisieren das Gebiet indem wir das Intervall $(0,1)$ in $n$ äquidistante Teilintervalle zerlegen. Die so entstehenden Gitterpunkte im $(0,1)^d$ werden unsere Diskretisierungspunkte. Mit den Finiten Differenzen zweiter Ordnung können wir den Laplace Operator diskretiseren, denn wir wissen aus \citep{Wiki}, dass 
-		$$\frac{\delta^2u}{\delta x_l^2} \approx D_h^{(2)} u_{x,l}(x) =\frac{u(x_1,...,x_l+h,...,x_d) - 2u(x_1,...,x_l,...,x_d) + u(x_1,...,x_l-h,...,x_d)}{h^2}$$
+		$$\frac{\partial^2u}{\partial x_l^2} \approx D_h^{(2)} u_{x,l}(x) =\frac{u(x_1,...,x_l+h,...,x_d) - 2u(x_1,...,x_l,...,x_d) + u(x_1,...,x_l-h,...,x_d)}{h^2}$$
 		gilt. 
 		Um ein lineares Gleichungssystem zu erhalten, definieren wir eine Ordnung auf den Diskretisierungspunkten.
 		
