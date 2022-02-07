@@ -180,5 +180,85 @@ def f(x,d):
         sum+=prod_one+prod_two
     return sum
 
+def time_solve(n,d):
+    """ Diese Funktion gibt die Zeit an, die das Programm zum berechnen der Lösung benötigt.
+    Returns
+    -------
+    None
+    """
+    start=time.time()
+    A=bl.BlockMatrix(d,n)
+    p,l,uu=A.get_lu()
+    b=pp.rhs(d,n,f)
+    ls.solve_lu(p,l,uu,b)
+    end=time.time()
+    return end-start
+
+def time_solve_sor(n,d):
+    """ Diese Funktion gibt die Zeit an, die das Programm zum berechnen der Lösung benötigt.
+    Returns
+    -------
+    None
+    """
+    start=time.time()
+    A=bl.BlockMatrix(d,n)
+    A= A.get_sparse()
+    b=pp.rhs(d,n,f)
+    ls.solve_sor(A,b,b)
+    end=time.time()
+    return end-start
+
+def time_solve_sor2(n,d):
+    """ Diese Funktion gibt die Zeit an, die das Programm zum berechnen der Lösung benötigt.
+    Returns
+    -------
+    None
+    """
+    start=time.time()
+    A=bl.BlockMatrix(d,n)
+    A= A.get_sparse()
+    b=pp.rhs(d,n,f)
+    ls.solve_sor2(A,b,b)
+    end=time.time()
+    return end-start
+
+def graph_time():
+    xlist=[]
+    ylist=[]
+    ylistt=[]
+    ylistt2=[]
+    ysquare=[]
+
+
+    for n in range(2,8):
+        xlist.append(n)
+        time=0
+        timee=0
+        timee2=0
+        for counter in range(16):
+            time+=time_solve(n,2)
+            timee+=time_solve_sor(n,2)
+            timee2+=time_solve_sor2(n,2)
+        ylist.append(time/16)
+        ylistt.append(timee/16)
+        ylistt2.append(timee2/16)
+
+    for x in xlist:
+        ysquare.append(x**2)
+
+    plt.figure()
+    plt.ylabel("Zeit")
+    plt.xlabel("n")
+    plt.plot(xlist, ylist, 'b-',label= 'lu Zeit' )
+    plt.plot(xlist, ylistt2, 'r-',label= 'sor mit solve_triangular() Zeit' )
+    plt.plot(xlist, ylistt, 'r--',label= 'sor komponentenweise Zeit' )
+    plt.plot(xlist, xlist, 'g--', label='f(x)=x')
+    plt.plot(xlist, ysquare, 'm--', label='f(x)=x^2')
+    plt.xscale("log")
+    plt.yscale("log")
+    plt.title("Zeit in Abhängigkeit von n")
+    plt.legend()
+    plt.show()
+
 if __name__ == "__main__":
     main()
