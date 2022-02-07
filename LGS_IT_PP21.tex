@@ -278,16 +278,19 @@ $$f(x)=\Delta u= \sum_{i=1}^d\frac{\partial ^2 u}{\partial x_i^2}=
 
 Dann ist $u$ die exakte Lösung zum Poisson Problem mit $f$ wie oben definiert. Wir können also nun numerisch das Poisson Problem lösen und das Ergebnis mit $u$ vergleichen um den Fehler zu erhalten. \cbend
 \subsection{Fehleranalyse}
+Wir schauen uns zunächst an, wie sich der Fehler im Laufe der Iterationen verhält. Dazu betrachten wir die folgende Abbildung, in der der maximale absolute Fehler der Iterierten für $d\in\{1,2,3\}$ und $n=18$ abgebildet ist. 
 
-Wir betrachten für die Dimensionen $d\in\{1,2,3\}$ die approximierte Lösung der Poisson-Gleichung durch das SOR-Verfahren für verschiedene Anzahlen an Teilintervallen $n$.   Wir schauen uns den Fehler für feste Abbruchbedingungen an,  entweder wenn $||Ax_i-b||-||Ax_{i+1}-b||<10^{-7}$, $||Ax_i-b||<10^{-8}$ oder wenn die maximale Iterationszahl von $1500$ überschritten ist.  In der folgenden Abbildung,  ist der maximale absolute Fehler der iterierten Lösung in Abhängigkeit von $n$ geplottet.
 \subsection{Konvergenzverhalten mit verschiedenen Abbruchbedingungen}
-Wir untersuchen das Konvergenzverhalten 
+Wir untersuchen das Konvergenzverhalten, je nachdem, welchen Wert man als Abbruchbedingung wählt. 
 \subsection{Experimentelle Ermittlung des optimalen Relaxationsfaktor $\omega$}
 Je nachdem welchen Relaxationsfaktor man für das SOR-Verfahren nutzt,  bekommt man unterschiedlich genaue Lösungen.  In der Theorie haben wir bereits gesehen, dass der optimale Wert für $\omega$ beträgt.  Wir werden das nun experimentell überprüfen.  Dazu ist in der folgenden Grafik der Fehler in Abhängigkeit von dem verwendeten Relaxationsfaktor aufgetragen. 
 \subsection{Vergleich LU und SOR}
-\subsubsection{Sparsität}
-Bei dem Poisson Problem betrachten wir 
+\subsubsection{Konvergenzverhalten}
 
+Wir betrachten für die Dimensionen $d\in\{1,2,3\}$ die approximierte Lösung der Poisson-Gleichung durch das LU- und das SOR-Verfahren für verschiedene Anzahlen an Diskretisierungspunkten $N$.   Wir schauen uns den Fehler beim SOR Verfahren für feste Abbruchbedingungen an,  entweder wenn $||Ax_i-b||-||Ax_{i+1}-b||<10^{-7}$, $||Ax_i-b||<10^{-8}$ oder wenn die maximale Iterationszahl von $1500$ überschritten ist.  In der folgenden Abbildung,  sind die Fehler der Lösungen des Poisson Problems mit durch die beiden Verfahren in Abhängigkeit von $N$ geplottet.
+\subsubsection{Sparsität}
+Bei dem Poisson Problem betrachten wir sehr dünnbesetze aber große Matrizen.  Beim Speichern ist es daher sinnvoll nur die Nicht-Null Einträge und deren Position zu betrachten.  Wir haben im letzten Bericht gesehen,  dass die LU Zerlegung im Allgemeinen mehr Nicht-Null EInträge besitzt als die ursprüngliche Matrix $A$.  Beim SOR Verfahren hingegen erhält man durch das \textit{splitting} von $A=L+D+U$ drei Matrizen mit gleich vielen Nicht-Null Einträgen.  Wählt man eine sehr feine Diskretisierung des Gebietes für das Poisson Problem,  so benötigt man also mit dem SOR Verfahren weniger Speicherplatz.   Experimentell überprüfen wir dies, indem wir für verschiedene $N$, der Anzahl an Diskretisierungspunkten, die Sparsität vergleichen. 
+In der folgenden Abbildung ist in Abhängigkeit von $N$ die relative Sparsität, also Anzahl an Nicht-Null Einträgen aufgezeichnet. 
 \subsubsection{Laufzeit}
 Um die beiden Verfahren hinsichtlich der Laufzeit zu vergleichen,  messen wir jeweils für $d=2$ und verschiedene $n$ die Zeit, welche die jeweiligen Verfahren benötigen um das Poisson Problem zu lösen.  Um Störungen auszugleichen,  nehmen wir den Mittelwert von mehreren Messungen.Für das SOR Verfahren vergleichen wir zusätzlich eine weitere Implementation,  welche das SOR Verfahren komponentenweise ausführt. 
 
@@ -295,6 +298,11 @@ Um die beiden Verfahren hinsichtlich der Laufzeit zu vergleichen,  messen wir je
 
 \section{Auswertung der Experimente}
 \section{Zusammenfassung}
+
+Im Gegensatz zu direkten Verfahren, nähert man sich bei iterativen Verfahren an die exakte Lösung mit jeder Iteration weiter an.  Wir haben uns hier ewin spezielles Iterationsverfahren angeschut, nämlich das SOR-Verfahren. Wir haben in unseren Experimenten diese im Hinblick auf Konvergenzverhalten, Laufzeit und Sparsität untersucht und mit dem LU-Verfahren, ein direktes Verfahren zur Lösung linearer Gleichungssysteme, verglichen.  Wir haben gesehen, dass man durch das iterierte Verfahren schneller und effizienter zu einer sehr genauen Lösung kommt.  Das liegt zum einen an einem niedrigeren Rechenaufwand, und zum anderen wird weniger Speicherplatz benötigt als beim LU-Verfahren. 
+
+\section{Ausblick}
+Wir haben in diesem Bericht uns die Vor und Nachteile der beiden Verfahren, zum einen dem LU-Verfahren und zum Anderen dem SOR-Verfahren, angeschaut.  Allerdings ist es in der Anwendung in der Regel nötig,  sehr feine Disretisierungen anzuschauen, und eine möglichst gute Approximation zu erhalten.  Es resultieren riesige Lineare Gleichungssysteme. Daher ist es sinnvoll, sich noch effizientere Iterationsverfahren als das SOR Verfahren anzuschauen. In der Literatur gibt es sehr viele verschieden. Im Weiteren Studium über das numerische Lösen von Gleichungssystemen kann man also die Vor und Nachteile der optimierteren iterierten Verfahren anschauen. 
 
 
 
