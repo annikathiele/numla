@@ -22,6 +22,15 @@
 % of contents'
 \usepackage[ngerman]{babel}
 
+\usepackage[xcolor]{changebar}
+\usepackage{lipsum}
+
+
+\usepackage[color]{changebar}
+\cbcolor{red}
+
+\setlength{\changebarsep}{2ex}
+
 \usepackage{amsthm}
 \newtheorem{theorem}{Satz}
 
@@ -45,7 +54,7 @@
 %%% COLORS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % define own colors and use colored text
 \usepackage[pdftex,svgnames,hyperref]{xcolor}
-
+ 
 %%% nice tables
 \usepackage{booktabs}
 
@@ -108,6 +117,44 @@
 		ziehen dabei sowohl den Speicherbedarf als auch den Rechenaufwand in 
 		Betracht. 
 	\subsection{Theoretischer Hintergrund}
+	
+	\subsubsection{Poisson Problem}
+		 \cbstart Wir definieren den Laplace Operator wie in \citep{PDE}.
+		\begin{definition}[Laplace Operator]
+		Der Laplace Operator einer Funktion $u\in C^2(\mathbb{R}^d,\mathbb{R})$ ist definiert durch
+		$$\Delta u=\sum_{i=1}^d\frac{\partial ^2 u}{\partial x_i^2}$$
+
+		\end{definition}
+		Wir definieren weiter das partielle Differentialgleichungssystem wie in \citep{PDE}, welches im Poisson-Problem gelöst werden soll. Wir betrachten das Problem auf einem  Gebiet  $\Omega$ und Rand $\partial \Omega$. seien $f\in C(\Omega , \mathbb{R})$ und $g\in C(\partial \Omega , \mathbb{R})$ Funktionen. Dann suchen wir eine Funktion $u$, sodass
+		\begin{align*}
+		\Delta u&=f \text{ in }\Omega\\
+		u&= g \text{ auf }\partial\Omega
+		\end{align*}
+		Wir betrachten in diesem Bericht einen Spezialfall des Problems, wo $\Omega =(0,1)^d$, $d\in \{1,2,3\}$ und $g\equiv 0$
+
+		Wir wollen das Problem numerisch mit \textit{Finiten-Differenzen} approximieren. Nach \citep{finite}
+		\begin{definition}[Finite-Differenzen-Methode]
+		Finite-Differenzen-Methoden sind eine Klasse numerischer Verfahren zur Lösung gewöhnlicher und partieller Differenzialgleichunen.		
+		Die grundlegende Idee bei der \textit{Finite-Differenzen-Methode} ist es die Ortsableitung in der Differenzialgleichung an einer endlichen Zahl Gitterpunkten durch Differenzenquotienten zu approximieren. Unsere angenäherten Lösungen der Differenzialgleichung an den Gitterpunkten führen dann auf ein entsprechendes Gleichungssystem, welches sich numerisch berechnen lässt.
+		\end{definition}
+		In unserem Fall diskretisieren wir dazu das Gebiet $\Omega$ und den Laplace Operator durch \textit{Finite Differenzen} um ein lineares Gleichungssystem zu erhalten.
+		 Im Folgenden wird die Theorie hinter unserem Verfahren zum numerischen lösen des Problems nach \citep{PDE}, \citep{Wiki}. Wir diskretisieren das Gebiet indem wir das Intervall $(0,1)$ in $n$ äquidistante Teilintervalle zerlegen. Die so entstehenden Gitterpunkte im $(0,1)^d$ werden unsere Diskretisierungspunkte. Mit den Finiten Differenzen zweiter Ordnung können wir den Laplace Operator diskretiseren, denn wir wissen aus \citep{Wiki}, dass 
+		$$\frac{\delta^2u}{\delta x_l^2} \approx D_h^{(2)} u_{x,l}(x) =\frac{u(x_1,...,x_l+h,...,x_d) - 2u(x_1,...,x_l,...,x_d) + u(x_1,...,x_l-h,...,x_d)}{h^2}$$
+		gilt. 
+		Um ein lineares Gleichungssystem zu erhalten, definieren wir eine Ordnung auf den Diskretisierungspunkten.
+		
+		\begin{definition}
+		Seien $x=(x_1,...,x_d)$ und $y=(y_1,...,y_d)$ zwei Diskretisierungspunkte. Dann gilt $x <_X y$ genau dann, wenn
+		$$\sum_{l=1}^dx_ln^l<\sum_{l=1}^dy_ln^l$$
+		\end{definition}
+		Sei $N:=(n-1)^d$ die Anzahl an Diskretisierungspunkten.
+		So erhalten wir $N$ lineare Gleichungen und damit Blockmatrizen $A^{(d)}$, für die zu lösen gilt $A^{(d)}\hat{u}=b$. Wir definieren diese Blockmatrizen induktiv.
+		$$A^{(d)}_{1} := \begin{pmatrix}     2d & -1 & 0 & 0 &\dots&0 \\    -1 & 2d & -1 & 0&\dots&0 \\    0&\ddots&\ddots&\ddots&\ddots&\vdots\\    \vdots & \ddots &\ddots&\ddots&-1&0 \\    0 & \dots&0&-1&2d&-1\\     0&  \dots&0&0&-1&2d    \end{pmatrix}$$
+		$$A^{(d)}_{l} := \begin{pmatrix}     A^{(d)}_{l-1} & -\mathbf{I}_{l-1} & 0 & 0 &\dots&0 \\    -\mathbf{I}_{l-1} & A^{(d)}_{l-1} & -\mathbf{I}_{l-1} & 0&\dots&0 \\    0&\ddots&\ddots&\ddots&\ddots&\vdots\\    \vdots & \ddots &\ddots&\ddots&-\mathbf{I}_{l-1}&0 \\    0 & \dots&0&-\mathbf{I}_{l-1}&A^{(d)}_{l-1}&-\mathbf{I}_{l-1}\\     0&  \dots&0&0&-\mathbf{I}_{l-1}&A^{(d)}_{l-1}    \end{pmatrix}$$
+		Wir setzen $A^{(d)}:=A^{(d)}_d$ Die rechte Seite $b$ erhalten wir durch das Einsetzen der Diskretisierungspunkte in die gegebene Funktion $f$. \cbend
+		\subsubsection{LU Zerlgeung}
+		Wir haben im letzten Bericht die LU-Zerlegung einer Matrix genutzt um das Poisson Problem diskret zu lösen. 
+		Bei der LU-Zerlegung wird eine Matrix $A$ wird diese Matrix in eine  oberen rechten Dreiecksmatrix mit Einsen auf der Hauptdiagonalen und einer unteren linken Dreicksmatrix zerlegt.  Danach kann ein Gleichungssystem durch Rückwärts und Vorwärtseinsetzen gelöst werden.  
 		\subsubsection{Iterative numerische Verfahren}
 			Im Vergleich zu dem Verfahren zum lösen linearer Gleichungssysteme 
 			mit der LU-Zerlegung,  enden iterative numerische Verfahren nicht nach
@@ -197,9 +244,55 @@
 		 dünnbesetzte Matrix $A\in\mathbb{R}^{n\cross nm}$
 		 
 		 \subsubsection{Optimaler Wert $\omega$}
+		 Der optimale Relaxationswert $\omega$ ist sehr Problemabhängig. Für das Poisson Problem ist er nach \citep{slides} bekannt und beträgt
+		 \begin{align*}
+		 \omega _{opt}:=\frac{2}{1+\sqrt{1-\mu ^2}}
+		 \end{align*}
+		 wobei $\mu$ der Spetralradius von $I-D^{-1}A$ ist, also 
+		 \begin{align*}
+		 \mu = \rho (I-D^{-1}A).
+		 \end{align*}
 		 
+		
 \section{Implementierung}
+
+\texttt{solve\_ sor()}
+
+\subsubsection*{Bedienungshilfe \texttt{linear\_solvers.py}}
+In \texttt{linear\_solvers.py} ist eine \texttt{main()} Funktion implementiert. Sie dient zur Demonstration ausgewählter vorhandender Funktionen und
+		wird nur ausgef\"uhrt wenn \texttt{linear\_solvers.py} direkt mittels \texttt{python3 experiments\_lu.py} gestartet wird. 
+Anschließend stellt das Programm die Funktionalität von \texttt{solve\_lu()} vor. Zunächst wird zu einer gegebenen $LU$ Zerlegung und rechten Seite das Gleichungssystem gelöst.
+Es wird die LU-Zerlegung für eine Koeffizienenmatrix $A$ mit gegebenen Werten $n$, $d$  erstellt. Standardmäßig sind $n=5$ und $d=2$ ausgewählt, aber das kann leicht im Programm geändert werden. Zu beachten ist, dass $n\geq 2$ und $d\geq 1$ sein muss. und in \texttt{block\_matrix.get\_lu()} eingesetzt. Um für $b$ ein Array in der passenden Form zu erhalten nehmen wir $[1,1,1,...]$.
+Das Programm gibt dann die Lösung $x$ zur Gleichung $Ax=b$ aus.
+
+\subsection*{Bedienungsanleitung }
 \section{Beschreibung der Experimente}
+
+ \cbstart Im Rahmen unserer Experimente werden wir uns mit folgender Funktion beschäftigen.
+Sei $u:\Omega\rightarrow \mathbb{R}$ definiert durch
+$$u(x):=\prod_{l=1}^dx_l\sin (\pi x_l)$$
+Wir berechnen
+
+$$f(x)=\Delta u= \sum_{i=1}^d\frac{\partial ^2 u}{\partial x_i^2}=
+ \sum_{i=1}^d \left(\prod_{l\neq i}x_l\sin (\pi x_l)\right)\left(-x_i\pi ^2\sin (\pi x_i)+(1+\pi)\cos (\pi x_i) \right)$$
+
+Dann ist $u$ die exakte Lösung zum Poisson Problem mit $f$ wie oben definiert. Wir können also nun numerisch das Poisson Problem lösen und das Ergebnis mit $u$ vergleichen um den Fehler zu erhalten. \cbend
+\subsection{Fehleranalyse}
+
+Wir betrachten für die Dimensionen $d\in\{1,2,3\}$ die approximierte Lösung der Poisson-Gleichung durch das SOR-Verfahren für verschiedene Anzahlen an Teilintervallen $n$.   Wir schauen uns den Fehler für feste Abbruchbedingungen an,  entweder wenn $||Ax_i-b||-||Ax_{i+1}-b||<10^{-7}$, $||Ax_i-b||<10^{-8}$ oder wenn die maximale Iterationszahl von $1500$ überschritten ist.  In der folgenden Abbildung,  ist der maximale absolute Fehler der iterierten Lösung in Abhängigkeit von $n$ geplottet.
+\subsection{Konvergenzverhalten mit verschiedenen Abbruchbedingungen}
+Wir untersuchen das Konvergenzverhalten 
+\subsection{Experimentelle Ermittlung des optimalen Relaxationsfaktor $\omega$}
+Je nachdem welchen Relaxationsfaktor man für das SOR-Verfahren nutzt,  bekommt man unterschiedlich genaue Lösungen.  In der Theorie haben wir bereits gesehen, dass der optimale Wert für $\omega$ beträgt.  Wir werden das nun experimentell überprüfen.  Dazu ist in der folgenden Grafik der Fehler in Abhängigkeit von dem verwendeten Relaxationsfaktor aufgetragen. 
+\subsection{Vergleich LU und SOR}
+\subsubsection{Sparsität}
+Bei dem Poisson Problem betrachten wir 
+
+\subsubsection{Laufzeit}
+Um die beiden Verfahren hinsichtlich der Laufzeit zu vergleichen,  messen wir jeweils für $d=2$ und verschiedene $n$ die Zeit, welche die jeweiligen Verfahren benötigen um das Poisson Problem zu lösen.  Um Störungen auszugleichen,  nehmen wir den Mittelwert von mehreren Messungen.Für das SOR Verfahren vergleichen wir zusätzlich eine weitere Implementation,  welche das SOR Verfahren komponentenweise ausführt. 
+
+
+
 \section{Auswertung der Experimente}
 \section{Zusammenfassung}
 
