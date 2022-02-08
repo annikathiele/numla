@@ -225,23 +225,37 @@
 			x_{n+1}=\omega (-D^{-1}Ux_n-D^{-1}Lx_{n+1}+D^{-1})+(1-\omega )x_n
 			\end{align}
 			für ein geeignetes $\omega$.
+			Wir bekommen also eine Iterationsmatrix wie in \citep{konvergenz}
+			\begin{align*}
+			M_{SOR}(\omega )=(D-\omega L)^{-1}[(1-\omega)D+\omega U].
+			\end{align*}
+			Angelehnt an \citep{konvergenz}, können wir zeigen,  dass das SOR Verfahren nur konvergiert für $\omega \in (0,2)$. Das liegt am folgenden Satz aus \citep{kovergenz}
+			
+			\begin{theorem}[Satz von Kahan]
+			Für jede Matrizen $A\in \mathbb{R}^{n\times n }$ mit regulärem Diagonalteil $D$ gilt 
+			\begin{align}\label{omegabetween02}
+			\rho (M_{SOR} )\geq |\omega -1|
+			\end{align}
+			\end{theorem}
+			
+			
 			
 			Da wir bei iterativen Verfahren nicht nach endlich vielen Schritten zu einer
 			exakten Lösung kommen,  möchten wir das Verfahren bei einer gewissen
 			Genauigkeit der Lösung abbrechen.  Dafür geben wir einen Wert $\varepsilon$ 
 			an, und setzen die Abbruchbedingung als $$||Ax_i-b||<\varepsilon$$ für $x_i$ 
-			als Lösung des $i$-ten Iterationsschrittes. 
+			als Lösung des $i$-ten Iterationsschrittes.  
 			
 		\subsubsection{Rechenaufwand und Speicherplatz}	
 		
 		Im Gegensatz zum Verfahren mit der 
 		LU-Zerlegung,  benötigen wir in dem oben beschriebenen Iterativen Verfahren 
 		nicht mehr Speicherplatz, denn die Anzahl an Nicht-Null Eintägen der Zerlegung 
-		ist genauso groß wie die der Matrix $A$.
+		ist genauso groß wie die der Matrix $A$. Das liegt daran, dass wir die Matrix $A$ für das Verfahren aufteilen in $A=L+D+U$, wobei aber wenn man $L,D,U$ in eine Matrix abspeichert genau $A$ rauskommt. Daher ist die Anzahl an Nicht-Null Einträgen gleich zu der von der Matrix $A$. Bei der LU Zerlegung hingegen ist die Anzahl an Nicht-Null Einträgen in der LU Zerlegung im Allgemeinen größer als die von $A$.
 		
 		Der Rechenaufwand von dem SOR-Verfahren ist in jedem Schritt nach
 		 \citep{slides} linear beschränkt, also in $\mathcal{O}(n)$, für eine 
-		 dünnbesetzte Matrix $A\in\mathbb{R}^{n\cross nm}$
+		 dünnbesetzte Matrix $A\in\mathbb{R}^{n\cross nm}$.  
 		 
 		 \subsubsection{Optimaler Wert $\omega$}
 		 Der optimale Relaxationswert $\omega$ ist sehr Problemabhängig. Für das Poisson Problem ist er nach \citep{slides} bekannt und beträgt
@@ -252,6 +266,7 @@
 		 \begin{align*}
 		 \mu = \rho (I-D^{-1}A).
 		 \end{align*}
+		 
 		 
 		
 \section{Implementierung}
@@ -278,19 +293,90 @@ $$f(x)=\Delta u= \sum_{i=1}^d\frac{\partial ^2 u}{\partial x_i^2}=
 
 Dann ist $u$ die exakte Lösung zum Poisson Problem mit $f$ wie oben definiert. Wir können also nun numerisch das Poisson Problem lösen und das Ergebnis mit $u$ vergleichen um den Fehler zu erhalten. \cbend
 \subsection{Fehleranalyse}
-Wir schauen uns zunächst an, wie sich der Fehler im Laufe der Iterationen verhält. Dazu betrachten wir die folgende Abbildung, in der der maximale absolute Fehler der Iterierten für $d\in\{1,2,3\}$ und $n=18$ abgebildet ist. 
+Wir schauen uns zunächst an, wie sich der Fehler im Laufe der Iterationen verhält. Dazu betrachten wir die folgende Abbildung \ref{error}, in der der maximale absolute Fehler der Iterierten für $d\in\{1,2,3\}$ und $27$ Diskretisierungspunkten.  
+
+
+
+
+\begin{minipage}{\textwidth}
+
+ \centering
+ \includegraphics[scale = 0.9]{Error1}
+ 	\captionof{figure}{Fehleranalyse}
+ 	\label{error}
+
+ \end{minipage}
+ 
+ Diese Grafik ist doppelt-logaritmisch skaliert. 
+
 
 \subsection{Konvergenzverhalten mit verschiedenen Abbruchbedingungen}
-Wir untersuchen das Konvergenzverhalten, je nachdem, welchen Wert man als Abbruchbedingung wählt. 
+Wir untersuchen das Konvergenzverhalten, je nachdem, welchen Wert man als Abbruchbedingung wählt.  Wir variieren in der folgenden Abbildung \ref{epsilon} das $\varepsilon$,  zu welchem die Abbruchbedingung $||Ax_i -b||<\varepsilon$ genutzt wird. Wir schauen uns an, wie der maximale absoluter Fehler sich in ABhängigkeit von $n$ verhält. 
+
+
+\begin{minipage}{\textwidth}
+
+ \centering
+ \includegraphics[scale = 0.9]{epsilon1}
+ 	\captionof{figure}{Vergleich von versdchiedenen Abbruchbedingungen}
+ 	\label{epsilon}
+
+ \end{minipage}
+ 
+ Man erkennt, dass mit kleinerem $\varepsilon$ ist auch der Fehler geringer, so sind die Fehler für $\varepsilon =\frac{1}{n^{-2}}$ und $\varepsilon =1$ für größere $n$ ungefähr Eins.    Für $\varepsilon =\frac{1}{n^{2}}$ ist der Fehler schon viel kleiner und für  $\varepsilon =\frac{1}{n^{4}}$ und  $\varepsilon =\frac{1}{n^{6}}$ ist der Fehler ähnlich aber noch kleiner.  Durch die eingezeichnete Hilfsgeraden kann man sehen, dass mit zunehmenden $n$, der Fehler sich ab $n=10$ nicht mehr viel ändert.  Bei $\varepsilon = \frac{1}{n^{-2}}$ sieht man bei höheren $n$, dass auch der Fehler wieder steigt.
+
 \subsection{Experimentelle Ermittlung des optimalen Relaxationsfaktor $\omega$}
-Je nachdem welchen Relaxationsfaktor man für das SOR-Verfahren nutzt,  bekommt man unterschiedlich genaue Lösungen.  In der Theorie haben wir bereits gesehen, dass der optimale Wert für $\omega$ beträgt.  Wir werden das nun experimentell überprüfen.  Dazu ist in der folgenden Grafik der Fehler in Abhängigkeit von dem verwendeten Relaxationsfaktor aufgetragen. 
+Je nachdem welchen Relaxationsfaktor man für das SOR-Verfahren nutzt,  bekommt man unterschiedlich genaue Lösungen.  In der Theorie haben wir bereits gesehen, dass der optimale Wert für $\omega$ beträgt.  Wir werden das nun experimentell überprüfen.  Dazu ist in der folgenden Grafik \ref{omega}
+ der Fehler in Abhängigkeit von dem verwendeten Relaxationsfaktor aufgetragen.  Es ist hier der Fehler von der durch das SOR Verfahren erhaltenen Lösung für $n=11$, $d=2$ mit den Abbruchbedingungen wie in Abbildung \ref{error} für verschiedene $\omega$ berechnet. Wir ziehen Werte $\omega \in (0,2)$ in Betracht, da das Verfahren nach \ref{omegabetween02} sonst nicht konvergiert.
+
+\begin{minipage}{\textwidth}
+
+ \centering
+ \includegraphics[scale = 0.5]{Omega1}
+ 	\captionof{figure}{Optimaler Relaxationswert}
+ 	\label{omega}
+
+ \end{minipage}
+		 
+	Hier ist zu sehen, dass mit zunehmendem Relaxationswert, auch der Fehler zunimmt. 
+	
+		
 \subsection{Vergleich LU und SOR}
 \subsubsection{Konvergenzverhalten}
 
-Wir betrachten für die Dimensionen $d\in\{1,2,3\}$ die approximierte Lösung der Poisson-Gleichung durch das LU- und das SOR-Verfahren für verschiedene Anzahlen an Diskretisierungspunkten $N$.   Wir schauen uns den Fehler beim SOR Verfahren für feste Abbruchbedingungen an,  entweder wenn $||Ax_i-b||-||Ax_{i+1}-b||<10^{-7}$, $||Ax_i-b||<10^{-8}$ oder wenn die maximale Iterationszahl von $1500$ überschritten ist.  In der folgenden Abbildung,  sind die Fehler der Lösungen des Poisson Problems mit durch die beiden Verfahren in Abhängigkeit von $N$ geplottet.
+Wir betrachten für die Dimensionen $d=2$ die approximierte Lösung der Poisson-Gleichung durch das LU- und das SOR-Verfahren für verschiedene  $n$ an.   Wir schauen uns den Fehler beim SOR Verfahren für feste Abbruchbedingungen an,  entweder wenn $||Ax_i-b||-||Ax_{i+1}-b||<10^{-7}$, $||Ax_i-b||<10^{-8}$ oder wenn die maximale Iterationszahl überschritten ist.  In der folgenden Abbildung,  sind die Fehler der Lösungen des Poisson Problems mit durch die beiden Verfahren in Abhängigkeit von $n$ geplottet.
+
+
+
+
+\begin{minipage}{\textwidth}
+
+ \centering
+ \includegraphics[scale = 0.8]{Errorlu1}
+ 	\captionof{figure}{Vergleich von dem Fehler}
+ 	\label{errorcomp}
+
+ \end{minipage}
+ 
+ Wir sehen in dem Graphen, dass der Fehler beim Lösen des Differentialgleichungssystems durch das LU und durch das SOR Verfahren für die gewählten Werte gleich ist.  Man erkennt aber hier gut den Einfluss von der maximalen Iterationszahl, denn ab $n>10$ wächst der Fehler der Lösung durch das SOR Verfahren mit einer kleineren maximalen Iterationsszahl stark an.
+ 
+ 
+
 \subsubsection{Sparsität}
 Bei dem Poisson Problem betrachten wir sehr dünnbesetze aber große Matrizen.  Beim Speichern ist es daher sinnvoll nur die Nicht-Null Einträge und deren Position zu betrachten.  Wir haben im letzten Bericht gesehen,  dass die LU Zerlegung im Allgemeinen mehr Nicht-Null EInträge besitzt als die ursprüngliche Matrix $A$.  Beim SOR Verfahren hingegen erhält man durch das \textit{splitting} von $A=L+D+U$ drei Matrizen mit gleich vielen Nicht-Null Einträgen.  Wählt man eine sehr feine Diskretisierung des Gebietes für das Poisson Problem,  so benötigt man also mit dem SOR Verfahren weniger Speicherplatz.   Experimentell überprüfen wir dies, indem wir für verschiedene $N$, der Anzahl an Diskretisierungspunkten, die Sparsität vergleichen. 
-In der folgenden Abbildung ist in Abhängigkeit von $N$ die relative Sparsität, also Anzahl an Nicht-Null Einträgen aufgezeichnet. 
+In der folgenden Abbildung \ref{sparsity} ist in Abhängigkeit von $N$ die relative Sparsität, also Anzahl an Nicht-Null Einträgen aufgezeichnet. 
+
+\begin{minipage}{\textwidth}
+
+ \centering
+ \includegraphics[scale = 0.9]{Sparsity1}
+ 	\captionof{figure}{Vergleich von Sparsität}
+ 	\label{sparsity}
+
+ \end{minipage}
+
+Man kann erkennen, dass die relative Anzahl der Nicht-Null Einträge im SOR Verfahren schneller abnimmt, als die der LU Zerlegung.  Es ist zu beachten, dass diese Abbildung doppelt-logarithmisch  skaliert ist.  Durch die eingezeichneten Hilfsgeraden sieht man, dass die Geraden des SOR Verfahrens parallel zur Funktion $f(x)=\frac{1}{x}$. Die Geraden der LU Zerlegung haben verschiedene Steigungen,  je nachdem welche DImension betrachtet wird. Bei Dimension $d=1$ gibt es keinen Unterschied zwischen der Sparsität der LU-Zerlegung und der Matrix beim SOR Verfahren.  Bei Dimension $d=2$ hingegen, verläuft die Gerade parallel zur Hilfsgeraden zur Funktion $f(x)=\frac{1}{\sqrt{x}}$. 
+
 \subsubsection{Laufzeit}
 Um die beiden Verfahren hinsichtlich der Laufzeit zu vergleichen,  messen wir jeweils für $d=2$ und verschiedene $n$ die Zeit, welche die jeweiligen Verfahren benötigen um das Poisson Problem zu lösen.  Um Störungen auszugleichen,  nehmen wir den Mittelwert von mehreren Messungen.Für das SOR Verfahren vergleichen wir zusätzlich eine weitere Implementation,  welche das SOR Verfahren komponentenweise ausführt. 
 
