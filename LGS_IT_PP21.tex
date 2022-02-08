@@ -275,12 +275,40 @@
 
 \subsubsection*{Bedienungshilfe \texttt{linear\_solvers.py}}
 In \texttt{linear\_solvers.py} ist eine \texttt{main()} Funktion implementiert. Sie dient zur Demonstration ausgewählter vorhandender Funktionen und
-		wird nur ausgef\"uhrt wenn \texttt{linear\_solvers.py} direkt mittels \texttt{python3 experiments\_lu.py} gestartet wird. 
-Anschließend stellt das Programm die Funktionalität von \texttt{solve\_lu()} vor. Zunächst wird zu einer gegebenen $LU$ Zerlegung und rechten Seite das Gleichungssystem gelöst.
-Es wird die LU-Zerlegung für eine Koeffizienenmatrix $A$ mit gegebenen Werten $n$, $d$  erstellt. Standardmäßig sind $n=5$ und $d=2$ ausgewählt, aber das kann leicht im Programm geändert werden. Zu beachten ist, dass $n\geq 2$ und $d\geq 1$ sein muss. und in \texttt{block\_matrix.get\_lu()} eingesetzt. Um für $b$ ein Array in der passenden Form zu erhalten nehmen wir $[1,1,1,...]$.
-Das Programm gibt dann die Lösung $x$ zur Gleichung $Ax=b$ aus.
+		wird nur ausgef\"uhrt wenn \texttt{linear\_solvers.py} direkt mittels \texttt{python3 linear\_solvers.py} gestartet wird. 
+Die \texttt{main()} stellt die Funktionalität von \texttt{solve\_sor()} vor. Zunächst kann vom Nutzer die Parameter $3\geq n\geq 15$ und $1\geq d\geq 3$ ausgewählt werden. Wird bei einer der Eingaben kein \textit{Integer} angegeben wird eine \texttt{ValueError}-Exception geworfen.
+Es wird die Koeffizienenmatrix $A$ zu den gegebenen Werten $n$, $d$  erstellt. Um für $b$ ein Array in der passenden Form zu erhalten nehmen wir $[1,\cdots,1]$.
+Das Programm gibt dann die Lösung $x$ zur Gleichung $Ax=b$ aus sowie das Residuum zur gefundenen Lösung.
 
-\subsection*{Bedienungsanleitung }
+\subsection*{Bedienungsanleitung \texttt{experimente\_it.py}}
+\texttt{experimente\_it.py} besitzt eine \texttt{main()} Funktion, welche unsere Experimente vorstellen kann. Dabei kann der Nutzer selbst wählen welches Experiment durchgeführt werden soll.
+Dazu werden die möglichen Experimente aufgelistet, zusammen mit einer Zahl. Die zugehörige Zahl zum Experiment, das gesehen werden soll, muss danach eingegeben werden. Wird eine andere Eingabe eingegeben, wird der Nutzer darauf hingewiesen und nochmal um eine Eingabe gebeten. Nach dem Auswählen eines Experimentes, wird dieses durchgeführt.
+Wird bei einer der Eingaben kein \textit{Integer} angegeben wird eine \texttt{ValueError}-Exception geworfen.\\
+\\
+
+\bfpara{\textit{1: Plot zum Fehler des iterativen Verfahrens}}\\
+Es wird ein Plot betrachtet, der für Dimension $=1,2,3$ den Fehler für die Iterationen zeigt. Der Nutzer
+kann hierbei ein $n$ zwischen $3$ und $18$ wählen.
+\bfpara{\textit{2: Plot zu unterschiedlichen Epsilon als Abbruchkriterium}}\\
+Der Nutzer wählt das maximale $3\geq n\geq 47$. Dann wird ein Plot mit Schrittweite $5$
+erstellt, mit dem man den Fehler der Lösung für unterschiedliche Epsilon vergleichen kann.
+Epsilon sind hierbei $h^k$($h=\frac{1}{n}$) mit $k=-2,0,2,4,6$.
+\bfpara{\textit{3: Plot zum Fehler in Abhängigkeit von Omega}}\\
+Diese Funktion illustriert den Fehler in Abhängigkeit von Omega für $d=2$ und ein vom Nutzer gewähltes
+$3\geq n\geq 15$.
+\bfpara{\textit{4: Plot zum Fehler des SOR- und des LU-Verfahrens}}\\
+Zunächst kann der Nutzer ein $n$ zwischen $3$ und $40$ auswählen.
+Diese Funktion erstellt einen Graphen, der für $d=1$ das Konvergenzverhalten
+des LU und SOR-Verfahrens vergleicht. Das SOR-Verfahren läuft
+einmal mit \texttt{max_iter}$=3000$ und einmal mit \texttt{max_iter}$=10000$. Es wird außerdem \texttt{omega}$=0.1$ verwendet.
+\bfpara{\textit{5: Vergleich der Laufzeit des SOR- und des LU-Verfahrens}}\\
+    Der Nutzer wählt ein $3\geq n\geq 10$ und für die Dimension verwenden wir $d=1$.
+    Diese Funktion erstellt einen Graphen, der die Laufzeit des
+    LU- und des SOR-Verfahrens komponentenweise und mit
+    solve-triangular vergleicht. Hierfür wird für jeden Punkt die Funktion $15$ mal durchlaufen und dann der Mittelwert gebildet.
+\bfpara{\textit{6: Vergleich der Sparsität der beiden Verfahren}}\\
+Hier wird die Anzahl Nicht-Null-Einträge der Matrizen mit und die der korrespondierenden LU-Zerlegung einander gegenüber gestellt.
+
 \section{Beschreibung der Experimente}
 
  \cbstart Im Rahmen unserer Experimente werden wir uns mit folgender Funktion beschäftigen.
