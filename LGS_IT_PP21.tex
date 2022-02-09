@@ -385,20 +385,28 @@ Wir untersuchen das Konvergenzverhalten, je nachdem, welchen Wert man als Abbruc
 
 \subsection{Experimentelle Ermittlung des optimalen Relaxationsfaktor $\omega$}
 Je nachdem welchen Relaxationsfaktor man für das SOR-Verfahren nutzt,  bekommt man unterschiedlich genaue Lösungen.  In der Theorie haben wir bereits gesehen, wie der optimale Wert für $\omega$ aussehen sollte.  Wir werden das nun experimentell überprüfen.  Dazu ist in der folgenden Grafik \ref{omega}
- der Fehler in Abhängigkeit von dem verwendeten Relaxationsfaktor aufgetragen.  Es ist hier der Fehler von der durch das SOR Verfahren erhaltenen Lösung für $n=11$, $d=2$ mit den Abbruchbedingungen wie in Abbildung \ref{error} für verschiedene $\omega$ berechnet. Wir ziehen Werte $\omega \in (0,2)$ in Betracht, da das Verfahren nach \ref{omegabetween02} sonst nicht konvergiert.
+ der Fehler in Abhängigkeit von dem verwendeten Relaxationsfaktor aufgetragen.  Es ist hier der Fehler von der durch das SOR Verfahren erhaltenen Lösung für $n=11$, $d=2$ mit den Abbruchbedingungen wie in Abbildung \ref{error} für verschiedene $\omega$ berechnet. Wir ziehen Werte $\omega \in (0,2)$ in Betracht, da das Verfahren nach \ref{omegabetween02} sonst nicht konvergiert. In der Abbildung \ref{omega2} hingegen ist der fehlr in Abhängigkeit von $\omega$ für $d=2$ und $n=4$ gezeigt.
 
 \begin{minipage}{\textwidth}
 
  \centering
  \includegraphics[scale = 0.5]{Omega1}
- 	\captionof{figure}{Optimaler Relaxationswert}
+ 	\captionof{figure}{Optimaler Relaxationswert $n=11$}
  	\label{omega}
 
  \end{minipage}
+ 
+\begin{minipage}{\textwidth}
+
+ \centering
+ \includegraphics[scale = 0.5]{Omega2}
+ 	\captionof{figure}{Optimaler Relaxationswert $n=4$}
+ 	\label{omega2}
+
+ \end{minipage}
 		 
-	Hier ist zu sehen, dass mit zunehmendem Relaxationswert, auch der Fehler zunimmt. 
-	Wir verwenden also in den folgenden Experimenten ein kleines $\omega=0.1$.
-		
+	Hier ist zu sehen, dass für $n=11$ mit zunehmendem Relaxationswert, auch der Fehler zunimmt. 
+	Allerdings wird klar, dass der optimale Relaxationsfaktor von der Matrix $A$, also auch von $n$ abhängt, denn in der Abbildung \ref{omega2} sieht man, dass der Fehler bei großem $\omega $ klein wird. 
 \subsection{Vergleich LU und SOR}
 \subsubsection{Konvergenzverhalten}
 
