@@ -348,7 +348,7 @@ Dann ist $u$ die exakte Lösung zum Poisson Problem mit $f$ wie oben definiert. 
 
 Wir werden uns im Folgenden mit einer Reihe an Experimenten auseinandersetzen.  Dabei untersuchen wir das Konvergenzverhalten, die Fehler in Abhängigkeit von der Anzahl an Diskretisierungspunkten,  der Fehler in Abhängigkeit von dem Relexationsfaktors $\omega $, sowie die Laufzeit und Sparsität des SOR Verfahrens. Wir werden dann das SOR Verfahren im Hinblick auf diese Punkte mit dem direkten LU Verfahren vergleichen, um Vor und Nachteile der beiden zu finden.
 \subsection{Fehleranalyse}
-Wir schauen uns zunächst an, wie sich der Fehler im Laufe der Iterationen verhält. Dazu betrachten wir die folgende Abbildung \ref{error}, in der der maximale absolute Fehler der Iterierten für $d\in\{1,2,3\}$ und $27$ Diskretisierungspunkten.   In der Abbildung \ref{error2} hingegen ist dieses Konvergenzverhalten für $d\in\{1,2,3\}$ und $144$ Diskretisierungspunkten abgebildet.
+Wir schauen uns zunächst an, wie sich der Fehler im Laufe der Iterationen verhält. Dazu betrachten wir die folgende Abbildung \ref{error}, in der der maximale absolute Fehler der Iterierten für $d\in\{1,2,3\}$ und $27$ Diskretisierungspunkten. In der Abbildung \ref{error2} hingegen ist dieses Konvergenzverhalten für $d\in\{1,2,3\}$ und $144$ Diskretisierungspunkten abgebildet. Wir wählen die Abbruchbedingungen max\_ iter=$5000$, $\varepsilon =10^{-8}$, min\_ red aufgehoben, $\omega =0,6$. WIr heben die Abbruchbedingung min\_ red auf, da der Fehler nicht streng monoton fällt.
 
 
 
@@ -385,7 +385,7 @@ Wir untersuchen das Konvergenzverhalten, je nachdem, welchen Wert man als Abbruc
 
 \subsection{Experimentelle Ermittlung des optimalen Relaxationsfaktor $\omega$}
 Je nachdem welchen Relaxationsfaktor man für das SOR-Verfahren nutzt,  bekommt man unterschiedlich genaue Lösungen.  In der Theorie haben wir bereits gesehen, wie der optimale Wert für $\omega$ aussehen sollte.  Wir werden das nun experimentell überprüfen.  Dazu ist in der folgenden Grafik \ref{omega}
- der Fehler in Abhängigkeit von dem verwendeten Relaxationsfaktor aufgetragen.  Es ist hier der Fehler von der durch das SOR Verfahren erhaltenen Lösung für $n=11$, $d=2$ mit den Abbruchbedingungen wie in Abbildung \ref{error} für verschiedene $\omega$ berechnet. Wir ziehen Werte $\omega \in (0,2)$ in Betracht, da das Verfahren nach \ref{omegabetween02} sonst nicht konvergiert. In der Abbildung \ref{omega2} hingegen ist der fehlr in Abhängigkeit von $\omega$ für $d=2$ und $n=4$ gezeigt.
+ der Fehler in Abhängigkeit von dem verwendeten Relaxationsfaktor aufgetragen.  Es ist hier der Fehler von der durch das SOR Verfahren erhaltenen Lösung für $n=11$, $d=2$ mit den Abbruchbedingungen wie in Abbildung \ref{error} für verschiedene $\omega$ berechnet. Wir ziehen Werte $\omega \in (0,2)$ in Betracht, da das Verfahren nach \ref{omegabetween02} sonst nicht konvergiert. In der Abbildung \ref{omega2} hingegen ist der Fehler in Abhängigkeit von $\omega$ für $d=2$ und $n=4$ gezeigt. Wir wählen hierbei die Abbruchbrdingungen wie in \ref{error}. 
 
 \begin{minipage}{\textwidth}
 
