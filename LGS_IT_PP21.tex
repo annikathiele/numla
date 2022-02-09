@@ -238,8 +238,33 @@
 			\end{align}
 			\end{theorem}
 			
+			\begin{proof}
+			Dieser Beweis stammt aus \citep{konvergenz}. Es gilt 
+			\begin{align*}
+			M_{SOR}(\omega )&=(D-\omega L)^{-1}[(1-\omega)D+\omega U]
+			\\&=(I-\omega D^{-1}L)^{-1}[(1-\omega )1+\omegaD^{-1}U]
+			\end{align*}
 			
+			Da die beiden faktoren Dreiecksmatrizen sind, gilt für die Determinante
+			\begin{align*}
+			\det (M_{SOR}(\omega ))=\det ((I-\omega D^{-1}L)^{-1})\det ((1-\omega )1+\omegaD^{-1}U)=(1-\omega )^n
+			\end{align*}
+			Es ergibt sich also für den Spektralradius 
+			\begin{align*}
+			\rho (M_{SOR}(\omega ))&:=\max_{1\leq i \leq n} |\lambda _i|\\
+			&\geq \left( \prod_{i=1}^n|\lambda _i|\right) ^{\frac{1}{n}}
+			\\&=1-\omega.
+			\end{align*}
+			Die Behauptung folgt.
+			\end{proof}
 			
+			Man kann auch den folgenden Satz, auch aus \citep{konvergenz}, zeigen:
+			\begin{theorem}
+			Für jede positiv definite Matrix $A\In\mathbb{R}^n$ gilt für $\omega \in (0,2)$,
+			$\rho (M_{SOR}(\omega )<1$ und damit konvergiert dann das SOR Verfahren.
+			\end{theorem}
+			Der Beweis ist in \citep{konvergenz} zu finden. 
+			Wir wissen also, dass das Verfahren genau für die $\omega \in (0,2)$ konvergiert. 
 			Da wir bei iterativen Verfahren nicht nach endlich vielen Schritten zu einer
 			exakten Lösung kommen,  möchten wir das Verfahren bei einer gewissen
 			Genauigkeit der Lösung abbrechen.  Dafür geben wir einen Wert $\varepsilon$ 
@@ -271,43 +296,43 @@
 		
 \section{Implementierung}
 
-\texttt{solve\_ sor()}
 
 \subsubsection*{Bedienungshilfe \texttt{linear\_solvers.py}}
 In \texttt{linear\_solvers.py} ist eine \texttt{main()} Funktion implementiert. Sie dient zur Demonstration ausgewählter vorhandender Funktionen und
-		wird nur ausgef\"uhrt wenn \texttt{linear\_solvers.py} direkt mittels \texttt{python3 linear\_solvers.py} gestartet wird. 
-Die \texttt{main()} stellt die Funktionalität von \texttt{solve\_sor()} vor. Zunächst kann vom Nutzer die Parameter $3\geq n\geq 15$ und $1\geq d\geq 3$ ausgewählt werden. Wird bei einer der Eingaben kein \textit{Integer} angegeben wird eine \texttt{ValueError}-Exception geworfen.
-Es wird die Koeffizienenmatrix $A$ zu den gegebenen Werten $n$, $d$  erstellt. Um für $b$ ein Array in der passenden Form zu erhalten nehmen wir $[1,\cdots,1]$.
-Das Programm gibt dann die Lösung $x$ zur Gleichung $Ax=b$ aus sowie das Residuum zur gefundenen Lösung.
+		wird nur ausgef\"uhrt wenn
+		\\ \texttt{linear\_solvers.py} direkt mittels \texttt{python3 linear\_solvers.py} gestartet wird. 
+ Die \texttt{main()} stellt die Funktionalität von \texttt{solve\_sor()} vor. Zunächst kann vom Nutzer die Parameter $3\geq n\geq 15$ und $1\geq d\geq 3$ ausgewählt werden. Wird bei einer der Eingaben kein \textit{Integer} angegeben wird eine \texttt{ValueError}-Exception geworfen.
+ Es wird die Koeffizienenmatrix $A$ zu den gegebenen Werten $n$, $d$  erstellt. Um für $b$ ein Array in der passenden Form zu erhalten nehmen wir $[1,\cdots,1]$.
+ Das Programm gibt dann die Lösung $x$ zur Gleichung $Ax=b$ aus sowie das Residuum zur gefundenen Lösung.
 
-\subsection*{Bedienungsanleitung \texttt{experimente\_it.py}}
-\texttt{experimente\_it.py} besitzt eine \texttt{main()} Funktion, welche unsere Experimente vorstellen kann. Dabei kann der Nutzer selbst wählen welches Experiment durchgeführt werden soll.
-Dazu werden die möglichen Experimente aufgelistet, zusammen mit einer Zahl. Die zugehörige Zahl zum Experiment, das gesehen werden soll, muss danach eingegeben werden. Wird eine andere Eingabe eingegeben, wird der Nutzer darauf hingewiesen und nochmal um eine Eingabe gebeten. Nach dem Auswählen eines Experimentes, wird dieses durchgeführt.
-Wird bei einer der Eingaben kein \textit{Integer} angegeben wird eine \texttt{ValueError}-Exception geworfen.\\
-\\
+ \subsection*{Bedienungsanleitung \texttt{experimente\_it.py}}
+ \texttt{experimente\_it.py} besitzt eine \texttt{main()} Funktion, welche unsere Experimente vorstellen kann. Dabei kann der Nutzer selbst wählen welches Experiment durchgeführt werden soll.
+ Dazu werden die möglichen Experimente aufgelistet, zusammen mit einer Zahl. Die zugehörige Zahl zum Experiment, das gesehen werden soll, muss danach eingegeben werden. Wird eine andere Eingabe eingegeben, wird der Nutzer darauf hingewiesen und nochmal um eine Eingabe gebeten. Nach dem Auswählen eines Experimentes, wird dieses durchgeführt.
+ Wird bei einer der Eingaben kein \textit{Integer} angegeben wird eine \texttt{ValueError}-Exception geworfen.\\
+ \\
 
-\bfpara{\textit{1: Plot zum Fehler des iterativen Verfahrens}}\\
-Es wird ein Plot betrachtet, der für Dimension $=1,2,3$ den Fehler für die Iterationen zeigt. Der Nutzer
-kann hierbei ein $n$ zwischen $3$ und $18$ wählen.
-\bfpara{\textit{2: Plot zu unterschiedlichen Epsilon als Abbruchkriterium}}\\
-Der Nutzer wählt das maximale $3\geq n\geq 47$. Dann wird ein Plot mit Schrittweite $5$
-erstellt, mit dem man den Fehler der Lösung für unterschiedliche Epsilon vergleichen kann.
-Epsilon sind hierbei $h^k$($h=\frac{1}{n}$) mit $k=-2,0,2,4,6$.
-\bfpara{\textit{3: Plot zum Fehler in Abhängigkeit von Omega}}\\
-Diese Funktion illustriert den Fehler in Abhängigkeit von Omega für $d=2$ und ein vom Nutzer gewähltes
-$3\geq n\geq 15$.
-\bfpara{\textit{4: Plot zum Fehler des SOR- und des LU-Verfahrens}}\\
-Zunächst kann der Nutzer ein $n$ zwischen $3$ und $40$ auswählen.
-Diese Funktion erstellt einen Graphen, der für $d=1$ das Konvergenzverhalten
-des LU und SOR-Verfahrens vergleicht. Das SOR-Verfahren läuft
-einmal mit \texttt{max_iter}$=3000$ und einmal mit \texttt{max_iter}$=10000$. Es wird außerdem \texttt{omega}$=0.1$ verwendet.
-\bfpara{\textit{5: Vergleich der Laufzeit des SOR- und des LU-Verfahrens}}\\
-    Der Nutzer wählt ein $3\geq n\geq 10$ und für die Dimension verwenden wir $d=1$.
-    Diese Funktion erstellt einen Graphen, der die Laufzeit des
-    LU- und des SOR-Verfahrens komponentenweise und mit
-    solve-triangular vergleicht. Hierfür wird für jeden Punkt die Funktion $15$ mal durchlaufen und dann der Mittelwert gebildet.
-\bfpara{\textit{6: Vergleich der Sparsität der beiden Verfahren}}\\
-Hier wird die Anzahl Nicht-Null-Einträge der Matrizen mit und die der korrespondierenden LU-Zerlegung einander gegenüber gestellt.
+ \bfpara{\textit{1: Plot zum Fehler des iterativen Verfahrens}}\\
+ Es wird ein Plot betrachtet, der für Dimension $=1,2,3$ den Fehler für die Iterationen zeigt. Der Nutzer
+ kann hierbei ein $n$ zwischen $3$ und $18$ wählen.
+ \bfpara{\textit{2: Plot zu unterschiedlichen Epsilon als Abbruchkriterium}}\\
+ Der Nutzer wählt das maximale $3\geq n\geq 47$. Dann wird ein Plot mit Schrittweite $5$
+ erstellt, mit dem man den Fehler der Lösung für unterschiedliche Epsilon vergleichen kann.
+ Epsilon sind hierbei $h^k$($h=\frac{1}{n}$) mit $k=-2,0,2,4,6$.
+ \bfpara{\textit{3: Plot zum Fehler in Abhängigkeit von Omega}}\\
+ Diese Funktion illustriert den Fehler in Abhängigkeit von Omega für $d=2$ und ein vom Nutzer gewähltes
+ $3\geq n\geq 15$.
+ \bfpara{\textit{4: Plot zum Fehler des SOR- und des LU-Verfahrens}}\\
+ Zunächst kann der Nutzer ein $n$ zwischen $3$ und $40$ auswählen.
+ Diese Funktion erstellt einen Graphen, der für $d=1$ das Konvergenzverhalten
+ des LU und SOR-Verfahrens vergleicht. Das SOR-Verfahren läuft
+ einmal mit \texttt{max\_ iter} $=3000$ und einmal mit \texttt{max\_ iter}$=10000$. Es wird außerdem \texttt{omega}$=0.1$ verwendet.
+ \bfpara{\textit{5: Vergleich der Laufzeit des SOR- und des LU-Verfahrens}}\\
+     Der Nutzer wählt ein $3\geq n\geq 10$ und für die Dimension verwenden wir $d=1$.
+     Diese Funktion erstellt einen Graphen, der die Laufzeit des
+     LU- und des SOR-Verfahrens komponentenweise und mit
+     solve-triangular vergleicht. Hierfür wird für jeden Punkt die Funktion $15$ mal durchlaufen und dann der Mittelwert gebildet.
+ \bfpara{\textit{6: Vergleich der Sparsität der beiden Verfahren}}\\
+ Hier wird die Anzahl Nicht-Null-Einträge der Matrizen mit und die der korrespondierenden LU-Zerlegung einander gegenüber gestellt.
 
 \section{Beschreibung der Experimente}
 
@@ -320,8 +345,10 @@ $$f(x)=\Delta u= \sum_{i=1}^d\frac{\partial ^2 u}{\partial x_i^2}=
  \sum_{i=1}^d \left(\prod_{l\neq i}x_l\sin (\pi x_l)\right)\left(-x_i\pi ^2\sin (\pi x_i)+(1+\pi)\cos (\pi x_i) \right)$$
 
 Dann ist $u$ die exakte Lösung zum Poisson Problem mit $f$ wie oben definiert. Wir können also nun numerisch das Poisson Problem lösen und das Ergebnis mit $u$ vergleichen um den Fehler zu erhalten. \cbend
+
+Wir werden uns im Folgenden mit einer Reihe an Experimenten auseinandersetzen.  Dabei untersuchen wir das Konvergenzverhalten, die Fehler in Abhängigkeit von der Anzahl an Diskretisierungspunkten,  der Fehler in Abhängigkeit von dem Relexationsfaktors $\omega $, sowie die Laufzeit und Sparsität des SOR Verfahrens. Wir werden dann das SOR Verfahren im Hinblick auf diese Punkte mit dem direkten LU Verfahren vergleichen, um Vor und Nachteile der beiden zu finden.
 \subsection{Fehleranalyse}
-Wir schauen uns zunächst an, wie sich der Fehler im Laufe der Iterationen verhält. Dazu betrachten wir die folgende Abbildung \ref{error}, in der der maximale absolute Fehler der Iterierten für $d\in\{1,2,3\}$ und $27$ Diskretisierungspunkten.  
+Wir schauen uns zunächst an, wie sich der Fehler im Laufe der Iterationen verhält. Dazu betrachten wir die folgende Abbildung \ref{error}, in der der maximale absolute Fehler der Iterierten für $d\in\{1,2,3\}$ und $27$ Diskretisierungspunkten.   In der Abbildung \ref{error2} hingegen ist dieses Konvergenzverhalten für $d\in\{1,2,3\}$ und $144$ Diskretisierungspunkten abgebildet.
 
 
 
@@ -332,14 +359,17 @@ Wir schauen uns zunächst an, wie sich der Fehler im Laufe der Iterationen verh�
  \includegraphics[scale = 0.9]{Error1}
  	\captionof{figure}{Fehleranalyse}
  	\label{error}
+ 	\includegraphics[scale = 0.9]{Error2}
+ 	\captionof{figure}{Fehleranalyse II}
+ 	\label{error2}
 
  \end{minipage}
  
- Diese Grafik ist doppelt-logaritmisch skaliert. 
+ Diese Grafiken sind doppelt-logaritmisch skaliert.  Man erkennt dass der Fehler im Laufe der iterationen zunächst stark sinkt und ab einem gewissen Punkt konstant bleibt oder sogar wieder leicht steigt.  Es ist außerdem zu erkennen, dass für eine größere Anzahl an Diskretisierungspunkten, mehr iterationen benötigt werden, um den minimalen Fehler zu erreichen. Dennoch ist zu sehen, dass der Fehler für größere $n$ größer ist. 
 
 
 \subsection{Konvergenzverhalten mit verschiedenen Abbruchbedingungen}
-Wir untersuchen das Konvergenzverhalten, je nachdem, welchen Wert man als Abbruchbedingung wählt.  Wir variieren in der folgenden Abbildung \ref{epsilon} das $\varepsilon$,  zu welchem die Abbruchbedingung $||Ax_i -b||<\varepsilon$ genutzt wird. Wir schauen uns an, wie der maximale absoluter Fehler sich in ABhängigkeit von $n$ verhält. 
+Wir untersuchen das Konvergenzverhalten, je nachdem, welchen Wert man als Abbruchbedingung wählt.  Wir variieren in der folgenden Abbildung \ref{epsilon} das $\varepsilon$,  zu welchem die Abbruchbedingung $||Ax_i -b||<\varepsilon$ genutzt wird. Wir setzen $h:=\frac{1}{n}$. Wir schauen uns an, wie der maximale absoluter Fehler sich in Abhängigkeit von $n$ verhält. 
 
 
 \begin{minipage}{\textwidth}
@@ -351,7 +381,7 @@ Wir untersuchen das Konvergenzverhalten, je nachdem, welchen Wert man als Abbruc
 
  \end{minipage}
  
- Man erkennt, dass mit kleinerem $\varepsilon$ ist auch der Fehler geringer, so sind die Fehler für $\varepsilon =\frac{1}{n^{-2}}$ und $\varepsilon =1$ für größere $n$ ungefähr Eins.    Für $\varepsilon =\frac{1}{n^{2}}$ ist der Fehler schon viel kleiner und für  $\varepsilon =\frac{1}{n^{4}}$ und  $\varepsilon =\frac{1}{n^{6}}$ ist der Fehler ähnlich aber noch kleiner.  Durch die eingezeichnete Hilfsgeraden kann man sehen, dass mit zunehmenden $n$, der Fehler sich ab $n=10$ nicht mehr viel ändert.  Bei $\varepsilon = \frac{1}{n^{-2}}$ sieht man bei höheren $n$, dass auch der Fehler wieder steigt.
+ Man erkennt, dass mit kleinerem $\varepsilon$ ist auch der Fehler geringer, so sind die Fehler für $\varepsilon =\frac{1}{n^{-2}}$ und $\varepsilon =1$ für größere $n$ ungefähr Eins.    Für $\varepsilon =\frac{1}{n^{2}}$ ist der Fehler schon viel kleiner und für  $\varepsilon =\frac{1}{n^{4}}$ und  $\varepsilon =\frac{1}{n^{6}}$ ist der Fehler ähnlich aber noch kleiner.  Durch die eingezeichnete Hilfsgeraden kann man sehen, dass mit zunehmenden $n$, der Fehler sich ab $n=10$ nicht mehr viel ändert.  Bei $\varepsilon = \frac{1}{n^{2}}$ sieht man bei höheren $n$, dass auch der Fehler wieder steigt.
 
 \subsection{Experimentelle Ermittlung des optimalen Relaxationsfaktor $\omega$}
 Je nachdem welchen Relaxationsfaktor man für das SOR-Verfahren nutzt,  bekommt man unterschiedlich genaue Lösungen.  In der Theorie haben wir bereits gesehen, dass der optimale Wert für $\omega$ beträgt.  Wir werden das nun experimentell überprüfen.  Dazu ist in der folgenden Grafik \ref{omega}
@@ -406,9 +436,20 @@ In der folgenden Abbildung \ref{sparsity} ist in Abhängigkeit von $N$ die relat
 Man kann erkennen, dass die relative Anzahl der Nicht-Null Einträge im SOR Verfahren schneller abnimmt, als die der LU Zerlegung.  Es ist zu beachten, dass diese Abbildung doppelt-logarithmisch  skaliert ist.  Durch die eingezeichneten Hilfsgeraden sieht man, dass die Geraden des SOR Verfahrens parallel zur Funktion $f(x)=\frac{1}{x}$. Die Geraden der LU Zerlegung haben verschiedene Steigungen,  je nachdem welche DImension betrachtet wird. Bei Dimension $d=1$ gibt es keinen Unterschied zwischen der Sparsität der LU-Zerlegung und der Matrix beim SOR Verfahren.  Bei Dimension $d=2$ hingegen, verläuft die Gerade parallel zur Hilfsgeraden zur Funktion $f(x)=\frac{1}{\sqrt{x}}$. 
 
 \subsubsection{Laufzeit}
-Um die beiden Verfahren hinsichtlich der Laufzeit zu vergleichen,  messen wir jeweils für $d=2$ und verschiedene $n$ die Zeit, welche die jeweiligen Verfahren benötigen um das Poisson Problem zu lösen.  Um Störungen auszugleichen,  nehmen wir den Mittelwert von mehreren Messungen.Für das SOR Verfahren vergleichen wir zusätzlich eine weitere Implementation,  welche das SOR Verfahren komponentenweise ausführt. 
+Um die beiden Verfahren hinsichtlich der Laufzeit zu vergleichen,  messen wir jeweils für $d=1$ und verschiedene $n$ die Zeit, welche die jeweiligen Verfahren benötigen um das Poisson Problem zu lösen.  Dabei betrachten wir $\omega =0,1$, $\varepsilon = 10^{-8}$ und eine maximale Iterationszahl $max\_ iter = 5000$.  Um Störungen auszugleichen,  nehmen wir den Mittelwert von mehreren Messungen.Für das SOR Verfahren vergleichen wir zusätzlich eine weitere Implementation,  welche das SOR Verfahren komponentenweise ausführt. 
 
 
+\begin{minipage}{\textwidth}
+
+ \centering
+ \includegraphics[scale = 0.9]{time1}
+ 	\captionof{figure}{Vergleich von Laufzeit}
+ 	\label{time}
+
+ \end{minipage}
+
+Es ist aus dieser Abbildung zu erkennen, dass die Laufzeit von dem LU Verfahren linear beschränkt ist.  Das SOR Verfahren hingegen ist nicht ganz linear beschränkt.  Wir haben beim SOR Verfahren noch von einer weiteren Implementation die Zeit gemessen, diese hat eine weitaus größere Laufzeit. Bei dieser Implementation berechnen wir die Schritte komponentenweise. Dies bedeutet einen größeren Rechenaufwand und damit eine höhere Laufzeit. Es ist also zu erkennen, dass die Laufzeit des Verfahrens natürlich auch 
+von der gewählten Umsetzung des Verfahrens abhängig ist. 
 
 \section{Auswertung der Experimente}
 \section{Zusammenfassung}
