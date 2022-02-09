@@ -7,7 +7,8 @@
 
 
 % title of the document
-\title{LGS mit LU Zerlegung}
+\title{Lineare Gleichungssysteme\\
+mit iterativen Verfahren lösen}
 % optional subtitle
 %\subtitle{Draft from~\today}
 % information about the author
@@ -22,7 +23,7 @@
 % of contents'
 \usepackage[ngerman]{babel}
 
-\usepackage[xcolor]{changebar}
+%\usepackage[xcolor]{changebar}
 \usepackage{lipsum}
 
 
@@ -93,6 +94,7 @@
 \maketitle
 \newpage
 % generating the table of contents (requires to run pdflatex twice!)
+\setcounter{tocdepth}{2}
 \tableofcontents
 \newpage
 
@@ -134,7 +136,7 @@
 
 		Wir wollen das Problem numerisch mit \textit{Finiten-Differenzen} approximieren. Nach \citep{finite}
 		\begin{definition}[Finite-Differenzen-Methode]
-		Finite-Differenzen-Methoden sind eine Klasse numerischer Verfahren zur Lösung gewöhnlicher und partieller Differenzialgleichunen.		
+		Finite-Differenzen-Methoden sind eine Klasse numerischer Verfahren zur Lösung gewöhnlicher und partieller Differenzialgleichungen.		
 		Die grundlegende Idee bei der \textit{Finite-Differenzen-Methode} ist es die Ortsableitung in der Differenzialgleichung an einer endlichen Zahl Gitterpunkten durch Differenzenquotienten zu approximieren. Unsere angenäherten Lösungen der Differenzialgleichung an den Gitterpunkten führen dann auf ein entsprechendes Gleichungssystem, welches sich numerisch berechnen lässt.
 		\end{definition}
 		In unserem Fall diskretisieren wir dazu das Gebiet $\Omega$ und den Laplace Operator durch \textit{Finite Differenzen} um ein lineares Gleichungssystem zu erhalten.
@@ -182,7 +184,7 @@
 			$(x_n)$.
 			\end{theorem}
 			Wir betrachten ein lineares Gleichungssystem $Ax=b$ für eine Matrix
-			$A\in \mathbb{R}^{m\cross m}$ Unser Iterationsansatz von \citep{skript}
+			$A\in \mathbb{R}^{m\times m}$ Unser Iterationsansatz von \citep{skript}
 			 $$x_{n+1}=Bx_n+d$$
 			 für geeignet gewähltes $B$ und $d$,  konvergiert nach dem Banachschen 
 			 Fixpunktsatz, wenn die rechte Seite als Abbildung eine 
@@ -197,7 +199,7 @@
 			Wir betrachten folgende Zerlegung von $A$ in die Summe einer unteren
 			Dreiecksmatrix, einer Diagonalmatrix und einer oberen Dreiecksmatrix.
 			\begin{definition}
-			Sei $A\in \mathbb{R}^{m\cross m}$.  Wir definieren die Matrizen
+			Sei $A\in \mathbb{R}^{m\times m}$.  Wir definieren die Matrizen
 			$$A=L+D+U:=\begin{pmatrix}
 			0&0&\hdots &0\\
 			*&0&\hdots &0\\
@@ -241,13 +243,13 @@
 			\begin{proof}
 			Dieser Beweis stammt aus \citep{konvergenz}. Es gilt 
 			\begin{align*}
-			M_{SOR}(\omega )&=(D-\omega L)^{-1}[(1-\omega)D+\omega U]
-			\\&=(I-\omega D^{-1}L)^{-1}[(1-\omega )1+\omegaD^{-1}U]
+			M_{SOR}(\omega )&=(D-\omega L)^{-1}[(1-\omega )D+\omega U]
+			\\&=(I-\omega D^{-1}L)^{-1}[(1-\omega )1+\omega D^{-1}U]
 			\end{align*}
 			
-			Da die beiden faktoren Dreiecksmatrizen sind, gilt für die Determinante
+			Da die beiden Faktoren Dreiecksmatrizen sind, gilt für die Determinante
 			\begin{align*}
-			\det (M_{SOR}(\omega ))=\det ((I-\omega D^{-1}L)^{-1})\det ((1-\omega )1+\omegaD^{-1}U)=(1-\omega )^n
+			\det (M_{SOR}(\omega ))=\det ((I-\omega D^{-1}L)^{-1})\det ((1-\omega )1+\omega D^{-1}U)=(1-\omega )^n
 			\end{align*}
 			Es ergibt sich also für den Spektralradius 
 			\begin{align*}
@@ -260,7 +262,7 @@
 			
 			Man kann auch den folgenden Satz, auch aus \citep{konvergenz}, zeigen:
 			\begin{theorem}
-			Für jede positiv definite Matrix $A\In\mathbb{R}^n$ gilt für $\omega \in (0,2)$,
+			Für jede positiv definite Matrix $A\in\mathbb{R}^n$ gilt für $\omega \in (0,2)$,
 			$\rho (M_{SOR}(\omega )<1$ und damit konvergiert dann das SOR Verfahren.
 			\end{theorem}
 			Der Beweis ist in \citep{konvergenz} zu finden. 
@@ -276,14 +278,14 @@
 		Im Gegensatz zum Verfahren mit der 
 		LU-Zerlegung,  benötigen wir in dem oben beschriebenen Iterativen Verfahren 
 		nicht mehr Speicherplatz, denn die Anzahl an Nicht-Null Eintägen der Zerlegung 
-		ist genauso groß wie die der Matrix $A$. Das liegt daran, dass wir die Matrix $A$ für das Verfahren aufteilen in $A=L+D+U$, wobei aber wenn man $L,D,U$ in eine Matrix abspeichert genau $A$ rauskommt. Daher ist die Anzahl an Nicht-Null Einträgen gleich zu der von der Matrix $A$. Bei der LU Zerlegung hingegen ist die Anzahl an Nicht-Null Einträgen in der LU Zerlegung im Allgemeinen größer als die von $A$.
+		ist genauso groß wie die der Matrix $A$. Das liegt daran, dass wir die Matrix $A$ für das Verfahren aufteilen in $A=L+D+U$, wobei aber wenn man $L,D,U$ in eine Matrix abspeichert genau $A$ raus kommt. Daher ist die Anzahl an Nicht-Null Einträgen gleich zu der von der Matrix $A$. Bei der LU Zerlegung hingegen ist die Anzahl an Nicht-Null Einträgen in der LU Zerlegung im Allgemeinen größer als die von $A$.
 		
 		Der Rechenaufwand von dem SOR-Verfahren ist in jedem Schritt nach
 		 \citep{slides} linear beschränkt, also in $\mathcal{O}(n)$, für eine 
-		 dünnbesetzte Matrix $A\in\mathbb{R}^{n\cross nm}$.  
+		 dünnbesetzte Matrix $A\in\mathbb{R}^{n\times nm}$.  
 		 
 		 \subsubsection{Optimaler Wert $\omega$}
-		 Der optimale Relaxationswert $\omega$ ist sehr Problemabhängig. Für das Poisson Problem ist er nach \citep{slides} bekannt und beträgt
+		 Der optimale Relaxationswert $\omega$ ist sehr problemabhängig. Für das Poisson Problem ist er nach \citep{slides} bekannt und beträgt
 		 \begin{align*}
 		 \omega _{opt}:=\frac{2}{1+\sqrt{1-\mu ^2}}
 		 \end{align*}
@@ -302,7 +304,7 @@ In \texttt{linear\_solvers.py} ist eine \texttt{main()} Funktion implementiert. 
 		wird nur ausgef\"uhrt wenn
 		\\ \texttt{linear\_solvers.py} direkt mittels \texttt{python3 linear\_solvers.py} gestartet wird. 
  Die \texttt{main()} stellt die Funktionalität von \texttt{solve\_sor()} vor. Zunächst kann vom Nutzer die Parameter $3\geq n\geq 15$ und $1\geq d\geq 3$ ausgewählt werden. Wird bei einer der Eingaben kein \textit{Integer} angegeben wird eine \texttt{ValueError}-Exception geworfen.
- Es wird die Koeffizienenmatrix $A$ zu den gegebenen Werten $n$, $d$  erstellt. Um für $b$ ein Array in der passenden Form zu erhalten nehmen wir $[1,\cdots,1]$.
+ Es wird die Koeffizientenmatrix $A$ zu den gegebenen Werten $n$, $d$  erstellt. Um für $b$ ein Array in der passenden Form zu erhalten nehmen wir $[1,\cdots,1]$.
  Das Programm gibt dann die Lösung $x$ zur Gleichung $Ax=b$ aus sowie das Residuum zur gefundenen Lösung.
 
  \subsection*{Bedienungsanleitung \texttt{experimente\_it.py}}
@@ -348,7 +350,7 @@ Dann ist $u$ die exakte Lösung zum Poisson Problem mit $f$ wie oben definiert. 
 
 Wir werden uns im Folgenden mit einer Reihe an Experimenten auseinandersetzen.  Dabei untersuchen wir das Konvergenzverhalten, die Fehler in Abhängigkeit von der Anzahl an Diskretisierungspunkten,  der Fehler in Abhängigkeit von dem Relexationsfaktors $\omega $, sowie die Laufzeit und Sparsität des SOR Verfahrens. Wir werden dann das SOR Verfahren im Hinblick auf diese Punkte mit dem direkten LU Verfahren vergleichen, um Vor und Nachteile der beiden zu finden.
 \subsection{Fehleranalyse}
-Wir schauen uns zunächst an, wie sich der Fehler im Laufe der Iterationen verhält. Dazu betrachten wir die folgende Abbildung \ref{error}, in der der maximale absolute Fehler der Iterierten für $d\in\{1,2,3\}$ und $27$ Diskretisierungspunkten. In der Abbildung \ref{error2} hingegen ist dieses Konvergenzverhalten für $d\in\{1,2,3\}$ und $144$ Diskretisierungspunkten abgebildet. Wir wählen die Abbruchbedingungen max\_ iter=$5000$, $\varepsilon =10^{-8}$, min\_ red aufgehoben, $\omega =0,6$. WIr heben die Abbruchbedingung min\_ red auf, da der Fehler nicht streng monoton fällt.
+Wir schauen uns zunächst an, wie sich der Fehler im Laufe der Iterationen verhält. Dazu betrachten wir die folgende Abbildung \ref{error}, in der der maximale absolute Fehler der Iterierten für $d\in\{1,2,3\}$ und $27$ Diskretisierungspunkten. In der Abbildung \ref{error2} hingegen ist dieses Konvergenzverhalten für $d\in\{1,2,3\}$ und $144$ Diskretisierungspunkten abgebildet. Wir wählen die Abbruchbedingungen max\_iter=$5000$, $\varepsilon =10^{-8}$, min\_ red aufgehoben, $\omega =0,6$. Wir heben die Abbruchbedingung min\_ red auf, da der Fehler nicht streng monoton fällt.
 
 
 
@@ -365,7 +367,7 @@ Wir schauen uns zunächst an, wie sich der Fehler im Laufe der Iterationen verh�
 
  \end{minipage}
  
- Diese Grafiken sind doppelt-logaritmisch skaliert.  Man erkennt dass der Fehler im Laufe der iterationen zunächst stark sinkt und ab einem gewissen Punkt konstant bleibt oder sogar wieder leicht steigt.  Es ist außerdem zu erkennen, dass für eine größere Anzahl an Diskretisierungspunkten, mehr Iterationen benötigt werden, um den minimalen Fehler zu erreichen. Dennoch ist zu sehen, dass der Fehler für größere $n$ größer ist. 
+ Diese Grafiken sind doppelt-logarithmisch skaliert.  Man erkennt dass der Fehler im Laufe der Iterationen zunächst stark sinkt und ab einem gewissen Punkt konstant bleibt oder sogar wieder leicht steigt.  Es ist außerdem zu erkennen, dass für eine größere Anzahl an Diskretisierungspunkten, mehr Iterationen benötigt werden, um den minimalen Fehler zu erreichen. Dennoch ist zu sehen, dass der Fehler für größere $n$ größer ist. 
 
 
 \subsection{Konvergenzverhalten mit verschiedenen Abbruchbedingungen}
@@ -376,7 +378,7 @@ Wir untersuchen das Konvergenzverhalten, je nachdem, welchen Wert man als Abbruc
 
  \centering
  \includegraphics[scale = 0.9]{epsilon1}
- 	\captionof{figure}{Vergleich von versdchiedenen Abbruchbedingungen}
+ 	\captionof{figure}{Vergleich von verschiedenen Abbruchbedingungen}
  	\label{epsilon}
 
  \end{minipage}
@@ -462,10 +464,10 @@ von der gewählten Umsetzung des Verfahrens abhängig ist.
 
 \section{Auswertung der Experimente}
 
-Der Fehler nimmt mit zunehmender Iterationszahl ab, was darauf hindeutet, dass das SOR Verfahren wie erwartet gegen die genaue Lösung konvergiert. Dass der Fehler dann ab einem gewissen Punkt wieder leicht steigt, kann daran liegen, dass durch weiteres Rechnen ein Approximationsfehler hinzu kommt.  Wenn dieser schneller größer wird, als wie das SOR Verfahren gegen die richtige Lösung konvergiert, steigt insgesamt der fehler.  Dass mit kleineren Abbruchbedingungen der Fehler kleiner wird haben wir in unseren Experimenten gemäß der Theorie beobachtet.  Wir haben uns allerdings nur eine Variation in der $\varepsilon$ Abbruchbedingung angeschaut. Dass der fehler ab einem gewissen $n$ bei einer der $\varepsilon$ wieder steigt kann unter Anderem damit erklärt werden, dass die anderen Abbruchbedingungen, wie zum Beipsiel die maximale Iterationsanzahl, greifen. Dies beobachten wir auch später, wenn wir das LU Verfahren und das SOR Verfahren im Hinblick auf den Fehler vergleichen. Hierbei haben wir gesehen, dass der Fehler der beiden Verfahren gleich ist,  bis zu einem gewissen $n$. Dann steigt der Fehler des SOR Verfahren mit einer niedrigeren maximalen Iterationszahl stark an, da das Programm abbricht bevor der Fehler klein genug für unser $\epsilon$-Kriterium ist.  Wieder benötigt das SOR Verfahren für höhere $n$ vermutlich eine größere Anzahl an Iterationen. Denn mit einer höheren maximalen Iterationszahl bleibt der Fehler klein. Wir haben im Abschnitt zur Ermittlung des optimalen Relaxationfaktors $\omega$ gesehen, dass dieser von der Matrix $A$ abhängt. So ist für kleine $n$ eine größerer Relaxationsfaktor von Vorteil, während für $n=13$ ein kleinerer Relaxationsfaktor von Vorteil ist. Auch in der Theorie gaben wir gesehen, dass dieser von der Matrix $A$ abängt.  Unsere theoretischen Überlegungen zur Sparsität der Matrizen der beiden Verfahren konnten wir experimentell bestätigen. Tatsächlich bleibt der Speicherbedarf bei dem SOR Verfahren zu gering wie die Matrix $A$ selbst, während dieser bei der LU Zerlegung höher wird. Das ist ein klarer Vorteil des Iterativen Verfahrens. Die Laufzeit der beiden Verfahren ist ähnlich. Theoretisch sollte der Rechenaufwand von dem SOR Verfahren auch in $\mathcal{O}(N)$ liegen. Wir haben aber auch gesehen,  dass die Laufzeit von der gewählten Implementierung abhängt. Es kann also sein, dass unsere Implementierung nicht optimal ist und das Verfahren auch schneller durchgeführt werden kann.  Alternativ, könnte das gewählte $\omega $ nicht optimal sein.
+Der Fehler nimmt mit zunehmender Iterationszahl ab, was darauf hindeutet, dass das SOR Verfahren wie erwartet gegen die genaue Lösung konvergiert. Dass der Fehler dann ab einem gewissen Punkt wieder leicht steigt, kann daran liegen, dass durch weiteres Rechnen ein Approximationsfehler hinzu kommt.  Wenn dieser schneller größer wird, als wie das SOR Verfahren gegen die richtige Lösung konvergiert, steigt insgesamt der Fehler.  Dass mit kleineren Abbruchbedingungen der Fehler kleiner wird haben wir in unseren Experimenten gemäß der Theorie beobachtet.  Wir haben uns allerdings nur eine Variation in der $\varepsilon$ Abbruchbedingung angeschaut. Dass der Fehler ab einem gewissen $n$ bei einer der $\varepsilon$ wieder steigt kann unter Anderem damit erklärt werden, dass die anderen Abbruchbedingungen, wie zum Beispiel die maximale Iterationsanzahl, greifen. Dies beobachten wir auch später, wenn wir das LU Verfahren und das SOR Verfahren im Hinblick auf den Fehler vergleichen. Hierbei haben wir gesehen, dass der Fehler der beiden Verfahren gleich ist,  bis zu einem gewissen $n$. Dann steigt der Fehler des SOR Verfahren mit einer niedrigeren maximalen Iterationszahl stark an, da das Programm abbricht bevor der Fehler klein genug für unser $\epsilon$-Kriterium ist.  Wieder benötigt das SOR Verfahren für höhere $n$ vermutlich eine größere Anzahl an Iterationen. Denn mit einer höheren maximalen Iterationszahl bleibt der Fehler klein. Wir haben im Abschnitt zur Ermittlung des optimalen Relaxationfaktors $\omega$ gesehen, dass dieser von der Matrix $A$ abhängt. So ist für kleine $n$ eine größerer Relaxationsfaktor von Vorteil, während für $n=13$ ein kleinerer Relaxationsfaktor von Vorteil ist. Auch in der Theorie gaben wir gesehen, dass dieser von der Matrix $A$ abhängt.  Unsere theoretischen Überlegungen zur Sparsität der Matrizen der beiden Verfahren konnten wir experimentell bestätigen. Tatsächlich bleibt der Speicherbedarf bei dem SOR Verfahren zu gering wie die Matrix $A$ selbst, während dieser bei der LU Zerlegung höher wird. Das ist ein klarer Vorteil des Iterativen Verfahrens. Die Laufzeit der beiden Verfahren ist ähnlich. Theoretisch sollte der Rechenaufwand von dem SOR Verfahren auch in $\mathcal{O}(N)$ liegen. Wir haben aber auch gesehen,  dass die Laufzeit von der gewählten Implementierung abhängt. Es kann also sein, dass unsere Implementierung nicht optimal ist und das Verfahren auch schneller durchgeführt werden kann.  Alternativ, könnte das gewählte $\omega $ nicht optimal sein.
 \section{Zusammenfassung}
 
-Im Gegensatz zu direkten Verfahren, nähert man sich bei iterativen Verfahren an die exakte Lösung mit jeder Iteration weiter an.  Wir haben uns hier ein spezielles Iterationsverfahren angeschaut, nämlich das SOR-Verfahren. Wir haben in unseren Experimenten diese im Hinblick auf Konvergenzverhalten, Laufzeit und Sparsität untersucht und mit dem LU-Verfahren, ein direktes Verfahren zur Lösung linearer Gleichungssysteme, verglichen.  Wir haben in der Theorie gesehen, dass man durch das iterierte Verfahren schneller und effizienter zu einer sehr genauen Lösung kommt.  Das liegt zum einen an einem niedrigeren Rechenaufwand, und zum anderen wird weniger Speicherplatz benötigt als beim LU-Verfahren.  In unseren Experimenten wurden die Überlegungen zum Speicherbedarf bestätigt, allerdings war die Laufzeit insgesamt höher als die der LU Zerlegung.  Aber das liegt vermutlich an unserer Implementation. Insgesamt sollte das iterative Verfahren bessser sein, um bei großen Gleichungssystemen eine Lösung zu finden, insbesondere wenn die Matrix $A$ dünnbesetzt ist. 
+Im Gegensatz zu direkten Verfahren, nähert man sich bei iterativen Verfahren an die exakte Lösung mit jeder Iteration weiter an.  Wir haben uns hier ein spezielles Iterationsverfahren angeschaut, nämlich das SOR-Verfahren. Wir haben in unseren Experimenten diese im Hinblick auf Konvergenzverhalten, Laufzeit und Sparsität untersucht und mit dem LU-Verfahren, ein direktes Verfahren zur Lösung linearer Gleichungssysteme, verglichen.  Wir haben in der Theorie gesehen, dass man durch das iterierte Verfahren schneller und effizienter zu einer sehr genauen Lösung kommt.  Das liegt zum einen an einem niedrigeren Rechenaufwand, und zum anderen wird weniger Speicherplatz benötigt als beim LU-Verfahren.  In unseren Experimenten wurden die Überlegungen zum Speicherbedarf bestätigt, allerdings war die Laufzeit insgesamt höher als die der LU Zerlegung.  Aber das liegt vermutlich an unserer Implementation. Insgesamt sollte das iterative Verfahren besser sein, um bei großen Gleichungssystemen eine Lösung zu finden, insbesondere wenn die Matrix $A$ dünnbesetzt ist. 
 
 
 
