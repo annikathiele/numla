@@ -127,14 +127,14 @@ mit iterativen Verfahren lösen}
 		$$\Delta u=\sum_{i=1}^d\frac{\partial ^2 u}{\partial x_i^2}$$
 
 		\end{definition}
-		Wir definieren weiter das partielle Differentialgleichungssystem wie in \citep{PDE}, welches im Poisson-Problem gelöst werden soll. Wir betrachten das Problem auf einem  Gebiet  $\Omega$ und Rand $\partial \Omega$. seien $f\in C(\Omega , \mathbb{R})$ und $g\in C(\partial \Omega , \mathbb{R})$ Funktionen. Dann suchen wir eine Funktion $u$, sodass
+		Wir definieren weiter das partielle Differentialgleichungssystem wie in \citep{PDE}, welches im Poisson-Problem gelöst werden soll. Wir betrachten das Problem auf einem  Gebiet  $\Omega$ und Rand $\partial \Omega$. Seien $f\in C(\Omega , \mathbb{R})$ und $g\in C(\partial \Omega , \mathbb{R})$ Funktionen. Dann suchen wir eine Funktion $u$, sodass
 		\begin{align*}
-		\Delta u&=f \text{ in }\Omega\\
+		-\Delta u&=f \text{ in }\Omega\\
 		u&= g \text{ auf }\partial\Omega
 		\end{align*}
 		Wir betrachten in diesem Bericht einen Spezialfall des Problems, wo $\Omega =(0,1)^d$, $d\in \{1,2,3\}$ und $g\equiv 0$
 
-		Wir wollen das Problem numerisch mit \textit{Finiten-Differenzen} approximieren. Nach \citep{finite}
+		Wir wollen das Problem numerisch mit \textit{Finiten-Differenzen} approximieren. Nach \citep{finite} führen wir die folgende Definition ein.
 		\begin{definition}[Finite-Differenzen-Methode]
 		Finite-Differenzen-Methoden sind eine Klasse numerischer Verfahren zur Lösung gewöhnlicher und partieller Differenzialgleichungen.		
 		Die grundlegende Idee bei der \textit{Finite-Differenzen-Methode} ist es die Ortsableitung in der Differenzialgleichung an einer endlichen Zahl Gitterpunkten durch Differenzenquotienten zu approximieren. Unsere angenäherten Lösungen der Differenzialgleichung an den Gitterpunkten führen dann auf ein entsprechendes Gleichungssystem, welches sich numerisch berechnen lässt.
@@ -150,7 +150,7 @@ mit iterativen Verfahren lösen}
 		$$\sum_{l=1}^dx_ln^l<\sum_{l=1}^dy_ln^l$$
 		\end{definition}
 		Sei $N:=(n-1)^d$ die Anzahl an Diskretisierungspunkten.
-		So erhalten wir $N$ lineare Gleichungen und damit Blockmatrizen $A^{(d)}$, für die zu lösen gilt $A^{(d)}\hat{u}=b$. Wir definieren diese Blockmatrizen induktiv.
+		So erhalten wir $N$ lineare Gleichungen und damit Blockmatrizen $A^{(d)}$, für die zu lösen gilt $A^{(d)}u=b$. Wir definieren diese Blockmatrizen induktiv.
 		$$A^{(d)}_{1} := \begin{pmatrix}     2d & -1 & 0 & 0 &\dots&0 \\    -1 & 2d & -1 & 0&\dots&0 \\    0&\ddots&\ddots&\ddots&\ddots&\vdots\\    \vdots & \ddots &\ddots&\ddots&-1&0 \\    0 & \dots&0&-1&2d&-1\\     0&  \dots&0&0&-1&2d    \end{pmatrix}$$
 		$$A^{(d)}_{l} := \begin{pmatrix}     A^{(d)}_{l-1} & -\mathbf{I}_{l-1} & 0 & 0 &\dots&0 \\    -\mathbf{I}_{l-1} & A^{(d)}_{l-1} & -\mathbf{I}_{l-1} & 0&\dots&0 \\    0&\ddots&\ddots&\ddots&\ddots&\vdots\\    \vdots & \ddots &\ddots&\ddots&-\mathbf{I}_{l-1}&0 \\    0 & \dots&0&-\mathbf{I}_{l-1}&A^{(d)}_{l-1}&-\mathbf{I}_{l-1}\\     0&  \dots&0&0&-\mathbf{I}_{l-1}&A^{(d)}_{l-1}    \end{pmatrix}$$
 		Wir setzen $A^{(d)}:=A^{(d)}_d$ Die rechte Seite $b$ erhalten wir durch das Einsetzen der Diskretisierungspunkte in die gegebene Funktion $f$. \cbend
@@ -350,7 +350,7 @@ Dann ist $u$ die exakte Lösung zum Poisson Problem mit $f$ wie oben definiert. 
 
 Wir werden uns im Folgenden mit einer Reihe an Experimenten auseinandersetzen.  Dabei untersuchen wir das Konvergenzverhalten, die Fehler in Abhängigkeit von der Anzahl an Diskretisierungspunkten,  der Fehler in Abhängigkeit von dem Relexationsfaktors $\omega $, sowie die Laufzeit und Sparsität des SOR Verfahrens. Wir werden dann das SOR Verfahren im Hinblick auf diese Punkte mit dem direkten LU Verfahren vergleichen, um Vor und Nachteile der beiden zu finden.
 \subsection{Fehleranalyse}
-Wir schauen uns zunächst an, wie sich der Fehler im Laufe der Iterationen verhält. Dazu betrachten wir die folgende Abbildung \ref{error}, in der der maximale absolute Fehler der Iterierten für $d\in\{1,2,3\}$ und $27$ Diskretisierungspunkten. In der Abbildung \ref{error2} hingegen ist dieses Konvergenzverhalten für $d\in\{1,2,3\}$ und $144$ Diskretisierungspunkten abgebildet. Wir wählen die Abbruchbedingungen max\_iter=$5000$, $\varepsilon =10^{-8}$, min\_ red aufgehoben, $\omega =0,6$. Wir heben die Abbruchbedingung min\_ red auf, da der Fehler nicht streng monoton fällt.
+Wir schauen uns zunächst an, wie sich der Fehler im Laufe der Iterationen verhält. Dazu betrachten wir die folgende Abbildung \ref{error}, in der der maximale absolute Fehler der Iterierten für $d\in\{1,2,3\}$ und $27$ Diskretisierungspunkten. In der Abbildung \ref{error2} hingegen ist dieses Konvergenzverhalten für $d\in\{1,2,3\}$ und $144$ Diskretisierungspunkten abgebildet. Wir wählen die Abbruchbedingungen $max\_ter=5000$, $\varepsilon =10^{-8}$, min\_ red aufgehoben, $\omega =0,6$. Wir heben die Abbruchbedingung $min\_red $ auf, da der Fehler nicht streng monoton fällt.
 
 
 
@@ -368,7 +368,7 @@ Wir schauen uns zunächst an, wie sich der Fehler im Laufe der Iterationen verh�
  \end{minipage}
  
  Diese Grafiken sind doppelt-logarithmisch skaliert.  Man erkennt dass der Fehler im Laufe der Iterationen zunächst stark sinkt und ab einem gewissen Punkt konstant bleibt oder sogar wieder leicht steigt.  Es ist außerdem zu erkennen, dass für eine größere Anzahl an Diskretisierungspunkten, mehr Iterationen benötigt werden, um den minimalen Fehler zu erreichen. Dennoch ist zu sehen, dass der Fehler für größere $n$ größer ist. 
-
+Es ist außerdem zu beobachten, dass das SOR Verfahren in Abbildung \ref{error2} abbricht wegen der $max\_iter$ Bedingung.
 
 \subsection{Konvergenzverhalten mit verschiedenen Abbruchbedingungen}
 Wir untersuchen das Konvergenzverhalten, je nachdem, welchen Wert man als Abbruchbedingung wählt.  Wir variieren in der folgenden Abbildung \ref{epsilon} das $\varepsilon$,  zu welchem die Abbruchbedingung $||Ax_i -b||<\varepsilon$ genutzt wird. Wir setzen $h:=\frac{1}{n}$. Wir schauen uns an, wie der maximale absoluter Fehler sich in Abhängigkeit von $n$ verhält. 
@@ -452,14 +452,24 @@ Um die beiden Verfahren hinsichtlich der Laufzeit zu vergleichen,  messen wir je
 \begin{minipage}{\textwidth}
 
  \centering
- \includegraphics[scale = 0.9]{time1}
+ \includegraphics[scale = 0.9]{Time2_1}
  	\captionof{figure}{Vergleich von Laufzeit}
  	\label{time}
 
  \end{minipage}
+ 
+\begin{minipage}{\textwidth}
 
-Es ist aus dieser Abbildung zu erkennen, dass die Laufzeit von dem LU Verfahren linear beschränkt ist.  Das SOR Verfahren hingegen ist nicht ganz linear beschränkt.  Wir haben beim SOR Verfahren noch von einer weiteren Implementation die Zeit gemessen, diese hat eine weitaus größere Laufzeit. Bei dieser Implementation berechnen wir die Schritte komponentenweise. Dies bedeutet einen größeren Rechenaufwand und damit eine höhere Laufzeit. Es ist also zu erkennen, dass die Laufzeit des Verfahrens natürlich auch 
+ \centering
+ \includegraphics[scale = 0.9]{Time2_2}
+ 	\captionof{figure}{Vergleich von Laufzeit II}
+ 	\label{time2}
+
+ \end{minipage}
+
+Es ist aus dieser Abbildung \ref{time} zu erkennen, dass die Laufzeit von dem LU Verfahren linear beschränkt ist.  Das SOR Verfahren hingegen ist nicht ganz linear beschränkt.  Wir haben beim SOR Verfahren noch von einer weiteren Implementation die Zeit gemessen, diese hat eine weitaus größere Laufzeit. Bei dieser Implementation berechnen wir die Schritte komponentenweise. Dies bedeutet einen größeren Rechenaufwand und damit eine höhere Laufzeit. Es ist also zu erkennen, dass die Laufzeit des Verfahrens natürlich auch 
 von der gewählten Umsetzung des Verfahrens abhängig ist. 
+In der Abbildung \ref{time2} hingegen sind nur die Laufzeit von dem LU Verfahren und dem verbesserten SOR Verfahren, um höhere $n$ anschauen zu können. Auch hier wird klar, dass man das SOR Verfahren auf jeden Fall auch effizienter implementieren kann.
 
 
 \section{Auswertung der Experimente}
